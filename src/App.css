@@ -1,38 +1,103 @@
-.App {
-  text-align: center;
+.navbar {
+  display: block;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.bottombar {
+  display: none; 
+  position: fixed;
+  bottom: 0;
+  width: 100%;  
+  z-index: 1000;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
+@media (max-width: 600px) {
+  .navbar {
+    display: none; 
+  }
+
+  .bottombar {
+    display: block; 
   }
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+@keyframes zoom {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
-.App-link {
-  color: #61dafb;
+.chatbot-icon {
+  animation: zoom 2s infinite alternate;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+@media (max-width: 768px) {
+  .chatbot-window {
+    bottom: 150px;
+    max-height: 100vh;
+    width: 70vw; 
   }
-  to {
-    transform: rotate(360deg);
+}
+
+/* for chatbot */
+.react-chatbot-kit-user-avatar-container{
+  background: url('https://www.w3schools.com/howto/img_avatar.png');
+  background-size: contain;
+}
+
+.react-chatbot-kit-user-avatar-icon{
+  fill: transparent!important;
+}
+
+
+/* for QR page */
+.scanner-animation {
+  position: relative;
+}
+
+.scanner-animation:after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  animation: scanner 3s linear infinite;
+}
+
+@keyframes scanner {
+  0% {
+    transform: translateY(-100%);
   }
+  100% {
+    transform: translateY(100%);
+  }
+}
+
+
+.camera-permission-button {
+  padding: 10px 20px;
+  background-color: #b81c21;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  outline: none;
+  font-size: 16px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.camera-permission-button:hover {
+  background-color: #da4045;
 }

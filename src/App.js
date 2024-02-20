@@ -1,24 +1,32 @@
-import logo from './logo.svg';
+import { Route, Routes } from 'react-router-dom';
 import './App.css';
+import ProtectedRoute from './Components/ProtectedRoute/ProtectedRoute.js';
+import About from './Pages/About.js';
+import Login from './Pages/Login.js';
+import Profile from './Pages/Profile.js';
+import Register from './Pages/Register.js';
+import Home from './Pages/User/Home.js';
+import QR from './Pages/User/QR.js';
+import Navigation from './Pages/User/Navigation.js';
 
-function App() {
+
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+      <Routes>
+      <Route path='/' element ={<ProtectedRoute/>}>
+        <Route path='/' element ={<Home/>} />
+      </Route>
+      <Route path='/login' element ={<Login/>} />
+      <Route path='/register' element ={<Register/>} />
+      <Route path='/' element ={<ProtectedRoute/>}>
+        <Route path='/about' element ={<About/>} />
+      </Route>
+
+      <Route path='/navigation' element ={<Navigation/>} />
+      <Route path='/qr' element ={<QR/>} />
+      <Route path='/profile' element ={<Profile/>} />
+      </Routes>
+
   );
 }
 
