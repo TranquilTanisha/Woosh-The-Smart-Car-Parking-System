@@ -37,7 +37,7 @@ const Home = () => {
         <Navbar />
       </div>
       <div>
-        <h1 style={{marginTop: '8rem'}}>Welcome {user.displayName}!</h1>
+        <h1 style={{marginTop: '8rem'}}>Welcomeeee {user.displayName}!</h1>
       </div>
       <div>
         <img 
