@@ -78,6 +78,7 @@ function QR() {
                 onScan={handleScan}
                 onError={handleError}
                 style={{ width: '100%' }}
+                facingMode={'environment'}
               />
             </div>
           </div>
