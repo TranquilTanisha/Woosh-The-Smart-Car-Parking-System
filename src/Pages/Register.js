@@ -12,7 +12,8 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import LoginIcon from '@mui/icons-material/Login';
 import Image2 from '../Images/car_parking.jpg';
 import { useNavigate } from 'react-router-dom';
-
+import { db } from '../Firebase';
+import { collection, addDoc } from "firebase/firestore"; 
 function Copyright(props) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
@@ -32,19 +33,25 @@ const defaultTheme = createTheme();
 export default function SignUpSide() {
   const navigate = useNavigate();
 
-  const handleSubmit = (event) => {
+
+  const handleSubmit = async (event) => { 
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      first_name: data.get('first_name'),
-      last_name: data.get('last_name'),
-      contact_no: data.get('contact_no'),
-      email: data.get('email'),
-      password: data.get('password'),
-      confirm_password: data.get('confirm_password'),
-    });
-
-    navigate('/');
+  
+    try {
+      
+      const docRef = await addDoc(collection(db, "users"), { 
+        first_name: data.get('first_name'),
+        last_name: data.get('last_name'),
+        License_Plate_no: data.get('License_Plate_no'),
+        email: data.get('email'),
+        password: data.get('password'),
+      });
+      console.log("Document written with ID: ", docRef.id);
+      navigate('/');
+    } catch (error) {
+      console.error("Error adding document: ", error);
+    }
   };
 
   return (
@@ -127,11 +134,13 @@ export default function SignUpSide() {
                 margin="normal"
                 required
                 fullWidth
-                id="contact_no"
-                label="Contact Number"
-                type="number"
-                name="contact_no"
-                autoComplete="contact_no"
+                id="License_Plate_no"
+                label="License Plate Number"
+                name="License_Plate_no"
+                autoComplete="License_Plate_no"
+                inputProps={{
+                  maxLength: 10
+                }}
                 autoFocus
               />
               <TextField

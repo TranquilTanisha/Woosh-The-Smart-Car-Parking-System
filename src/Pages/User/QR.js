@@ -15,7 +15,7 @@ function QR() {
         window.open(data.text, '_blank');
       }
       setPermissionGranted(false);
-      navigator.mediaDevices.getUserMedia({ video: true })
+      navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
         .then(stream => {
           stream.getTracks().forEach(track => track.stop());
         })
@@ -40,7 +40,7 @@ function QR() {
     const requestCameraPermission = () => {
       const isConfirmed = window.confirm("Allow this website to access your camera?");
       if (isConfirmed) {
-        navigator.mediaDevices.getUserMedia({ video: true })
+        navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
           .then(() => setPermissionGranted(true))
           .catch(err => console.error(err));
       }
@@ -54,7 +54,7 @@ function QR() {
     const requestCameraPermission = () => {
       const isConfirmed = window.confirm("Allow this website to access your camera?");
       if (isConfirmed) {
-        navigator.mediaDevices.getUserMedia({ video: true })
+        navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
           .then(() => setPermissionGranted(true))
           .catch(err => console.error(err));
       }
@@ -84,10 +84,9 @@ function QR() {
         )}
         {qrResult && <p>Scanned QR Code Content: {qrResult.text}</p>}
         {!permissionGranted && !qrResult && (
-         <button onClick={handleRequestPermissionAgain} className="camera-permission-button">
-         Request Camera Permission
-       </button>
-       
+          <button onClick={handleRequestPermissionAgain} className="camera-permission-button">
+            Request Camera Permission
+          </button>
         )}
       </div>
       <div className="bottombar">

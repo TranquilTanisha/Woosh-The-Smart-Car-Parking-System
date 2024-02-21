@@ -16,7 +16,8 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
 import { auth, provider } from '../Firebase.js';
 import '../App.css';
-
+import { getDocs, query, where, collection } from 'firebase/firestore';
+import { db } from '../Firebase.js';
 
 function Copyright(props) {
   return (
@@ -50,17 +51,28 @@ export default function SignInSide() {
       console.log(error);
     }
   }
-
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
-    navigate('/');
+    const email = data.get('email');
+    const password = data.get('password');
+  
+    try {
+    
+      const usersRef = collection(db, 'users');
+      const userQuery = query(usersRef, where('email', '==', email), where('password', '==', password));
+      const querySnapshot = await getDocs(userQuery);
+  
+      if (!querySnapshot.empty) {
+        console.log("User successfully logged in!");
+        navigate('/'); 
+      } else {
+        console.error("Invalid email or password");
+      }
+    } catch (error) {
+      console.error("Error signing in: ", error.message);
+    }
   };
-
   return (
     <ThemeProvider theme={defaultTheme}>
       <Grid container component="main" sx={{ height: '100vh' }}>
