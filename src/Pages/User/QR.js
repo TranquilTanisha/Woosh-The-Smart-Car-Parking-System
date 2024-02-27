@@ -16,11 +16,6 @@ function QR() {
         window.open(data.text, '_blank');
       }
       setPermissionGranted(false);
-      navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
-        .then(stream => {
-          stream.getTracks().forEach(track => track.stop());
-        })
-        .catch(err => console.error(err));
     }
   };
 
@@ -43,19 +38,35 @@ function QR() {
       if (isConfirmed) {
         navigator.mediaDevices.enumerateDevices()
           .then(devices => {
-            const rearCamera = devices.find(device => device.kind === 'videoinput' && device.label.includes('rear'));
+            const rearCamera = devices.find(device => device.kind === 'videoinput' && device.label.includes('back'));
             if (rearCamera) {
               navigator.mediaDevices.getUserMedia({ video: { deviceId: rearCamera.deviceId } })
                 .then(() => setPermissionGranted(true))
-                .catch(err => console.error(err));
+                .catch(() => {
+                  setCameraErrorMessage('Rear camera not accessible. Trying front camera.');
+                  navigator.mediaDevices.getUserMedia({ video: { facingMode: 'front' } })
+                    .then(() => setPermissionGranted(true))
+                    .catch(() => {
+                      setCameraErrorMessage('Front camera not accessible.');
+                    });
+                });
             } else {
-              setCameraErrorMessage('Rear camera not found. Using front camera instead.');
-              navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } })
+              setCameraErrorMessage('Rear camera not found. Trying front camera.');
+              navigator.mediaDevices.getUserMedia({ video: { facingMode: 'front' } })
                 .then(() => setPermissionGranted(true))
-                .catch(err => console.error(err));
+                .catch(() => {
+                  setCameraErrorMessage('Front camera not accessible.');
+                });
             }
           })
-          .catch(err => console.error(err));
+          .catch(() => {
+            setCameraErrorMessage('Error enumerating devices. Trying front camera.');
+            navigator.mediaDevices.getUserMedia({ video: { facingMode: 'front' } })
+              .then(() => setPermissionGranted(true))
+              .catch(() => {
+                setCameraErrorMessage('Front camera not accessible.');
+              });
+          });
       }
     };
     
@@ -70,19 +81,35 @@ function QR() {
       if (isConfirmed) {
         navigator.mediaDevices.enumerateDevices()
           .then(devices => {
-            const rearCamera = devices.find(device => device.kind === 'videoinput' && device.label.includes('rear'));
+            const rearCamera = devices.find(device => device.kind === 'videoinput' && device.label.includes('back'));
             if (rearCamera) {
               navigator.mediaDevices.getUserMedia({ video: { deviceId: rearCamera.deviceId } })
                 .then(() => setPermissionGranted(true))
-                .catch(err => console.error(err));
+                .catch(() => {
+                  setCameraErrorMessage('Rear camera not accessible. Trying front camera.');
+                  navigator.mediaDevices.getUserMedia({ video: { facingMode: 'front' } })
+                    .then(() => setPermissionGranted(true))
+                    .catch(() => {
+                      setCameraErrorMessage('Front camera not accessible.');
+                    });
+                });
             } else {
-              setCameraErrorMessage('Rear camera not found. Using front camera instead.');
-              navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } })
+              setCameraErrorMessage('Rear camera not found. Trying front camera.');
+              navigator.mediaDevices.getUserMedia({ video: { facingMode: 'front' } })
                 .then(() => setPermissionGranted(true))
-                .catch(err => console.error(err));
+                .catch(() => {
+                  setCameraErrorMessage('Front camera not accessible.');
+                });
             }
           })
-          .catch(err => console.error(err));
+          .catch(() => {
+            setCameraErrorMessage('Error enumerating devices. Trying front camera.');
+            navigator.mediaDevices.getUserMedia({ video: { facingMode: 'front' } })
+              .then(() => setPermissionGranted(true))
+              .catch(() => {
+                setCameraErrorMessage('Front camera not accessible.');
+              });
+          });
       }
     };
     requestCameraPermission();
@@ -104,7 +131,7 @@ function QR() {
                 onScan={handleScan}
                 onError={handleError}
                 style={{ width: '100%' }}
-                facingMode={'environment'}
+                facingMode={'rear'}
               />
             </div>
           </div>
