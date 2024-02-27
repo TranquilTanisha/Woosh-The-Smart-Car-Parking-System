@@ -7,6 +7,7 @@ import '../../App.css';
 function QR() {
   const [qrResult, setQrResult] = useState(null);
   const [permissionGranted, setPermissionGranted] = useState(false);
+  const [cameraErrorMessage, setCameraErrorMessage] = useState('');
 
   const handleScan = data => {
     if (data) {
@@ -40,8 +41,20 @@ function QR() {
     const requestCameraPermission = () => {
       const isConfirmed = window.confirm("Allow this website to access your camera?");
       if (isConfirmed) {
-        navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
-          .then(() => setPermissionGranted(true))
+        navigator.mediaDevices.enumerateDevices()
+          .then(devices => {
+            const rearCamera = devices.find(device => device.kind === 'videoinput' && device.label.includes('rear'));
+            if (rearCamera) {
+              navigator.mediaDevices.getUserMedia({ video: { deviceId: rearCamera.deviceId } })
+                .then(() => setPermissionGranted(true))
+                .catch(err => console.error(err));
+            } else {
+              setCameraErrorMessage('Rear camera not found. Using front camera instead.');
+              navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } })
+                .then(() => setPermissionGranted(true))
+                .catch(err => console.error(err));
+            }
+          })
           .catch(err => console.error(err));
       }
     };
@@ -51,11 +64,24 @@ function QR() {
 
   const handleRequestPermissionAgain = () => {
     setPermissionGranted(false);
+    setCameraErrorMessage('');
     const requestCameraPermission = () => {
       const isConfirmed = window.confirm("Allow this website to access your camera?");
       if (isConfirmed) {
-        navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
-          .then(() => setPermissionGranted(true))
+        navigator.mediaDevices.enumerateDevices()
+          .then(devices => {
+            const rearCamera = devices.find(device => device.kind === 'videoinput' && device.label.includes('rear'));
+            if (rearCamera) {
+              navigator.mediaDevices.getUserMedia({ video: { deviceId: rearCamera.deviceId } })
+                .then(() => setPermissionGranted(true))
+                .catch(err => console.error(err));
+            } else {
+              setCameraErrorMessage('Rear camera not found. Using front camera instead.');
+              navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } })
+                .then(() => setPermissionGranted(true))
+                .catch(err => console.error(err));
+            }
+          })
           .catch(err => console.error(err));
       }
     };
@@ -84,6 +110,7 @@ function QR() {
           </div>
         )}
         {qrResult && <p>Scanned QR Code Content: {qrResult.text}</p>}
+        {cameraErrorMessage && <p>{cameraErrorMessage}</p>}
         {!permissionGranted && !qrResult && (
           <button onClick={handleRequestPermissionAgain} className="camera-permission-button">
             Request Camera Permission
