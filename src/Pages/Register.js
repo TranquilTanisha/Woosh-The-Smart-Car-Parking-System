@@ -13,7 +13,9 @@ import LoginIcon from '@mui/icons-material/Login';
 import Image2 from '../Images/car_parking.jpg';
 import { useNavigate } from 'react-router-dom';
 import { db } from '../Firebase';
-import { collection, addDoc } from "firebase/firestore"; 
+// import { auth , googleProvider} from "../Firebase";
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore"; 
 function Copyright(props) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
@@ -33,26 +35,75 @@ const defaultTheme = createTheme();
 export default function SignUpSide() {
   const navigate = useNavigate();
 
-
+//on submit redirect to login page
   const handleSubmit = async (event) => { 
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-  
-    try {
-      
-      const docRef = await addDoc(collection(db, "users"), { 
-        first_name: data.get('first_name'),
-        last_name: data.get('last_name'),
-        License_Plate_no: data.get('License_Plate_no'),
-        email: data.get('email'),
-        password: data.get('password'),
-      });
-      console.log("Document written with ID: ", docRef.id);
-      navigate('/');
-    } catch (error) {
-      console.error("Error adding document: ", error);
+
+    if(data.get('password') === data.get('confirm_password')) {
+      try {
+        const auth = getAuth();
+        const email = data.get('email');
+        const password = data.get('password');
+        createUserWithEmailAndPassword(auth, email, password).then((userCredential) => {
+          const user = userCredential.user;
+          const userUidString = user.uid.toString();
+          const userName = user.displayName;
+          console.log(userUidString);
+          console.log(userName);
+          navigate('/login');
+          
+          const docName = userUidString;
+          setDoc(doc(db, "users", docName), {
+            email: data.get('email'),
+            name: userName,
+            licenseNo1: '',
+            licenseNo2: '',
+            licenseNo3: '',
+            parkingId: '',
+            orgID: '',
+            employeeID: '',
+            isVerifiedEmployee: false,
+          });
+          // const docRef = addDoc(collection(db, "users"), { 
+          //   licenseNo: '',
+          //   email: data.get('email'),
+          //   name: userName,
+          // });
+        }).catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          console.log(errorCode, errorMessage);
+        });
+      }
+      catch (error) {
+        console.log(error);
+      }
+    }
+    else {
+      alert('Passwords do not match');
     }
   };
+  
+  //   try {
+  //     const docRef = await addDoc(collection(db, "users"), { 
+  //       first_name: data.get('first_name'),
+  //       last_name: data.get('last_name'),
+  //       License_Plate_no: data.get('License_Plate_no'),
+  //       email: data.get('email'),
+  //       password: data.get('password'),
+  //     });
+  //     try {
+  //       localStorage.setItem('token', docRef.id);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //     navigate('/');
+  //     console.log("Document written with ID: ", docRef.id);
+  //   } catch (error) {
+  //     console.error("Error adding document: ", error);
+  //   }
+  // };
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -97,7 +148,7 @@ export default function SignUpSide() {
             <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
             <Grid container spacing={2}>
                 <Grid item xs={12} sm={6}>
-                  <TextField
+                  {/* <TextField
                     margin="normal"
                     required
                     fullWidth
@@ -117,7 +168,7 @@ export default function SignUpSide() {
                     label="Last Name"
                     name="last_name"
                     autoComplete="last_name"
-                  />
+                  /> */}
                 </Grid>
               </Grid>
               <TextField
@@ -130,7 +181,7 @@ export default function SignUpSide() {
                 autoComplete="email"
                 autoFocus
               />
-              <TextField
+              {/* <TextField
                 margin="normal"
                 required
                 fullWidth
@@ -142,7 +193,7 @@ export default function SignUpSide() {
                   maxLength: 10
                 }}
                 autoFocus
-              />
+              /> */}
               <TextField
                 margin="normal"
                 required

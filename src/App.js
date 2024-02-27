@@ -8,6 +8,7 @@ import Register from './Pages/Register.js';
 import Home from './Pages/User/Home.js';
 import QR from './Pages/User/QR.js';
 import Navigation from './Pages/User/Navigation.js';
+import Temp from './Pages/Temp.js';
 
 
 const App = () => {
@@ -18,13 +19,11 @@ const App = () => {
       </Route>
       <Route path='/login' element ={<Login/>} />
       <Route path='/register' element ={<Register/>} />
-      <Route path='/' element ={<ProtectedRoute/>}>
-        <Route path='/about' element ={<About/>} />
-      </Route>
-
+      <Route path='/about' element ={<About/>} />
       <Route path='/navigation' element ={<Navigation/>} />
       <Route path='/qr' element ={<QR/>} />
       <Route path='/profile' element ={<Profile/>} />
+      <Route path='/temp' element ={<Temp/>} />
       </Routes>
 
   );

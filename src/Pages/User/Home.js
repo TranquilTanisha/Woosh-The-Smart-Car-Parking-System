@@ -14,6 +14,8 @@ const Home = () => {
   console.log(user);
   const value = "Home";
 
+  const username = user.displayName ? user.displayName : user.username;
+
   // const handleLogout = async() => {
   //   try {
   //     await signOut(auth);
@@ -37,7 +39,7 @@ const Home = () => {
         <Navbar />
       </div>
       <div>
-        <h1 style={{marginTop: '8rem'}}>Welcomeeee {user.displayName}!</h1>
+        <h1 style={{marginTop: '8rem'}}>Welcomeeee {username}!</h1>
       </div>
       <div>
         <img 

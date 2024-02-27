@@ -40,6 +40,9 @@ function ResponsiveAppBar() {
   const user = JSON.parse(localStorage.getItem('user'));
   console.log(user);
 
+  // If the user signs in with Google, the username will be the user's name, else it will be fetched from firebase
+  const username = user.displayName ? user.displayName : user.username;
+
   return (
     <AppBar position="static" sx={{ backgroundColor: '#b81c21' }}>
       <Container maxWidth="xl">
@@ -78,7 +81,7 @@ function ResponsiveAppBar() {
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <img alt={user.displayName} src={user.photoURL} style={{height: '3.5rem', borderRadius: '50%'}}/>
+                <img alt={username} src={user.photoURL} style={{height: '3.5rem', borderRadius: '50%'}}/>
               </IconButton>
             </Tooltip>
             <Menu
