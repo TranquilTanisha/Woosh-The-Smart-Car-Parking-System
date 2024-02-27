@@ -29,59 +29,79 @@ function Copyright(props) {
   );
 }
 
+function validateEmail(email) {
+  // Email regex pattern for basic validation
+  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return regex.test(email);
+}
 
 const defaultTheme = createTheme();
 
 export default function SignUpSide() {
   const navigate = useNavigate();
 
-//on submit redirect to login page
+  //on submit redirect to login page
   const handleSubmit = async (event) => { 
     event.preventDefault();
     const data = new FormData(event.currentTarget);
+    const email = data.get('email');
+    const password = data.get('password');
+    const confirmPassword = data.get('confirm_password');
 
-    if(data.get('password') === data.get('confirm_password')) {
-      try {
-        const auth = getAuth();
-        const email = data.get('email');
-        const password = data.get('password');
-        createUserWithEmailAndPassword(auth, email, password).then((userCredential) => {
-          const user = userCredential.user;
-          const userUidString = user.uid.toString();
-          const userName = user.displayName;
-          console.log(userUidString);
-          console.log(userName);
-          navigate('/login');
-          
-          const docName = userUidString;
-          setDoc(doc(db, "users", docName), {
-            email: data.get('email'),
-            name: userName,
-            licenseNo1: '',
-            licenseNo2: '',
-            licenseNo3: '',
-            parkingId: '',
-            orgID: '',
-            employeeID: '',
-            isVerifiedEmployee: false,
-          });
+    // Frontend validations
+    if (!validateEmail(email)) {
+      alert('Invalid email address');
+      return;
+    }
+  
+    if (password !== confirmPassword) {
+      alert('Passwords do not match');
+      return;
+    }
+  
+    // Weak password validation
+    if (password.length < 6) {
+      alert('Password should be at least 6 characters long');
+      return;
+    }
+
+    try {
+      const auth = getAuth();
+      const email = data.get('email');
+      const password = data.get('password');
+      createUserWithEmailAndPassword(auth, email, password).then((userCredential) => {
+        const user = userCredential.user;
+        const userUidString = user.uid.toString();
+        const userName = user.displayName;
+        console.log(userUidString);
+        console.log(userName);
+        navigate('/login');
+        
+        const docName = userUidString;
+        setDoc(doc(db, "users", docName), {
+          email: data.get('email'),
+          name: userName,
+          licenseNo1: '',
+          licenseNo2: '',
+          licenseNo3: '',
+          parkingId: '',
+          orgID: '',
+          employeeID: '',
+          isVerifiedEmployee: false,
+        });
           // const docRef = addDoc(collection(db, "users"), { 
           //   licenseNo: '',
           //   email: data.get('email'),
           //   name: userName,
           // });
-        }).catch((error) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
-          console.log(errorCode, errorMessage);
-        });
-      }
-      catch (error) {
-        console.log(error);
-      }
+      }).catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(errorCode, errorMessage);
+      });
     }
-    else {
-      alert('Passwords do not match');
+    catch (error) {
+      console.log(error);
     }
   };
   
@@ -104,7 +124,7 @@ export default function SignUpSide() {
   //     console.error("Error adding document: ", error);
   //   }
   // };
-
+  
   return (
     <ThemeProvider theme={defaultTheme}>
       <Grid container component="main" sx={{ height: '100vh' }}>
@@ -146,31 +166,6 @@ export default function SignUpSide() {
               Sign Up
             </Typography>
             <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
-            <Grid container spacing={2}>
-                <Grid item xs={12} sm={6}>
-                  {/* <TextField
-                    margin="normal"
-                    required
-                    fullWidth
-                    id="first_name"
-                    label="First Name"
-                    name="first_name"
-                    autoComplete="first_name"
-                    autoFocus
-                  />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    margin="normal"
-                    required
-                    fullWidth
-                    id="last_name"
-                    label="Last Name"
-                    name="last_name"
-                    autoComplete="last_name"
-                  /> */}
-                </Grid>
-              </Grid>
               <TextField
                 margin="normal"
                 required
@@ -180,7 +175,7 @@ export default function SignUpSide() {
                 name="email"
                 autoComplete="email"
                 autoFocus
-              />
+                />
               {/* <TextField
                 margin="normal"
                 required
@@ -214,7 +209,7 @@ export default function SignUpSide() {
                 id="confirm_password"
                 autoComplete="current-password"
               />
-              {/* <FormControlLabel
+            {/* <FormControlLabel
                 control={<Checkbox value="remember" color="primary" />}
                 label="Remember me"
               /> */}

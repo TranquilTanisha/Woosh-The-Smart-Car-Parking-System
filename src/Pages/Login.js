@@ -51,14 +51,31 @@ export default function SignInSide() {
       console.log(error);
     }
   }
+
+  function validateEmail(email) {
+    // Email regex pattern for basic validation
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
+  }
+  
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const email = data.get('email');
     const password = data.get('password');
   
+    // Frontend validations
+    if (!validateEmail(email)) {
+      alert('Invalid email address');
+      return;
+    }
+  
+    if (password.length < 6) {
+      alert('Password should be at least 6 characters long');
+      return;
+    }
+  
     try {
-    
       const usersRef = collection(db, 'users');
       const userQuery = query(usersRef, where('email', '==', email), where('password', '==', password));
       const querySnapshot = await getDocs(userQuery);
@@ -73,6 +90,7 @@ export default function SignInSide() {
       console.error("Error signing in: ", error.message);
     }
   };
+  
   return (
     <ThemeProvider theme={defaultTheme}>
       <Grid container component="main" sx={{ height: '100vh' }}>
