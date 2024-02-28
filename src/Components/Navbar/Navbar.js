@@ -4,6 +4,7 @@ import * as React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { signOut } from 'firebase/auth';
 import { auth } from '../../Firebase';
+import Avatar from '../../Images/Avatar.jpg';
 
 const pages = ['Home', 'Navigation', 'QR'];
 const settings = ['Profile', 'Logout'];
@@ -13,7 +14,6 @@ function ResponsiveAppBar() {
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const navigate = useNavigate();
 
-  //eslint-disable-next-line
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
   };
@@ -38,10 +38,7 @@ function ResponsiveAppBar() {
   };
 
   const user = JSON.parse(localStorage.getItem('user'));
-  console.log(user);
-
-  // If the user signs in with Google, the username will be the user's name, else it will be fetched from firebase
-  const username = user.displayName ? user.displayName : user.username;
+  const username = user?.displayName || user?.username;
 
   return (
     <AppBar position="static" sx={{ backgroundColor: '#b81c21' }}>
@@ -81,7 +78,11 @@ function ResponsiveAppBar() {
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <img alt={username} src={user.photoURL} style={{height: '3.5rem', borderRadius: '50%'}}/>
+                <img
+                  alt={username}
+                  src={user ? user.photoURL : Avatar}
+                  style={{ height: '3.5rem', borderRadius: '50%' }}
+                />
               </IconButton>
             </Tooltip>
             <Menu

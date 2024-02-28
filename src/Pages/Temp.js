@@ -15,9 +15,25 @@ import Image2 from '../Images/car_parking.jpg';
 import { useNavigate } from 'react-router-dom';
 import { setDoc, doc, getDoc } from 'firebase/firestore';
 import { db } from '../Firebase.js';
+import { signInWithPopup } from 'firebase/auth';
+import { auth, provider } from '../Firebase.js';
+
 
 function TempUser() {
   const navigate = useNavigate();
+
+  const SignInWithGoogle = async() => {
+    console.log('Sign in with google');
+    try {
+      const result = await signInWithPopup(auth, provider);
+      console.log(result);
+      localStorage.setItem('token', result.user.accessToken);
+      localStorage.setItem('user', JSON.stringify(result.user));
+      navigate('/');
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -26,12 +42,10 @@ function TempUser() {
     const licenseNo1 = data.get('licenseNo1');
 
     try {
-      // Check if the document already exists in the users collection
       const userDocRef = doc(db, 'users', name);
       const userDocSnapshot = await getDoc(userDocRef);
 
       if (userDocSnapshot.exists()) {
-        // Update the existing document with the provided fields and nullify the rest
         await setDoc(userDocRef, {
           ...userDocSnapshot.data(),
           name: name,
@@ -44,7 +58,6 @@ function TempUser() {
           isVerifiedEmployee: false,
         });
       } else {
-        // Create a new document with the provided fields and nullify the rest
         await setDoc(userDocRef, {
           name: name,
           email: null,
@@ -59,7 +72,7 @@ function TempUser() {
       }
 
       console.log('User data updated successfully!');
-      navigate('/'); // Navigate to the home page or wherever needed
+      navigate('/');
     } catch (error) {
       console.error('Error updating user data: ', error.message);
     }
@@ -123,6 +136,7 @@ function TempUser() {
                 type="submit"
                 fullWidth
                 variant="contained"
+                onClick={() => navigate('/')}
                 sx={{
                   backgroundColor: '#b81c21',
                   mt: 3,
@@ -153,7 +167,7 @@ function TempUser() {
                 Already have an account?
               </Typography>
               <Box sx={{ mt: 1, display: 'flex', justifyContent: 'center' }}>
-                <GoogleButton onClick={() => {}} />
+              <GoogleButton onClick={SignInWithGoogle}/>
                 <Button
                   type="button"
                   variant="contained"

@@ -9,6 +9,7 @@ import Home from './Pages/User/Home.js';
 import QR from './Pages/User/QR.js';
 import Navigation from './Pages/User/Navigation.js';
 import Temp from './Pages/Temp.js';
+import Location from './Pages/Location.js';
 
 
 const App = () => {
@@ -24,6 +25,7 @@ const App = () => {
       <Route path='/qr' element ={<QR/>} />
       <Route path='/profile' element ={<Profile/>} />
       <Route path='/temp' element ={<Temp/>} />
+      <Route path='/location' element ={<Location/>} />
       </Routes>
 
   );

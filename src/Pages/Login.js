@@ -97,8 +97,8 @@ export default function SignInSide() {
         <CssBaseline />
         <Grid
           item
-          xs={false}
-          sm={4}
+          xs={12}
+          sm={5}
           md={7}
           sx={{
             backgroundImage: `url(${Image2})`,
