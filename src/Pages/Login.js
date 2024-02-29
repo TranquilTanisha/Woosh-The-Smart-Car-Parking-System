@@ -1,4 +1,5 @@
 import LoginIcon from '@mui/icons-material/Login';
+import { TextField, Typography } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -8,16 +9,15 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Grid from '@mui/material/Grid';
 import Link from '@mui/material/Link';
 import Paper from '@mui/material/Paper';
-import { Typography, TextField } from '@mui/material';
-import { signInWithPopup } from 'firebase/auth';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { getAuth, signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 import GoogleButton from 'react-google-button';
-import Image2 from '../Images/car_parking.jpg';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
-import { auth, provider } from '../Firebase.js';
 import '../App.css';
-import { getDocs, query, where, collection } from 'firebase/firestore';
-import { db } from '../Firebase.js';
+import { db } from '../Firebase';
+import { auth, provider } from '../Firebase.js';
+import Image2 from '../Images/car_parking.jpg';
 
 function Copyright(props) {
   return (
@@ -32,20 +32,26 @@ function Copyright(props) {
   );
 }
 
-
 const defaultTheme = createTheme();
 
 export default function SignInSide() {
 
   const navigate = useNavigate();
 
-  const SignInWithGoogle = async() => {
+  const SignInWithGoogle = async () => {
     console.log('Sign in with google');
     try {
       const result = await signInWithPopup(auth, provider);
       console.log(result);
       localStorage.setItem('token', result.user.accessToken);
-      localStorage.setItem('user', JSON.stringify(result.user));
+      const user = auth.currentUser;
+      const uid = user.uid;
+      const docRef = doc(db, "users", uid);
+      updateDoc(docRef, {
+        photoURL: result.user.photoURL,
+      });
+      const docSnap = await getDoc(docRef);
+      localStorage.setItem('profile', JSON.stringify(docSnap.data()));
       navigate('/');
     } catch (error) {
       console.log(error);
@@ -53,44 +59,44 @@ export default function SignInSide() {
   }
 
   function validateEmail(email) {
-    // Email regex pattern for basic validation
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return regex.test(email);
   }
-  
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const email = data.get('email');
     const password = data.get('password');
-  
+
     // Frontend validations
     if (!validateEmail(email)) {
       alert('Invalid email address');
       return;
     }
-  
+
     if (password.length < 6) {
       alert('Password should be at least 6 characters long');
       return;
     }
-  
+
     try {
-      const usersRef = collection(db, 'users');
-      const userQuery = query(usersRef, where('email', '==', email), where('password', '==', password));
-      const querySnapshot = await getDocs(userQuery);
-  
-      if (!querySnapshot.empty) {
-        console.log("User successfully logged in!");
-        navigate('/'); 
-      } else {
-        console.error("Invalid email or password");
-      }
-    } catch (error) {
-      console.error("Error signing in: ", error.message);
+      const auth = getAuth();
+      signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          const result = userCredential;
+          localStorage.setItem('token', result.user.accessToken);
+          navigate('/');
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+
+    } catch (err) {
+      console.error(err);
     }
   };
-  
+
   return (
     <ThemeProvider theme={defaultTheme}>
       <Grid container component="main" sx={{ height: '100vh' }}>
@@ -119,14 +125,14 @@ export default function SignInSide() {
               alignItems: 'center',
             }}
           >
-            <Avatar sx={{ 
-                  backgroundColor: '#b81c21',
-                  m:1,
-                 }}>
-                <LoginIcon />
+            <Avatar sx={{
+              backgroundColor: '#b81c21',
+              m: 1,
+            }}>
+              <LoginIcon />
             </Avatar>
-            
-            
+
+
             <Typography component="h1" variant="h5">
               Login
             </Typography>
@@ -189,14 +195,14 @@ export default function SignInSide() {
                 </Grid>
               </Grid>
               <Typography
-              sx={{
-                mt: 2,
-                mb: 2,
-                textAlign: 'center'
-              }}>
-              OR
+                sx={{
+                  mt: 2,
+                  mb: 2,
+                  textAlign: 'center'
+                }}>
+                OR
               </Typography>
-                <GoogleButton onClick={SignInWithGoogle}/>
+              <GoogleButton onClick={SignInWithGoogle} />
               <Copyright sx={{ mt: 5 }} />
             </Box>
           </Box>

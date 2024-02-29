@@ -1,33 +1,28 @@
-import React, { useState } from 'react';
+import { React, useEffect, useState } from 'react';
+import Chatbot from 'react-chatbot-kit';
+import 'react-chatbot-kit/build/main.css';
+import { useNavigate } from 'react-router-dom';
 import '../../App.css';
+import ActionProvider from '../../Components/Chatbot/ActionProvider';
+import config from '../../Components/Chatbot/Config';
+import MessageParser from '../../Components/Chatbot/MessageParser';
 import Bottombar from '../../Components/Navbar/Bottombar';
 import Navbar from '../../Components/Navbar/Navbar';
-import Chatbot from 'react-chatbot-kit'
-import 'react-chatbot-kit/build/main.css'
 import chatbotIcon from '../../Images/chat-bot.png';
-import config from '../../Components/Chatbot/Config';
-import ActionProvider from '../../Components/Chatbot/ActionProvider';
-import MessageParser from '../../Components/Chatbot/MessageParser';
 
 const Home = () => {
-  const user = JSON.parse(localStorage.getItem('user'));
-  console.log(user);
+  const [username, setUsername] = useState('');
   const value = "Home";
-
-  const username = user.displayName ? user.displayName : user.username;
-
-  // const handleLogout = async() => {
-  //   try {
-  //     await signOut(auth);
-  //     localStorage.removeItem('token');
-  //     localStorage.removeItem('user');
-  //     navigate('/login');
-  //   } catch (error) {
-  //     console.log(error)
-  //   }
-  // }
-
   const [chatbotVisible, setChatbotVisible] = useState(false);
+
+  useEffect(() => {
+    const profile = JSON.parse(localStorage.getItem('profile'));
+    console.log(profile);
+    if (profile) {
+      setUsername(profile.name);
+    }
+  }
+  , []);
 
   const toggleChatbot = () => {
     setChatbotVisible(!chatbotVisible);
@@ -39,14 +34,14 @@ const Home = () => {
         <Navbar />
       </div>
       <div>
-        <h1 style={{marginTop: '8rem'}}>Welcomeeee {username}!</h1>
+        <h1 style={{ marginTop: '8rem' }}>Welcome {username}!</h1>
       </div>
       <div>
-        <img 
-          src={chatbotIcon} 
-          alt="Chatbot" 
+        <img
+          src={chatbotIcon}
+          alt="Chatbot"
           className={chatbotVisible ? 'chatbot-icon animate-zoom' : 'chatbot-icon'}
-          style={{ position: 'fixed', bottom: '60px', right: '20px', width: '60px', height: '60px', cursor: 'pointer' }} 
+          style={{ position: 'fixed', bottom: '60px', right: '20px', width: '60px', height: '60px', cursor: 'pointer' }}
           onClick={toggleChatbot}
         />
         {chatbotVisible && (

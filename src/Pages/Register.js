@@ -1,21 +1,21 @@
-import * as React from 'react';
+import LoginIcon from '@mui/icons-material/Login';
 import Avatar from '@mui/material/Avatar';
+import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
-import TextField from '@mui/material/TextField';
+import Grid from '@mui/material/Grid';
 import Link from '@mui/material/Link';
 import Paper from '@mui/material/Paper';
-import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
-import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import LoginIcon from '@mui/icons-material/Login';
-import Image2 from '../Images/car_parking.jpg';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
+import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { db } from '../Firebase';
+import Image2 from '../Images/car_parking.jpg';
 // import { auth , googleProvider} from "../Firebase";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore"; 
+import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
 function Copyright(props) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
@@ -71,16 +71,13 @@ export default function SignUpSide() {
       const password = data.get('password');
       createUserWithEmailAndPassword(auth, email, password).then((userCredential) => {
         const user = userCredential.user;
-        const userUidString = user.uid.toString();
+        const docName = user.uid.toString();
         const userName = user.displayName;
-        console.log(userUidString);
-        console.log(userName);
-        navigate('/login');
-        
-        const docName = userUidString;
-        setDoc(doc(db, "users", docName), {
-          email: data.get('email'),
+        localStorage.setItem('token', docName);
+        const userData = {
+          email: email,
           name: userName,
+          photoURL: user.photoURL ? user.photoURL : '',
           licenseNo1: '',
           licenseNo2: '',
           licenseNo3: '',
@@ -88,16 +85,15 @@ export default function SignUpSide() {
           orgID: '',
           employeeID: '',
           isVerifiedEmployee: false,
-        });
-          // const docRef = addDoc(collection(db, "users"), { 
-          //   licenseNo: '',
-          //   email: data.get('email'),
-          //   name: userName,
-          // });
+        }
+
+        setDoc(doc(db, "users", docName),
+          userData
+        );
+        localStorage.setItem('profile', JSON.stringify(userData));
+        navigate('/');
       }).catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log(errorCode, errorMessage);
+        console.log(error);
       });
     }
     catch (error) {

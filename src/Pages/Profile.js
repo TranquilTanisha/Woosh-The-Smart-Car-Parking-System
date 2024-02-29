@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import Navbar from '../Components/Navbar/Navbar';
 import Bottombar from '../Components/Navbar/Bottombar';
 import { Box, Container, Typography, Avatar, CircularProgress, Button } from '@mui/material';
-import { auth } from '../Firebase';
 import Image2 from '../Images/car_park2.png';
 
 function Profile() {
@@ -14,10 +13,11 @@ function Profile() {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
+        const localProfile = JSON.parse(localStorage.getItem('profile'));
         const userProfile = {
-          displayName: auth.currentUser.displayName,
-          email: auth.currentUser.email,
-          photoURL: auth.currentUser.photoURL,
+          displayName: localProfile.name,
+          email: localProfile.email,
+          photoURL: localProfile.photoURL,
         };
         setProfile(userProfile);
       } catch (error) {

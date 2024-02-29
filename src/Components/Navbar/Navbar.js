@@ -1,15 +1,15 @@
 import AdbIcon from '@mui/icons-material/Adb';
-import { AppBar, Box, Button, Container, IconButton, Menu, MenuItem, Tooltip, Toolbar, Typography } from '@mui/material';
-import * as React from 'react';
+import { AppBar, Box, Button, Container, IconButton, Menu, MenuItem, Toolbar, Tooltip, Typography } from '@mui/material';
+import { getAuth, signOut } from "firebase/auth";
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { signOut } from 'firebase/auth';
-import { auth } from '../../Firebase';
-import Avatar from '../../Images/Avatar.jpg';
+import { Avatar } from '@mui/material';
+
 
 const pages = ['Home', 'Navigation', 'QR'];
 const settings = ['Profile', 'Logout'];
 
-function ResponsiveAppBar() {
+const ResponsiveAppBar = () => {
   const [setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const navigate = useNavigate();
@@ -27,18 +27,28 @@ function ResponsiveAppBar() {
   };
 
   const handleLogout = async () => {
-    try {
-      await signOut(auth);
+    const auth = getAuth();
+    signOut(auth).then(() => {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
+      localStorage.removeItem('profile');
       navigate('/login');
-    } catch (error) {
+    }).catch((error) => {
       console.log(error);
-    }
+    });
   };
 
-  const user = JSON.parse(localStorage.getItem('user'));
-  const username = user?.displayName || user?.username;
+  // const user = JSON.parse(localStorage.getItem('user'));
+  // const username = user?.displayName || user?.username;
+  const [profile, setProfile] = useState(null);
+
+  useEffect(() => {
+    const profile = JSON.parse(localStorage.getItem('profile'));
+    if (profile) {
+      setProfile(profile);
+      console.log("Navbar: ", profile);
+    }
+  }, []);
 
   return (
     <AppBar position="static" sx={{ backgroundColor: '#b81c21' }}>
@@ -78,11 +88,7 @@ function ResponsiveAppBar() {
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <img
-                  alt={username}
-                  src={user ? user.photoURL : Avatar}
-                  style={{ height: '3.5rem', borderRadius: '50%' }}
-                />
+                <Avatar alt={profile ? profile.name : ''} src={profile ? profile.photoURL: Avatar} sx={{ height: '3rem', width: '3rem', borderRadius: '50%' }} />
               </IconButton>
             </Tooltip>
             <Menu
