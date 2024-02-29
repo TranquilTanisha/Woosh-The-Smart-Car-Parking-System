@@ -86,6 +86,11 @@ export default function SignInSide() {
         .then((userCredential) => {
           const result = userCredential;
           localStorage.setItem('token', result.user.accessToken);
+          const user = auth.currentUser;
+          const uid = user.uid;
+          const docRef = doc(db, "users", uid);
+          const docSnap = getDoc(docRef);
+          localStorage.setItem('profile', JSON.stringify(docSnap.data()));
           navigate('/');
         })
         .catch((error) => {

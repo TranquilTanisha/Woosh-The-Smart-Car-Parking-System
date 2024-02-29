@@ -1,9 +1,8 @@
 import AdbIcon from '@mui/icons-material/Adb';
-import { AppBar, Box, Button, Container, IconButton, Menu, MenuItem, Toolbar, Tooltip, Typography } from '@mui/material';
+import { AppBar, Avatar, Box, Button, Container, IconButton, Menu, MenuItem, Toolbar, Tooltip, Typography } from '@mui/material';
 import { getAuth, signOut } from "firebase/auth";
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Avatar } from '@mui/material';
 
 
 const pages = ['Home', 'Navigation', 'QR'];
@@ -38,14 +37,12 @@ const ResponsiveAppBar = () => {
     });
   };
 
-  // const user = JSON.parse(localStorage.getItem('user'));
-  // const username = user?.displayName || user?.username;
   const [profile, setProfile] = useState(null);
 
   useEffect(() => {
-    const profile = JSON.parse(localStorage.getItem('profile'));
-    if (profile) {
-      setProfile(profile);
+    const profile = localStorage.getItem('profile')
+    if (profile !== "undefined" && profile !== null) {
+      setProfile(JSON.parse(profile));
       console.log("Navbar: ", profile);
     }
   }, []);

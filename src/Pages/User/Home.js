@@ -1,7 +1,6 @@
 import { React, useEffect, useState } from 'react';
 import Chatbot from 'react-chatbot-kit';
 import 'react-chatbot-kit/build/main.css';
-import { useNavigate } from 'react-router-dom';
 import '../../App.css';
 import ActionProvider from '../../Components/Chatbot/ActionProvider';
 import config from '../../Components/Chatbot/Config';
@@ -16,10 +15,9 @@ const Home = () => {
   const [chatbotVisible, setChatbotVisible] = useState(false);
 
   useEffect(() => {
-    const profile = JSON.parse(localStorage.getItem('profile'));
-    console.log(profile);
-    if (profile) {
-      setUsername(profile.name);
+    const profile = localStorage.getItem('profile');
+    if (profile !== "undefined" && profile !== null) {
+      setUsername(JSON.parse(profile).name);
     }
   }
   , []);
