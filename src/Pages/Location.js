@@ -5,17 +5,25 @@ import axios from 'axios';
 import { MapContainer, TileLayer, Marker, CircleMarker } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import Button from '@mui/material/Button';
+import L from 'leaflet';
 
 const Location = () => {
     const [parkinglotLocations, setParkinglotLocations] = useState([]); 
     const [initialPosition, setInitialPosition] = useState(null);
     const [setMapLoaded] = useState(false);
     const [fetchError, setFetchError] = useState(null);
+    const [visibleLocations, setVisibleLocations] = useState([]);
 
     useEffect(() => {
         fetchData();
         getGeoLocation();
     }, []);
+
+    useEffect(() => {
+        if (initialPosition && parkinglotLocations.length > 0) {
+            filterVisibleLocations();
+        }
+    }, [initialPosition, parkinglotLocations]);
 
     const fetchData = async () => {
         try {
@@ -90,6 +98,40 @@ const Location = () => {
         }
     };
 
+    const blueIcon = new L.Icon({
+        iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        shadowSize: [41, 41]
+    });
+
+    const filterVisibleLocations = () => {
+        const visible = parkinglotLocations.filter(location => {
+            const distance = getDistance(initialPosition[0], initialPosition[1], location.latitude, location.longitude);
+            return distance <= 5000; // You can change the threshold (in meters) here
+        });
+        setVisibleLocations(visible);
+    };
+
+    //Haversine formula
+    const getDistance = (lat1, lon1, lat2, lon2) => {
+        const R = 6371;
+        const dLat = deg2rad(lat2 - lat1);
+        const dLon = deg2rad(lon2 - lon1);
+        const a =
+            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+            Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        const d = R * c;
+        return d * 1000;
+    };
+
+    const deg2rad = (deg) => {
+        return deg * (Math.PI / 180);
+    };
+
     return (
         <><div className="navbar">
             <Navbar />
@@ -104,8 +146,8 @@ const Location = () => {
                         whenCreated={handleMapLoad}
                     >
                         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                        <Marker position={initialPosition} />
-                        {parkinglotLocations.map((location, index) => (
+                        <Marker position={initialPosition} icon={blueIcon} />
+                        {visibleLocations.map((location, index) => (
                             <CircleMarker
                                 key={index}
                                 center={[location.latitude, location.longitude]}
