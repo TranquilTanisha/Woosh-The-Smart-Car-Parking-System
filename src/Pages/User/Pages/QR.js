@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import Navbar from '../../Components/Navbar/Navbar';
-import Bottombar from '../../Components/Navbar/Bottombar';
+import Navbar from '../../../Components/Navbar/Navbar';
+import Bottombar from '../../../Components/Navbar/Bottombar';
 import QrScanner from 'react-qr-scanner';
-import '../../App.css';
+import '../../../App.css';
 
 function QR() {
   const [qrResult, setQrResult] = useState(null);

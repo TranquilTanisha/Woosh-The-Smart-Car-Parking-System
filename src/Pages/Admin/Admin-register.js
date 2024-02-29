@@ -1,3 +1,4 @@
+import React from 'react';
 import LoginIcon from '@mui/icons-material/Login';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
@@ -9,25 +10,8 @@ import Paper from '@mui/material/Paper';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import * as React from 'react';
+import Image2 from '../../Images/admin_parking.jpg';
 import { useNavigate } from 'react-router-dom';
-import { db } from '../Firebase';
-import Image2 from '../Images/car_parking.jpg';
-// import { auth , googleProvider} from "../Firebase";
-import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore";
-function Copyright(props) {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
-      <Link color="inherit" href="/">
-        MASTEK
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
 
 function validateEmail(email) {
   // Email regex pattern for basic validation
@@ -40,7 +24,6 @@ const defaultTheme = createTheme();
 export default function SignUpSide() {
   const navigate = useNavigate();
 
-  //on submit redirect to login page
   const handleSubmit = async (event) => { 
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -59,67 +42,15 @@ export default function SignUpSide() {
       return;
     }
   
-    // Weak password validation
     if (password.length < 6) {
       alert('Password should be at least 6 characters long');
       return;
     }
 
-    try {
-      const auth = getAuth();
-      const email = data.get('email');
-      const password = data.get('password');
-      createUserWithEmailAndPassword(auth, email, password).then((userCredential) => {
-        const user = userCredential.user;
-        const docName = user.uid.toString();
-        const userName = user.displayName;
-        localStorage.setItem('token', docName);
-        const userData = {
-          email: email,
-          name: userName,
-          photoURL: user.photoURL ? user.photoURL : '',
-          licenseNo1: '',
-          licenseNo2: '',
-          licenseNo3: '',
-          parkingId: '',
-          orgID: '',
-          employeeID: '',
-          isVerifiedEmployee: false,
-        }
-
-        setDoc(doc(db, "users", docName),
-          userData
-        );
-        localStorage.setItem('profile', JSON.stringify(userData));
-        navigate('/');
-      }).catch((error) => {
-        console.log(error);
-      });
-    }
-    catch (error) {
-      console.log(error);
-    }
+    // Submit form logic (without backend or Firebase)
+    // Redirect to login page after successful submission
+    navigate('/login');
   };
-  
-  //   try {
-  //     const docRef = await addDoc(collection(db, "users"), { 
-  //       first_name: data.get('first_name'),
-  //       last_name: data.get('last_name'),
-  //       License_Plate_no: data.get('License_Plate_no'),
-  //       email: data.get('email'),
-  //       password: data.get('password'),
-  //     });
-  //     try {
-  //       localStorage.setItem('token', docRef.id);
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //     navigate('/');
-  //     console.log("Document written with ID: ", docRef.id);
-  //   } catch (error) {
-  //     console.error("Error adding document: ", error);
-  //   }
-  // };
   
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -153,15 +84,23 @@ export default function SignUpSide() {
                   backgroundColor: '#b81c21',
                   m: 0,
                  }}>
-
-                <LoginIcon />
+              <LoginIcon />
             </Avatar>
-            
             
             <Typography component="h1" variant="h5">
               Sign Up
             </Typography>
             <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
+            <TextField
+                margin="normal"
+                required
+                fullWidth
+                id="email"
+                label="Organization Name"
+                name="org_name"
+                autoComplete="org_name"
+                autoFocus
+              />
               <TextField
                 margin="normal"
                 required
@@ -171,20 +110,7 @@ export default function SignUpSide() {
                 name="email"
                 autoComplete="email"
                 autoFocus
-                />
-              {/* <TextField
-                margin="normal"
-                required
-                fullWidth
-                id="License_Plate_no"
-                label="License Plate Number"
-                name="License_Plate_no"
-                autoComplete="License_Plate_no"
-                inputProps={{
-                  maxLength: 10
-                }}
-                autoFocus
-              /> */}
+              />
               <TextField
                 margin="normal"
                 required
@@ -205,10 +131,6 @@ export default function SignUpSide() {
                 id="confirm_password"
                 autoComplete="current-password"
               />
-            {/* <FormControlLabel
-                control={<Checkbox value="remember" color="primary" />}
-                label="Remember me"
-              /> */}
               <Button
                 type="submit"
                 fullWidth
@@ -231,12 +153,11 @@ export default function SignUpSide() {
                   </Link>
                 </Grid>
                 <Grid item>
-                  <Link href="/login" variant="body2">
+                  <Link href="/admin-login" variant="body2">
                     {"Already have an account? Log in"}
                   </Link>
                 </Grid>
               </Grid>
-              <Copyright sx={{ mt: 5 }} />
             </Box>
           </Box>
         </Grid>

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Navbar from '../Components/Navbar/Navbar';
-import Bottombar from '../Components/Navbar/Bottombar';
+import Navbar from '../../Components/Navbar/Navbar';
+import Bottombar from '../../Components/Navbar/Bottombar';
 import { Box, Container, Typography, Avatar, CircularProgress, Button } from '@mui/material';
-import Image2 from '../Images/car_park2.png';
+import Image2 from '../../Images/car_park2.png';
 
 function Profile() {
   const navigate = useNavigate();

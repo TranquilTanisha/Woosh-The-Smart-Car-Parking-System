@@ -1,13 +1,13 @@
 import { React, useEffect, useState } from 'react';
 import Chatbot from 'react-chatbot-kit';
 import 'react-chatbot-kit/build/main.css';
-import '../../App.css';
-import ActionProvider from '../../Components/Chatbot/ActionProvider';
-import config from '../../Components/Chatbot/Config';
-import MessageParser from '../../Components/Chatbot/MessageParser';
-import Bottombar from '../../Components/Navbar/Bottombar';
-import Navbar from '../../Components/Navbar/Navbar';
-import chatbotIcon from '../../Images/chat-bot.png';
+import '../../../App.css';
+import ActionProvider from '../../../Components/Chatbot/ActionProvider';
+import config from '../../../Components/Chatbot/Config';
+import MessageParser from '../../../Components/Chatbot/MessageParser';
+import Bottombar from '../../../Components/Navbar/Bottombar';
+import Navbar from '../../../Components/Navbar/Navbar';
+import chatbotIcon from '../../../Images/chat-bot.png';
 
 const Home = () => {
   const [username, setUsername] = useState('');

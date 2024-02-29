@@ -13,6 +13,7 @@ const ResponsiveAppBar = () => {
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const navigate = useNavigate();
 
+  // eslint-disable-next-line
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
   };

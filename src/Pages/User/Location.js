@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import Bottombar from '../Components/Navbar/Bottombar';
-import Navbar from '../Components/Navbar/Navbar';
+import Bottombar from '../../Components/Navbar/Bottombar';
+import Navbar from '../../Components/Navbar/Navbar';
 import axios from 'axios';
 import { MapContainer, TileLayer, Marker, CircleMarker } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -23,6 +23,7 @@ const Location = () => {
         if (initialPosition && parkinglotLocations.length > 0) {
             filterVisibleLocations();
         }
+    // eslint-disable-next-line
     }, [initialPosition, parkinglotLocations]);
 
     const fetchData = async () => {

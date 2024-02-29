@@ -11,12 +11,12 @@ import Link from '@mui/material/Link';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import GoogleButton from 'react-google-button';
-import Image2 from '../Images/car_parking.jpg';
+import Image2 from '../../Images/car_parking.jpg';
 import { useNavigate } from 'react-router-dom';
 import { setDoc, doc, getDoc } from 'firebase/firestore';
-import { db } from '../Firebase.js';
+import { db } from '../../Firebase.js';
 import { signInWithPopup } from 'firebase/auth';
-import { auth, provider } from '../Firebase.js';
+import { auth, provider } from '../../Firebase.js';
 
 
 function TempUser() {

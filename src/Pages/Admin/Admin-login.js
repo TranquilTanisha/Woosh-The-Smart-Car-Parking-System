@@ -1,3 +1,4 @@
+import React from 'react';
 import LoginIcon from '@mui/icons-material/Login';
 import { TextField, Typography } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
@@ -10,14 +11,9 @@ import Grid from '@mui/material/Grid';
 import Link from '@mui/material/Link';
 import Paper from '@mui/material/Paper';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import { getAuth, signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
-import { doc, getDoc, updateDoc } from "firebase/firestore";
 import GoogleButton from 'react-google-button';
 import { useNavigate } from 'react-router-dom';
-import '../App.css';
-import { db } from '../Firebase';
-import { auth, provider } from '../Firebase.js';
-import Image2 from '../Images/car_parking.jpg';
+import Image2 from '../../Images/admin_parking.jpg';
 
 function Copyright(props) {
   return (
@@ -35,75 +31,17 @@ function Copyright(props) {
 const defaultTheme = createTheme();
 
 export default function SignInSide() {
-
+  // eslint-disable-next-line
   const navigate = useNavigate();
 
   const SignInWithGoogle = async () => {
     console.log('Sign in with google');
-    try {
-      const result = await signInWithPopup(auth, provider);
-      console.log(result);
-      localStorage.setItem('token', result.user.accessToken);
-      const user = auth.currentUser;
-      const uid = user.uid;
-      const docRef = doc(db, "users", uid);
-      updateDoc(docRef, {
-        photoURL: result.user.photoURL,
-      });
-      const docSnap = await getDoc(docRef);
-      localStorage.setItem('profile', JSON.stringify(docSnap.data()));
-      navigate('/');
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  function validateEmail(email) {
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return regex.test(email);
-  }
+    // Frontend Google sign-in functionality
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    const email = data.get('email');
-    const password = data.get('password');
-
-    // Frontend validations
-    if (!validateEmail(email)) {
-      alert('Invalid email address');
-      return;
-    }
-
-    if (password.length < 6) {
-      alert('Password should be at least 6 characters long');
-      return;
-    }
-
-    try {
-      const auth = getAuth();
-      signInWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-          const result = userCredential;
-          localStorage.setItem('token', result.user.accessToken);
-          const user = auth.currentUser;
-          const uid = user.uid;
-          getDoc(doc(db, "users", uid)).then(docSnap => {
-            if (docSnap.exists()) {
-              localStorage.setItem('profile', JSON.stringify(docSnap.data()));
-            } else {
-              console.log("No such document!");
-            }
-          })
-          navigate('/');
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-
-    } catch (err) {
-      console.error(err);
-    }
+    // Frontend form submission functionality
   };
 
   return (
@@ -140,8 +78,6 @@ export default function SignInSide() {
             }}>
               <LoginIcon />
             </Avatar>
-
-
             <Typography component="h1" variant="h5">
               Login
             </Typography>
@@ -198,7 +134,7 @@ export default function SignInSide() {
                   </Link>
                 </Grid>
                 <Grid item>
-                  <Link href="/register" variant="body2">
+                  <Link href="/admin-register" variant="body2">
                     {"Don't have an account? Register"}
                   </Link>
                 </Grid>

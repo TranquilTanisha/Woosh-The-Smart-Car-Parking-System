@@ -2,7 +2,7 @@ import { getAuth } from "firebase/auth";
 import { doc, updateDoc } from "firebase/firestore";
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { db } from '../Firebase';
+import { db } from '../../../Firebase';
 
 const EditProfile = () => {
     const navigate = useNavigate();
@@ -10,6 +10,8 @@ const EditProfile = () => {
     const user = auth.currentUser;
     const uid = user.uid;
     const [username, setUsername] = useState('');
+    const [employeeID, setEmployeeID] = useState('');
+    const [parkingID, setParkingID] = useState('');
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -27,6 +29,10 @@ const EditProfile = () => {
             <form onSubmit={handleSubmit}>
                 <label htmlFor="username">Username</label>
                 <input type="text" id="username" value={username} onChange={(e) => setUsername(e.target.value)} />
+                <label htmlFor="employeeID">Employee ID</label>
+                <input type="text" id="employeeID" value={employeeID} onChange={(e) => setEmployeeID(e.target.value)} />
+                <label htmlFor="parkingID">Parking ID</label>
+                <input type="text" id="parkingID" value={parkingID} onChange={(e) => setParkingID(e.target.value)} />
                 <button type="submit">Save</button>
             </form>
         </div>
