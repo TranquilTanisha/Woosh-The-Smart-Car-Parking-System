@@ -88,9 +88,13 @@ export default function SignInSide() {
           localStorage.setItem('token', result.user.accessToken);
           const user = auth.currentUser;
           const uid = user.uid;
-          const docRef = doc(db, "users", uid);
-          const docSnap = getDoc(docRef);
-          localStorage.setItem('profile', JSON.stringify(docSnap.data()));
+          getDoc(doc(db, "users", uid)).then(docSnap => {
+            if (docSnap.exists()) {
+              localStorage.setItem('profile', JSON.stringify(docSnap.data()));
+            } else {
+              console.log("No such document!");
+            }
+          })
           navigate('/');
         })
         .catch((error) => {
