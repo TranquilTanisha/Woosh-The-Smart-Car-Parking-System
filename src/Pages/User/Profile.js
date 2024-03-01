@@ -18,6 +18,8 @@ function Profile() {
           displayName: localProfile.name,
           email: localProfile.email,
           photoURL: localProfile.photoURL,
+          employeeID: localProfile.employeeID,
+          parkingID: localProfile.parkingID,
         };
         setProfile(userProfile);
       } catch (error) {
@@ -43,6 +45,8 @@ function Profile() {
               <Avatar alt={profile.displayName} src={profile.photoURL} sx={{ width: 150, height: 150, mb: 2, mx: 'auto', display: 'block' }} />
               <Typography variant="h6" sx={{ mb: 1 }}>Name: {profile.displayName}</Typography>
               <Typography variant="body1">Email: {profile.email}</Typography>
+              <Typography variant="body1">Employee ID: {profile.employeeID}</Typography>
+              <Typography variant="body1">Workplace Parking ID: {profile.parkingID}</Typography>
               <Button variant="outlined" onClick={handleEditProfile} sx={{ mt: 2 }}>Edit Profile</Button>
             </>
           ) : (

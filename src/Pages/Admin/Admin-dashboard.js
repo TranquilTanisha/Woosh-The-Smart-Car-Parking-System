@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Container, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Paper } from '@mui/material';
 import { db } from '../../Firebase';
+import AdminNavbar from './Admin-navbar';
 
 function AdminDashboard() {
   const [employees, setEmployees] = useState([]);
@@ -34,6 +35,9 @@ function AdminDashboard() {
   };
 
   return (
+        <><div>
+          <AdminNavbar />
+        </div>
     <Container>
       <Typography variant="h4" align="center" gutterBottom>
         Admin Dashboard
@@ -66,6 +70,7 @@ function AdminDashboard() {
         </Table>
       </TableContainer>
     </Container>
+    </>
   );
 }
 

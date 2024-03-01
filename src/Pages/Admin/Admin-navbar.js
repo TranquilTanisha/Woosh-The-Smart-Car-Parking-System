@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 
-const pages = ['Home', 'Navigation', 'QR'];
+const pages = ['Home', 'Manage Employee', 'Layout Editor'];
 const settings = ['Profile', 'Logout'];
 
 const ResponsiveAppBar = () => {

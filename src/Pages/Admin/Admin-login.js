@@ -147,7 +147,6 @@ export default function SignInSide() {
                 }}>
                 OR
               </Typography>
-              <GoogleButton onClick={SignInWithGoogle} />
               <Copyright sx={{ mt: 5 }} />
             </Box>
           </Box>
