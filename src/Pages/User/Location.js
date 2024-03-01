@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Bottombar from '../../Components/Navbar/Bottombar';
-import Navbar from '../../Components/Navbar/Navbar';
+// import Navbar from '../../Components/Navbar/Navbar';
 import axios from 'axios';
 import { MapContainer, TileLayer, Marker, CircleMarker } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -134,9 +134,10 @@ const Location = () => {
     };
 
     return (
-        <><div className="navbar">
-            <Navbar />
-        </div>
+        <>
+         {/* <div className="navbar">
+             <Navbar />
+         </div> */}
         <div style={{ height: '100%', width: '100%' }}>
                 {fetchError && <p>{fetchError}</p>}
                 {initialPosition && (

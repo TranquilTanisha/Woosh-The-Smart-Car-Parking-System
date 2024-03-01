@@ -90,6 +90,7 @@ export default function SignInSide() {
           const uid = user.uid;
           getDoc(doc(db, "users", uid)).then(docSnap => {
             if (docSnap.exists()) {
+              console.log("Document data:", docSnap.data());
               localStorage.setItem('profile', JSON.stringify(docSnap.data()));
             } else {
               console.log("No such document!");

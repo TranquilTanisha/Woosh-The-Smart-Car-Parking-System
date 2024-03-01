@@ -8,6 +8,9 @@ import MessageParser from '../../../Components/Chatbot/MessageParser';
 import Bottombar from '../../../Components/Navbar/Bottombar';
 import Navbar from '../../../Components/Navbar/Navbar';
 import chatbotIcon from '../../../Images/chat-bot.png';
+import Location from '../Location';
+import { Box } from '@mui/material';
+
 
 const Home = () => {
   const [username, setUsername] = useState('');
@@ -32,8 +35,13 @@ const Home = () => {
         <Navbar />
       </div>
       <div>
-        <h1 style={{ marginTop: '8rem' }}>Welcome {username}!</h1>
+        <h1 style={{ marginTop: '8rem' }}>Welcome {username}! Explore nearby parking areas. </h1>
       </div>
+      <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+      <Box border={1} borderColor="primary.main" borderRadius={5} p={2} width={1000}>
+        <Location />
+      </Box>
+      </Box>
       <div>
         <img
           src={chatbotIcon}

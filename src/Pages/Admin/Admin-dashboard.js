@@ -4,74 +4,86 @@ import { db } from '../../Firebase';
 import AdminNavbar from './Admin-navbar';
 
 function AdminDashboard() {
-  const [employees, setEmployees] = useState([]);
-
-  useEffect(() => {
-    // Fetch employees data from Firebase or your backend
-    const fetchEmployees = async () => {
-      try {
-        // Fetch employees data from Firebase Firestore
-        const querySnapshot = await db.collection('employees').get();
-        const fetchedEmployees = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        setEmployees(fetchedEmployees);
-      } catch (error) {
-        console.error('Error fetching employees:', error);
-      }
-    };
-
-    fetchEmployees();
-  }, []);
+  // Dummy data for employees
+  const employees = [
+    { id: 1, email: 'employee1@example.com' },
+    { id: 2, email: 'employee2@example.com' },
+    { id: 3, email: 'employee3@example.com' },
+  ];
 
   const handleApprove = (employeeId) => {
-    // Implement the logic to approve the employee with the given ID
-    // This could involve updating the employee's status in the database
-    console.log('Approve employee with ID:', employeeId);
+    // Handle approve logic
+    console.log('Approving employee with ID:', employeeId);
   };
 
   const handleDeny = (employeeId) => {
-    // Implement the logic to deny the employee with the given ID
-    // This could involve removing the employee's record from the database
-    console.log('Deny employee with ID:', employeeId);
+    // Handle deny logic
+    console.log('Denying employee with ID:', employeeId);
   };
 
   return (
-        <><div>
-          <AdminNavbar />
-        </div>
-    <Container>
-      <Typography variant="h4" align="center" gutterBottom>
-        Admin Dashboard
-      </Typography>
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Employee ID</TableCell>
-              <TableCell>Email</TableCell>
-              <TableCell>Actions</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {employees.map((employee) => (
-              <TableRow key={employee.id}>
-                <TableCell>{employee.id}</TableCell>
-                <TableCell>{employee.email}</TableCell>
-                <TableCell>
-                  <Button variant="contained" color="primary" onClick={() => handleApprove(employee.id)}>
+    <>
+      <div>
+        <AdminNavbar />
+      </div>
+      <Container>
+        <Typography variant="h4" align="center" gutterBottom>
+          Admin Dashboard
+        </Typography>
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Employee ID</TableCell>
+                <TableCell>Email</TableCell>
+                <TableCell>Actions</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {employees.map((employee) => (
+                <TableRow key={employee.id}>
+                  <TableCell>{employee.id}</TableCell>
+                  <TableCell>{employee.email}</TableCell>
+                  <TableCell>
+                  <div style={{ marginTop: '10px' }}>
+                  <Button variant="contained" style={{ backgroundColor: '#355E3B' }} onClick={() => handleApprove(employee.id)}>
                     Approve
                   </Button>
-                  <Button variant="contained" color="secondary" onClick={() => handleDeny(employee.id)}>
+                  <span style={{ marginRight: '10px' }} />
+                  <Button variant="contained" style={{ backgroundColor: '#b81c21' }} color="secondary" onClick={() => handleDeny(employee.id)}>
                     Deny
                   </Button>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </Container>
+                </div>
+
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Container>
     </>
   );
 }
 
 export default AdminDashboard;
+
+
+
+// const [employees, setEmployees] = useState([]);
+
+//   useEffect(() => {
+//     // Fetch employees data from Firebase or your backend
+//     const fetchEmployees = async () => {
+//       try {
+//         // Fetch employees data from Firebase Firestore
+//         const querySnapshot = await db.collection('employees').get();
+//         const fetchedEmployees = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+//         setEmployees(fetchedEmployees);
+//       } catch (error) {
+//         console.error('Error fetching employees:', error);
+//       }
+//     };
+
+//     fetchEmployees();
+//   }, []);

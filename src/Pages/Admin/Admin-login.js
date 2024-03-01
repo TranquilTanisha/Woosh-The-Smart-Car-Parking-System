@@ -13,10 +13,9 @@ import Paper from '@mui/material/Paper';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
 import Image2 from '../../Images/admin_parking.jpg';
-import { getAuth, signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { doc, getDoc } from "firebase/firestore";
 import { db } from '../../Firebase.js';
-import { auth, provider } from '../../Firebase.js';
 
 function Copyright(props) {
   return (

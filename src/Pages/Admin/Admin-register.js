@@ -74,7 +74,6 @@ export default function SignUpSide() {
           adminData
         );
         localStorage.setItem('profile', JSON.stringify(adminData));
-        navigate('/');
       }).catch((error) => {
         console.log(error);
       });
