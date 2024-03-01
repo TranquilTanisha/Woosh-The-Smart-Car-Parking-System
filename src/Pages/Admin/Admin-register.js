@@ -12,6 +12,9 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import Image2 from '../../Images/admin_parking.jpg';
 import { useNavigate } from 'react-router-dom';
+import { db } from '../../Firebase';
+import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
 
 function validateEmail(email) {
   // Email regex pattern for basic validation
@@ -27,6 +30,7 @@ export default function SignUpSide() {
   const handleSubmit = async (event) => { 
     event.preventDefault();
     const data = new FormData(event.currentTarget);
+    const orgName = data.get('org_name');
     const email = data.get('email');
     const password = data.get('password');
     const confirmPassword = data.get('confirm_password');
@@ -47,9 +51,39 @@ export default function SignUpSide() {
       return;
     }
 
-    // Submit form logic (without backend or Firebase)
-    // Redirect to login page after successful submission
-    navigate('/login');
+    try {
+      const auth = getAuth();
+      const email = data.get('email');
+      const password = data.get('password');
+      createUserWithEmailAndPassword(auth, email, password).then((userCredential) => {
+        const admin = userCredential.user;
+        const docName = admin.uid.toString();
+        const adminName = admin.displayName;
+        localStorage.setItem('token', docName);
+        const adminData = {
+          email: email,
+          name: adminName,
+          parkingID: '',
+          orgID: '',
+          orgName: orgName,
+          employeeID: '',
+          isVerifiedAdmin: false,
+        }
+
+        setDoc(doc(db, "admins", docName),
+          adminData
+        );
+        localStorage.setItem('profile', JSON.stringify(adminData));
+        navigate('/');
+      }).catch((error) => {
+        console.log(error);
+      });
+    }
+    catch (error) {
+      console.log(error);
+    }
+
+    navigate('/dashboard');
   };
   
   return (

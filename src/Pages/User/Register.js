@@ -101,25 +101,7 @@ export default function SignUpSide() {
     }
   };
   
-  //   try {
-  //     const docRef = await addDoc(collection(db, "users"), { 
-  //       first_name: data.get('first_name'),
-  //       last_name: data.get('last_name'),
-  //       License_Plate_no: data.get('License_Plate_no'),
-  //       email: data.get('email'),
-  //       password: data.get('password'),
-  //     });
-  //     try {
-  //       localStorage.setItem('token', docRef.id);
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //     navigate('/');
-  //     console.log("Document written with ID: ", docRef.id);
-  //   } catch (error) {
-  //     console.error("Error adding document: ", error);
-  //   }
-  // };
+  //  
   
   return (
     <ThemeProvider theme={defaultTheme}>

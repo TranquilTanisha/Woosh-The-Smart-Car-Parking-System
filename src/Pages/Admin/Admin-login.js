@@ -11,9 +11,12 @@ import Grid from '@mui/material/Grid';
 import Link from '@mui/material/Link';
 import Paper from '@mui/material/Paper';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import GoogleButton from 'react-google-button';
 import { useNavigate } from 'react-router-dom';
 import Image2 from '../../Images/admin_parking.jpg';
+import { getAuth, signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
+import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { db } from '../../Firebase.js';
+import { auth, provider } from '../../Firebase.js';
 
 function Copyright(props) {
   return (
@@ -34,14 +37,46 @@ export default function SignInSide() {
   // eslint-disable-next-line
   const navigate = useNavigate();
 
-  const SignInWithGoogle = async () => {
-    console.log('Sign in with google');
-    // Frontend Google sign-in functionality
-  };
+  function validateEmail(email) {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
+  }
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    // Frontend form submission functionality
+    const data = new FormData(event.currentTarget);
+    const email = data.get('email');
+    const password = data.get('password');
+
+    if (!validateEmail(email)) {
+      alert('Invalid email address');
+      return;
+    }
+
+    try {
+      const auth = getAuth();
+      signInWithEmailAndPassword(auth, email, password)
+        .then((adminCredential) => {
+          const result = adminCredential;
+          localStorage.setItem('token', result.user.accessToken);
+          const admin = auth.currentUser;
+          const uid = admin.uid;
+          getDoc(doc(db, "admins", uid)).then(docSnap => {
+            if (docSnap.exists()) {
+              localStorage.setItem('profile', JSON.stringify(docSnap.data()));
+            } else {
+              console.log("No such document!");
+            }
+          })
+          navigate('/dashboard');
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (
@@ -139,14 +174,6 @@ export default function SignInSide() {
                   </Link>
                 </Grid>
               </Grid>
-              <Typography
-                sx={{
-                  mt: 2,
-                  mb: 2,
-                  textAlign: 'center'
-                }}>
-                OR
-              </Typography>
               <Copyright sx={{ mt: 5 }} />
             </Box>
           </Box>

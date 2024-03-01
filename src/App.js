@@ -14,6 +14,8 @@ import QR from './Pages/User/Pages/QR.js';
 import AdminDashboard from './Pages/Admin/Admin-dashboard.js';
 import AdminLogin from './Pages/Admin/Admin-login.js';
 import AdminRegister from './Pages/Admin/Admin-register.js';
+import ManageEmployee from './Pages/Admin/manage-employee.js';
+import LayoutEditor from './Pages/Admin/layout-editor.js';
 
 const App = () => {
   return (
@@ -30,9 +32,11 @@ const App = () => {
       <Route path='/qr' element={<QR />} />
       <Route path='/temp' element={<Temp />} />
       <Route path='/location' element={<Location />} />
-      <Route path='/admin-dashboard' element={<AdminDashboard />} />
+      <Route path='/dashboard' element={<AdminDashboard />} />
       <Route path='/admin-login' element={<AdminLogin />} />
       <Route path='/admin-register' element={<AdminRegister />} />
+      <Route path='/manage-employee' element={<ManageEmployee/>} />
+      <Route path='/layout-editor' element={<LayoutEditor/>} />
     </Routes>
   );
 }

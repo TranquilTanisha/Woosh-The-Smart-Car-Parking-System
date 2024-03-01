@@ -1,17 +1,17 @@
 import React from 'react';
 import AdminNavbar from './Admin-navbar';
 
-function ManageEmployee() {
+function LayoutEditor() {
   return (
     <>
     <div>
         <AdminNavbar />
     </div>
     <div>
-      this is manage employee
+      this is layout editor
     </div>
     </>
   );
 }
 
-export default ManageEmployee;
+export default LayoutEditor;

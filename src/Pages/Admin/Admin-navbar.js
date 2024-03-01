@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 
-const pages = ['Home', 'Manage Employee', 'Layout Editor'];
+const pages = ['Dashboard', 'Manage Employee', 'Layout Editor'];
 const settings = ['Profile', 'Logout'];
 
 const ResponsiveAppBar = () => {
@@ -32,7 +32,7 @@ const ResponsiveAppBar = () => {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
       localStorage.removeItem('profile');
-      navigate('/login');
+      navigate('/admin-login');
     }).catch((error) => {
       console.log(error);
     });
@@ -57,7 +57,7 @@ const ResponsiveAppBar = () => {
             variant="h6"
             noWrap
             component="a"
-            href="/"
+            href="/dashboard"
             sx={{
               mr: 2,
               display: { xs: 'none', md: 'flex' },
@@ -76,7 +76,7 @@ const ResponsiveAppBar = () => {
                 key={page}
                 sx={{ color: 'white', fontWeight: 600 }}
                 component={Link}
-                to={page === 'Home' ? '/' : `/${page.toLowerCase().replace(' ', '-')}`}
+                to={page === 'dashboard' ? 'admin-login' : `/${page.toLowerCase().replace(' ', '-')}`}
               >
                 {page}
               </Button>
