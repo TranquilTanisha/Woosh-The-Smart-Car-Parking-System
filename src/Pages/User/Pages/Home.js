@@ -34,6 +34,7 @@ const Home = () => {
       <div className="navbar">
         <Navbar />
       </div>
+      <div className='home'>
       <div>
         <h1 style={{ marginTop: '8rem' }}>Welcome {username}! Explore nearby parking areas. </h1>
       </div>
@@ -61,6 +62,7 @@ const Home = () => {
         )}
 
 
+      </div>
       </div>
       <div className="bottombar">
         <Bottombar value={value} />

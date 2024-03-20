@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Button, Container, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Paper } from '@mui/material';
-import { db } from '../../Firebase';
+// import { db } from '../../Firebase';
 import AdminNavbar from './Admin-navbar';
 
 function AdminDashboard() {

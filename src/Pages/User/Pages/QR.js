@@ -39,33 +39,20 @@ function QR() {
         navigator.mediaDevices.enumerateDevices()
           .then(devices => {
             const rearCamera = devices.find(device => device.kind === 'videoinput' && device.label.includes('back'));
-            if (rearCamera) {
-              navigator.mediaDevices.getUserMedia({ video: { deviceId: rearCamera.deviceId } })
+            const frontCamera = devices.find(device => device.kind === 'videoinput' && device.label.includes('front'));
+            const camera = rearCamera || frontCamera;
+            if (camera) {
+              navigator.mediaDevices.getUserMedia({ video: { deviceId: camera.deviceId } })
                 .then(() => setPermissionGranted(true))
                 .catch(() => {
-                  setCameraErrorMessage('Rear camera not accessible. Trying front camera.');
-                  navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } }) // Set facingMode to 'environment' for back camera
-                    .then(() => setPermissionGranted(true))
-                    .catch(() => {
-                      setCameraErrorMessage('Front camera not accessible.');
-                    });
+                  setCameraErrorMessage('Camera not accessible.');
                 });
             } else {
-              setCameraErrorMessage('Rear camera not found. Trying front camera.');
-              navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } }) // Set facingMode to 'environment' for back camera
-                .then(() => setPermissionGranted(true))
-                .catch(() => {
-                  setCameraErrorMessage('Front camera not accessible.');
-                });
+              setCameraErrorMessage('No camera found.');
             }
           })
           .catch(() => {
-            setCameraErrorMessage('Error enumerating devices. Trying front camera.');
-            navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } }) // Set facingMode to 'environment' for back camera
-              .then(() => setPermissionGranted(true))
-              .catch(() => {
-                setCameraErrorMessage('Front camera not accessible.');
-              });
+            setCameraErrorMessage('Error enumerating devices.');
           });
       }
     };
@@ -82,33 +69,20 @@ function QR() {
         navigator.mediaDevices.enumerateDevices()
           .then(devices => {
             const rearCamera = devices.find(device => device.kind === 'videoinput' && device.label.includes('back'));
-            if (rearCamera) {
-              navigator.mediaDevices.getUserMedia({ video: { deviceId: rearCamera.deviceId } })
+            const frontCamera = devices.find(device => device.kind === 'videoinput' && device.label.includes('front'));
+            const camera = rearCamera || frontCamera;
+            if (camera) {
+              navigator.mediaDevices.getUserMedia({ video: { deviceId: camera.deviceId } })
                 .then(() => setPermissionGranted(true))
                 .catch(() => {
-                  setCameraErrorMessage('Rear camera not accessible. Trying front camera.');
-                  navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } }) // Set facingMode to 'environment' for back camera
-                    .then(() => setPermissionGranted(true))
-                    .catch(() => {
-                      setCameraErrorMessage('Front camera not accessible.');
-                    });
+                  setCameraErrorMessage('Camera not accessible.');
                 });
             } else {
-              setCameraErrorMessage('Rear camera not found. Trying front camera.');
-              navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } }) // Set facingMode to 'environment' for back camera
-                .then(() => setPermissionGranted(true))
-                .catch(() => {
-                  setCameraErrorMessage('Front camera not accessible.');
-                });
+              setCameraErrorMessage('No camera found.');
             }
           })
           .catch(() => {
-            setCameraErrorMessage('Error enumerating devices. Trying front camera.');
-            navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } }) // Set facingMode to 'environment' for back camera
-              .then(() => setPermissionGranted(true))
-              .catch(() => {
-                setCameraErrorMessage('Front camera not accessible.');
-              });
+            setCameraErrorMessage('Error enumerating devices.');
           });
       }
     };

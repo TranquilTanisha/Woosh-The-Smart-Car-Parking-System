@@ -3,6 +3,7 @@ import { AppBar, Avatar, Box, Button, Container, IconButton, Menu, MenuItem, Too
 import { getAuth, signOut } from "firebase/auth";
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import Theme from '../DarkMode/DarkMode';
 
 
 const pages = ['Home', 'Navigation', 'QR'];
@@ -81,6 +82,7 @@ const ResponsiveAppBar = () => {
                 {page}
               </Button>
             ))}
+            <Theme />
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
@@ -93,8 +95,8 @@ const ResponsiveAppBar = () => {
               sx={{
                 mt: '45px',
                 '& .MuiPaper-root': {
-                  backgroundColor: '#f0f0f0',
-                  color: '#333',
+                  backgroundColor: 'var(--body_color)',
+                  color: 'var(--body_background)',
                   boxShadow: '0 2px 5px rgba(0, 0, 0, 0.2)',
                 },
                 '& .MuiTypography-root': {
