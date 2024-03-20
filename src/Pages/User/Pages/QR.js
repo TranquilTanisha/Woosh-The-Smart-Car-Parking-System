@@ -1,9 +1,11 @@
-// eslint-disable-next-line
 import { useRef, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import QrScanner from 'qr-scanner';
 import '../../../App.css';
+import Navbar from '../../../Components/Navbar/Navbar';
+import Bottombar from '../../../Components/Navbar/Bottombar';
 
+// Configure QrScanner
 QrScanner.WORKER_PATH = './worker.js';
 
 const ReadQR = () => {
@@ -12,6 +14,7 @@ const ReadQR = () => {
   const [cameraPermissionGranted, setCameraPermissionGranted] = useState(false);
   const [rearCameraAvailable, setRearCameraAvailable] = useState(false);
   const [cameraErrorMessage, setCameraErrorMessage] = useState('');
+  const qrScannerRef = useRef();
 
   useEffect(() => {
     const checkRearCamera = async () => {
@@ -57,70 +60,68 @@ const ReadQR = () => {
     }
 
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { exact: 'environment' } } });
-      const videoElement = document.createElement('video');
-      videoElement.srcObject = stream;
-      videoElement.setAttribute('playsinline', 'true'); // Required for iOS Safari
-      document.body.appendChild(videoElement);
-      const scanner = new QrScanner(videoElement, (result) => {
-        setData(result);
-        scanner.stop();
-        videoElement.remove();
-      });
-      scanner.start();
+      qrScannerRef.current.start();
     } catch (error) {
       console.error('Error accessing camera:', error);
       setCameraErrorMessage('Error accessing camera.');
     }
   };
 
-  const clearAll = (e) => {
-    e.preventDefault();
-    setData(null);
-  };
+  const value = "QR";
 
   return (
-    <div className="container">
-      <h2 className="text-center mb-4">Scan QR Code</h2>
-      <div className="card border-0">
-        <div className="card-body d-flex flex-column align-items-center justify-content-center">
-          <div className="d-flex align-items-center justify-content-between">
-            {!rearCameraAvailable && <p className="error-message">Rear camera not found.</p>}
-            {cameraErrorMessage && <p className="error-message">{cameraErrorMessage}</p>}
-            {rearCameraAvailable && (
-              <>
-                <button
-                  type="button"
-                  className="btn btn-success mx-2"
-                  onClick={handleCameraPermission}
-                >
-                  Grant Camera Permission
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-primary mx-2"
-                  onClick={handleCameraScan}
-                  disabled={!cameraPermissionGranted}
-                >
-                  Scan QR Code from Rear Camera
-                </button>
-              </>
-            )}
-            <button
-              onClick={clearAll}
-              type="button"
-              className="btn btn-outline-danger my-4"
-            >
-              &#x2715;
-            </button>
+    <>
+      <div className="navbar">
+        <Navbar />
+      </div>
+      <div className="container">
+        <h2 className="text-center mb-4">Scan QR Code</h2>
+        <div className="card border-0">
+          <div className="card-body d-flex flex-column align-items-center justify-content-center">
+            <div className="d-flex align-items-center justify-content-between">
+              {!rearCameraAvailable && <p className="error-message">Rear camera not found.</p>}
+              {cameraErrorMessage && <p className="error-message">{cameraErrorMessage}</p>}
+              {rearCameraAvailable && (
+                <div className="scanner-container">
+                  <QrScanner
+                    ref={qrScannerRef}
+                    className="qr-scanner"
+                    onScan={(result) => setData(result)}
+                    constraints={{ facingMode: 'environment' }}
+                  />
+                  <div className="scanner-overlay"></div>
+                  <div className="buttons-container">
+                    <button
+                      type="button"
+                      className="btn btn-success mx-2"
+                      onClick={handleCameraPermission}
+                    >
+                      Grant Camera Permission
+                    </button>
+                    <button
+                      type="button"
+                      className="btn btn-primary mx-2"
+                      onClick={handleCameraScan}
+                      disabled={!cameraPermissionGranted}
+                    >
+                      Scan QR Code from Rear Camera
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
+        <div className="bottombar">
+          <Bottombar value={value} />
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
 export default ReadQR;
+
 
 
 
