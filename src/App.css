@@ -46,6 +46,9 @@
     max-height: 100vh;
     width: 70vw; 
   }
+  #qrScanner{
+    left: 20vw !important;
+  }
 }
 
 /* for chatbot */
@@ -60,6 +63,73 @@
 
 
 /* for QR page */
+.card-body{
+  display: flex;
+  justify-content: center;
+  padding-top: 10vh;
+}
+
+#qrScanner {
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+  position: absolute;
+  top: 30vh;
+  left: 41vw;
+  /* transform: translate(-50%, -50%); */
+}
+
+
+
+/* #qrScanner {
+  position: relative;
+} */
+
+
+.qrScanner {
+  position: relative;
+}
+
+.qrScanner::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  animation: scanner 3s linear infinite;
+}
+
+@keyframes scanner {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(100%);
+  }
+}
+
+
+.scan-button {
+  padding: 10px 20px;
+  font-size: 18px;
+  border-radius: 5px;
+  background-color: #b81c21;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  outline: none;
+  font-size: 16px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.scan-button:hover {
+  background-color: #da4045;
+}
+
 /* .scanner-animation {
   position: relative;
 }
@@ -84,53 +154,5 @@
   }
 }
 
-
-.camera-permission-button {
-  padding: 10px 20px;
-  background-color: #b81c21;
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  outline: none;
-  font-size: 16px;
-  font-weight: bold;
-  text-transform: uppercase;
-}
-
-.camera-permission-button:hover {
-  background-color: #da4045;
-} */
-
-
-
-.qr-scanner {
-  position: relative;
-  width: 300px;
-  height: 300px;
-  overflow: hidden;
-  border: 2px solid #000;
-}
-
-.scanner-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-}
-
-.buttons-container {
-  display: flex;
-  justify-content: center;
-  margin-top: 20px;
-  background-color: #b81c21;
-}
-
-.error-message {
-  color: #b81c21;
-  font-weight: bold;
-  margin-bottom: 10px;
-}
+ */
 
