@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import QrScanner from 'qr-scanner';
 
@@ -7,9 +7,29 @@ QrScanner.WORKER_PATH = 'path/to/qr-scanner-worker.min.js';
 
 const ReadQR = () => {
   const navigate = useNavigate();
-  // eslint-disable-next-line
   const [data, setData] = useState(null);
   const [cameraPermissionGranted, setCameraPermissionGranted] = useState(false);
+  const [rearCameraAvailable, setRearCameraAvailable] = useState(false);
+
+  useEffect(() => {
+    const checkRearCamera = async () => {
+      try {
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        const rearCamera = devices.find(device => device.kind === 'videoinput' && device.label.toLowerCase().includes('back'));
+        setRearCameraAvailable(!!rearCamera);
+      } catch (error) {
+        console.error('Error checking rear camera:', error);
+      }
+    };
+
+    checkRearCamera();
+  }, []);
+
+  useEffect(() => {
+    if (data) {
+      navigate(data); // Redirect to scanned QR link
+    }
+  }, [data, navigate]);
 
   const handleCameraPermission = async () => {
     try {
@@ -27,7 +47,12 @@ const ReadQR = () => {
       alert('Please grant camera permission before scanning.');
       return;
     }
-    
+
+    if (!rearCameraAvailable) {
+      alert('Rear camera not found.');
+      return;
+    }
+
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { exact: 'environment' } } });
       const videoElement = document.createElement('video');
@@ -38,7 +63,6 @@ const ReadQR = () => {
         setData(result);
         scanner.stop();
         videoElement.remove();
-        navigate(result);
       });
       scanner.start();
     } catch (error) {
@@ -57,23 +81,28 @@ const ReadQR = () => {
       <div className="card border-0">
         <div className="card-body d-flex flex-column align-items-center justify-content-center">
           <div className="d-flex align-items-center justify-content-between">
-            <button
-              type="button"
-              style={{ height: '50px' }}
-              className="btn btn-success px-4 mx-2"
-              onClick={handleCameraPermission}
-            >
-              Grant Camera Permission
-            </button>
-            <button
-              type="button"
-              style={{ height: '50px' }}
-              className="btn btn-primary px-4 mx-2"
-              onClick={handleCameraScan}
-              disabled={!cameraPermissionGranted}
-            >
-              Scan QR Code from Rear Camera
-            </button>
+            {!rearCameraAvailable && <p>Rear camera not found.</p>}
+            {rearCameraAvailable && (
+              <>
+                <button
+                  type="button"
+                  style={{ height: '50px' }}
+                  className="btn btn-success px-4 mx-2"
+                  onClick={handleCameraPermission}
+                >
+                  Grant Camera Permission
+                </button>
+                <button
+                  type="button"
+                  style={{ height: '50px' }}
+                  className="btn btn-primary px-4 mx-2"
+                  onClick={handleCameraScan}
+                  disabled={!cameraPermissionGranted}
+                >
+                  Scan QR Code from Rear Camera
+                </button>
+              </>
+            )}
             <button
               onClick={clearAll}
               type="button"
