@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+</head>
+<body>
+    {% if next %}
+    <form action="/admin-login?next={{next}}" method="POST">
+    {% else %}
+    <form action="/admin-login" method="POST">
+    {% endif %}
+        Email: <input type="text" name="email"><br>
+        Password: <input type="password" name="password"><br>
+        <a href="/forgot/"{{email}}>Forgot Password</a><br>
+        <input type="submit" value="Login">
+
+    {% if next %}
+    <a href="/admin-register?next={{next}}">Register</a>
+    {% else %}
+    <a href="/admin-register">Register</a>
+    {% endif %}
+        
+        
+    </form>
+</body>
+</html>
