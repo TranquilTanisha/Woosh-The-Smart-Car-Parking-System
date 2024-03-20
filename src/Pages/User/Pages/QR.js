@@ -39,16 +39,14 @@ function QR() {
         navigator.mediaDevices.enumerateDevices()
           .then(devices => {
             const rearCamera = devices.find(device => device.kind === 'videoinput' && device.label.includes('back'));
-            const frontCamera = devices.find(device => device.kind === 'videoinput' && device.label.includes('front'));
-            const camera = rearCamera || frontCamera;
-            if (camera) {
-              navigator.mediaDevices.getUserMedia({ video: { deviceId: camera.deviceId } })
+            if (rearCamera) {
+              navigator.mediaDevices.getUserMedia({ video: { deviceId: rearCamera.deviceId } }) // Specify the deviceId of the rear camera
                 .then(() => setPermissionGranted(true))
                 .catch(() => {
-                  setCameraErrorMessage('Camera not accessible.');
+                  setCameraErrorMessage('Rear camera not accessible.');
                 });
             } else {
-              setCameraErrorMessage('No camera found.');
+              setCameraErrorMessage('Rear camera not found.');
             }
           })
           .catch(() => {
@@ -69,16 +67,14 @@ function QR() {
         navigator.mediaDevices.enumerateDevices()
           .then(devices => {
             const rearCamera = devices.find(device => device.kind === 'videoinput' && device.label.includes('back'));
-            const frontCamera = devices.find(device => device.kind === 'videoinput' && device.label.includes('front'));
-            const camera = rearCamera || frontCamera;
-            if (camera) {
-              navigator.mediaDevices.getUserMedia({ video: { deviceId: camera.deviceId } })
+            if (rearCamera) {
+              navigator.mediaDevices.getUserMedia({ video: { deviceId: rearCamera.deviceId } }) // Specify the deviceId of the rear camera
                 .then(() => setPermissionGranted(true))
                 .catch(() => {
-                  setCameraErrorMessage('Camera not accessible.');
+                  setCameraErrorMessage('Rear camera not accessible.');
                 });
             } else {
-              setCameraErrorMessage('No camera found.');
+              setCameraErrorMessage('Rear camera not found.');
             }
           })
           .catch(() => {
@@ -97,7 +93,7 @@ function QR() {
         <Navbar />
       </div>
       <div style={{ textAlign: 'center', position: 'relative', height: '100vh' }}>
-        <h1>QR test</h1>
+        <h1>QR</h1>
         {permissionGranted && (
           <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '100%', maxWidth: '300px' }}>
             <div className="scanner-animation">
@@ -105,7 +101,7 @@ function QR() {
                 onScan={handleScan}
                 onError={handleError}
                 style={{ width: '100%' }}
-                facingMode='environment'
+                facingMode='environment' // Use 'environment' for back camera
               />
             </div>
           </div>
