@@ -97,7 +97,7 @@ function QR() {
         <Navbar />
       </div>
       <div style={{ textAlign: 'center', position: 'relative', height: '100vh' }}>
-        <h1>QR</h1>
+        <h1>QR test</h1>
         {permissionGranted && (
           <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '100%', maxWidth: '300px' }}>
             <div className="scanner-animation">
