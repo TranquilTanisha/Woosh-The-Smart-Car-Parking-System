@@ -60,7 +60,7 @@
 
 
 /* for QR page */
-.scanner-animation {
+/* .scanner-animation {
   position: relative;
 }
 
@@ -100,4 +100,37 @@
 
 .camera-permission-button:hover {
   background-color: #da4045;
+} */
+
+
+
+.qr-scanner {
+  position: relative;
+  width: 300px;
+  height: 300px;
+  overflow: hidden;
+  border: 2px solid #000;
 }
+
+.scanner-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.buttons-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  background-color: #b81c21;
+}
+
+.error-message {
+  color: #b81c21;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
