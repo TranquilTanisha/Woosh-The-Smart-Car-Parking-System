@@ -30,7 +30,7 @@ const ReadQR = () => {
 
   useEffect(() => {
     if (data) {
-      window.location.href = 'https://google.com';
+      window.location.href = data;
       // navigate(data); // Redirect to scanned QR link
     }
   }, [data, navigate]);
