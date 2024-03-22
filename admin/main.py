@@ -60,26 +60,52 @@ def add_employees():
     
     return render_template('add-employees.html')
 
-@app.route('/view-employees')
+@app.route('/add-employee', methods=['GET','POST'])
+@authenticate_user
+def add_employee():
+    if request.method == 'POST':
+        ref=db.collection('employees').document(session['localId'])
+        doc=ref.get()
+        data[request.form['name']]=request.form['email']
+        if doc.exists:
+            data=doc.to_dict()
+            ref.set(data)
+        else:
+            ref.set(data)
+        return redirect(url_for('view_employees'))
+    return render_template('add-employees.html', msg='Add Employee')
+@app.route('/view-employees', methods=['GET','POST'])
 @authenticate_user
 def view_employees():
     ref=db.collection('employees').document(session['localId'])
     doc=ref.get()
     if doc.exists:
         data=doc.to_dict()
-        return render_template('view-employees.html', data=data)
+        return render_template('view-employees.html', data=data, l=len(data))
     return 'No data available'
 
-@app.route('/view-employee/<str:k>')
+#fetch all the data of a particular employee from users
+#takes the key as it is, eq:name. Will have to modify at the user's end only while saving data
+@app.route('/view-employee/<k>', methods=['GET','POST'])
 @authenticate_user
-def view_employees():
-    ref=db.collection('employees').document(session['localId'])
+def view_employee(k):
+    ref=db.collection('users').document(k)
     doc=ref.get()
     if doc.exists:
         data=doc.to_dict()
         print(data)
-        return render_template('view-employees.html', data=data)
+        return render_template('view-employee.html', data=data)
     return 'No data available'
+
+@app.route('/remove-employee/<k>', methods=['GET','POST'])
+@authenticate_user
+def delete_employee(k):
+    ref=db.collection('employees').document(session['localId'])
+    doc=ref.get()
+    data=doc.to_dict()
+    data.pop(k)
+    ref.set(data)
+    return redirect(url_for('view_employees'))
 
 if __name__ == '__main__':
     app.run(host="127.0.0.1", port=5000, debug=True)
