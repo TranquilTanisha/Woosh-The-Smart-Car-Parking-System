@@ -45,12 +45,15 @@ def login():
                     return "Email not verified. Please verify your email to <a href='/admin-login'>login</a>."
             else:
                 ref=db.collection('organization').document(user['localId'])
-                ref.set({'id':user['localId'], 'location':session['location'],'email':email, 'org_name':session['org_name']})
-                
-                ref=db.collection('employees').document(user['localId'])
-                ref=db.collection('parking_layout').document(user['localId'])
-                ref=db.collection('visitors').document(user['localId'])
-                
+                doc=ref.get()
+                if (doc.exists):
+                    pass
+                else:
+                    ref.set({'id':user['localId'], 'location':session['location'],'email':email, 'org_name':session['org_name']})
+                    
+                    ref=db.collection('employees').document(user['localId'])
+                    ref=db.collection('parking_layout').document(user['localId'])
+                    ref=db.collection('visitors').document(user['localId'])
                 session['user']=email
                 session['localId']=user['localId']
                 session['idToken']=user['idToken']
@@ -107,8 +110,6 @@ def logout():
 def profile():
     ref=db.collection('organization').document(session['localId'])
     data=ref.get().to_dict()
-    print(data)
-    print(session)
     return render_template('admin-profile.html', id=data['id'], org_name=data['org_name'], email=data['email'], location=data['location'])
 
 @app.route('/admin-update', methods=['GET','POST'])
