@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
@@ -6,30 +6,27 @@ import Typography from '@mui/material/Typography';
 import '../../../App.css';
 import Navbar from '../../../Components/Navbar/Navbar';
 import Bottombar from '../../../Components/Navbar/Bottombar';
+import { getFirestore, collection, getDocs } from 'firebase/firestore';
+
+// Placeholder image URL
+const placeholderImage = 'https://via.placeholder.com/150';
 
 function Navigation() {
-  const dummyData = [
-    {
-      id: 1,
-      image: 'https://via.placeholder.com/150',
-      name: 'John Doe',
-      location: '123 Main St',
-      contact: 'john@example.com',
-      totalParking: 50,
-      usedSpots: 30,
-      vacantSpots: 20,
-    },
-    {
-      id: 2,
-      image: 'https://via.placeholder.com/150',
-      name: 'Jane Smith',
-      location: '456 Elm St',
-      contact: 'jane@example.com',
-      totalParking: 100,
-      usedSpots: 70,
-      vacantSpots: 30,
-    }
-  ];
+  // State to store organization data
+  const [organizations, setOrganizations] = useState([]);
+
+  // Function to fetch data from Firestore
+  const fetchOrganizations = async () => {
+    const db = getFirestore();
+    const organizationsCollection = collection(db, 'organization');
+    const snapshot = await getDocs(organizationsCollection);
+    const organizationsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    setOrganizations(organizationsData);
+  };
+
+  useEffect(() => {
+    fetchOrganizations(); // Fetch data when component mounts
+  }, []);
 
   return (
     <div>
@@ -51,17 +48,18 @@ function Navigation() {
           </svg>
         </div>
         <div className="squares-container">
-          {dummyData.map(item => (
-            <Link to={`/navigation/Detail`} key={item.id} className="link">
+          {organizations.map(org => (
+            <Link to={`/navigation/detail/${org.id}`} key={org.id} className="link">
               <Card className="square">
-                <CardContent className='card-content'>
-                  <img src={item.image} alt="/" className="image" />
+                <CardContent className="card-content">
+                  <img src={placeholderImage} alt="Organization" className="image" />
                   <Typography variant="h6" component="div" className="name">
-                    {item.name}
+                    {org.org_name}
                   </Typography>
                   <Typography variant="body2" color="textSecondary" component="div" className="location">
-                    {item.location}
+                    {org.location}
                   </Typography>
+                  {/* Add more organization data fields as needed */}
                 </CardContent>
               </Card>
             </Link>
@@ -76,6 +74,7 @@ function Navigation() {
 }
 
 export default Navigation;
+
 
 
 
