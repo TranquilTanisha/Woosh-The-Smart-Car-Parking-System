@@ -19,7 +19,9 @@ authenticator=firebase.auth()
 # for firestore
 import firebase_admin
 from firebase_admin import credentials, firestore, auth
-
-cred = credentials.Certificate("admin\smart-parking-system-181d0-firebase-adminsdk-iunkh-d62d0a1306.json")
+try:
+    cred = credentials.Certificate("admin\smart-parking-system-181d0-firebase-adminsdk-iunkh-d62d0a1306.json")
+except FileNotFoundError:
+    cred = credentials.Certificate("smart-parking-system-181d0-firebase-adminsdk-iunkh-d62d0a1306.json")
 firebase_admin.initialize_app(cred)
 db=firestore.client()
