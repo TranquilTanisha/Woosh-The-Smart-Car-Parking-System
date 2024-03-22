@@ -16,6 +16,7 @@ import AdminLogin from './Pages/Admin/Admin-login.js';
 import AdminRegister from './Pages/Admin/Admin-register.js';
 import ManageEmployee from './Pages/Admin/manage-employee.js';
 import LayoutEditor from './Pages/Admin/layout-editor.js';
+import ParkingDetail from './Pages/User/Pages/ParkingDetail.js';
 
 const App = () => {
   return (
@@ -37,6 +38,8 @@ const App = () => {
       <Route path='/admin-register' element={<AdminRegister />} />
       <Route path='/manage-employee' element={<ManageEmployee/>} />
       <Route path='/layout-editor' element={<LayoutEditor/>} />
+      <Route path='/navigation/Detail' element={<ParkingDetail/>} />
+      
     </Routes>
   );
 }

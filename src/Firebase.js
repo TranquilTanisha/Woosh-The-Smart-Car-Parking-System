@@ -2,6 +2,7 @@
 import { initializeApp } from "firebase/app";
 import { GoogleAuthProvider, getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
+
 const firebaseConfig = {
   apiKey: "AIzaSyCErrNeI7GYkbJXxSHUoQZJ-0UFXzwtxuY",
   authDomain: "smart-parking-system-181d0.firebaseapp.com",

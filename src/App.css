@@ -156,3 +156,173 @@
 
  */
 
+
+
+ /* for navigation page */
+
+ .navigation-container {
+  padding: 12px;
+}
+
+.search-bar {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 12px 50px 12px 10px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-size: 16px;
+  background-color: #fff;
+  box-sizing: border-box;
+  padding-left: 2vw;
+}
+
+.search-input::placeholder {
+  color: #aaa;
+}
+
+.search-icon {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+
+.card-content{
+  border-radius: 10px !important;
+}
+@media (max-width: 1465px) {
+
+}
+  
+@media only screen and (min-width: 768px)  {
+  
+  .square {
+    flex: 1 0 40%;
+    margin-right: 20px;
+    margin-bottom: 20px; 
+ 
+  }
+  .search-bar{
+    margin-top: 10vh;
+    width: 50vw;
+    margin-left: 25vw;
+  }
+
+  .squares-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+
+  .boxi{
+    display: flex;
+    margin-top: 20px;
+    width: 40vw;
+    flex-direction: column;
+  }
+
+  .outerBoxi{
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+  }
+}
+
+
+.image {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+}
+
+.name {
+  font-weight: bold !important;
+ font-size: medium !important;
+ text-decoration: none;
+}
+.name:hover {
+ 
+  color: blue;
+  cursor: pointer;
+}
+
+.location {
+  color: #666;
+  text-decoration: none !important;
+  font-size: small !important;
+}
+
+
+@media (max-width: 768px) {
+  .square {
+    max-width: 40vw;
+  }
+
+  .squares-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    /* flex-wrap: wrap;
+    justify-content: flex-start; */
+  }
+
+  .link{
+    width: 40vw;
+    display: flex;
+    flex-direction: row;
+  }
+}
+
+
+
+
+
+.pcontent{
+  display: flex;
+  margin-left: 15px;
+  margin-right: 15px;
+}
+.pimage{
+  border-radius: 10px;
+  margin-right: 20px;
+}
+
+.pdetail{
+  display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+}
+.pname{
+  font-size: larger;
+  font-weight: bold;
+}
+
+.pinfo{
+  height: 10vh;
+  border: 1px solid #b81c21;
+  margin: 10px 15px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.pline{
+  height: 70%;
+  background: #b81c21;
+  width: 2px;
+  border-radius: 50px;
+}
+
+.pinfo1{
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}

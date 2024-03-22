@@ -20,6 +20,6 @@ authenticator=firebase.auth()
 import firebase_admin
 from firebase_admin import credentials, firestore, auth
 
-cred = credentials.Certificate("smart-parking-system-181d0-firebase-adminsdk-iunkh-d62d0a1306.json")
+cred = credentials.Certificate("admin\smart-parking-system-181d0-firebase-adminsdk-iunkh-d62d0a1306.json")
 firebase_admin.initialize_app(cred)
 db=firestore.client()
