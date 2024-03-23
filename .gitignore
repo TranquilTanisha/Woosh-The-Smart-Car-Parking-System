@@ -23,3 +23,10 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .vercel
+
+*__pycache__
+/admin/Include
+/admin/Lib
+/admin/Scripts
+/admin/share
+/admin/pyvenv.cfg
