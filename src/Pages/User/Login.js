@@ -11,12 +11,11 @@ import Link from '@mui/material/Link';
 import Paper from '@mui/material/Paper';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { getAuth, signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 import GoogleButton from 'react-google-button';
 import { useNavigate } from 'react-router-dom';
 import '../../App.css';
-import { db } from '../../Firebase.js';
-import { auth, provider } from '../../Firebase.js';
+import { auth, db, provider } from '../../Firebase.js';
 import Image2 from '../../Images/car_parking.jpg';
 
 function Copyright(props) {
@@ -47,9 +46,31 @@ export default function SignInSide() {
       const user = auth.currentUser;
       const uid = user.uid;
       const docRef = doc(db, "users", uid);
-      updateDoc(docRef, {
-        photoURL: result.user.photoURL,
-      });
+      // updateDoc(docRef, {
+      //   photoURL: result.user.photoURL,
+      // });
+      const docName = uid;
+      const userName = user.displayName;
+      const email = user.email;
+
+      const userData = {
+        email: email,
+        name: userName,
+        photoURL: user.photoURL ? user.photoURL : '',
+        licenseNo1: '',
+        licenseNo2: '',
+        licenseNo3: '',
+        parkingID: '',
+        orgID: '',
+        entryTime: '',
+        exitTime: '',
+        employeeID: '',
+        isVerifiedEmployee: false,
+      }
+
+      setDoc(doc(db, "users", docName),
+        userData
+      );
       const docSnap = await getDoc(docRef);
       localStorage.setItem('profile', JSON.stringify(docSnap.data()));
       navigate('/');
