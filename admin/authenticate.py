@@ -49,11 +49,14 @@ def login():
                 if (doc.exists):
                     pass
                 else:
-                    ref.set({'id':user['localId'], 'location':session['location'],'email':email, 'org_name':session['org_name']})
-                    
-                    ref=db.collection('employees').document(user['localId'])
-                    ref=db.collection('parking_layout').document(user['localId'])
-                    ref=db.collection('visitors').document(user['localId'])
+                    ref.set({'id':user['localId'], 'location':session['location'],'email':email, 'org_name':session['org_name'], 
+                                'fee': session['fee'], 'basis': session['basis'], 'charges': session['charges'], 
+                                'floors': session['floors']})
+                        
+                # ref=db.collection('employees').document(user['localId'])
+                # ref.set({'None':'None'})
+                # ref=db.collection('parking_layout').document(user['localId'])
+                # ref.set({'None':'None'})
                 session['user']=email
                 session['localId']=user['localId']
                 session['idToken']=user['idToken']
@@ -72,6 +75,10 @@ def signup():
     if request.method=='POST':
         org_name=request.form['org_name']
         location=request.form['location']
+        fee=request.form['fee']
+        basis=request.form['basis']
+        charges=float(request.form['charges'])
+        floors=request.form['floors']
         email=request.form['email']
         password=request.form['password']
         try:
@@ -79,6 +86,10 @@ def signup():
             authenticator.send_email_verification(user['idToken'])
             session['org_name']=org_name
             session['location']=location
+            session['fee']=fee
+            session['basis']=basis
+            session['charges']=charges
+            session['floors']=floors
             if type(n)==str:
                 return "Email not verified. Please verify your email to <a href='/admin-login?next="+n+"'>login</a>."
             else:
@@ -110,20 +121,37 @@ def logout():
 def profile():
     ref=db.collection('organization').document(session['localId'])
     data=ref.get().to_dict()
-    return render_template('admin-profile.html', id=data['id'], org_name=data['org_name'], email=data['email'], location=data['location'])
+    return render_template('admin-profile.html', id=session['localId'], org_name=data['org_name'], email=data['email'], location=data['location'], 
+                           fee= data['fee'], basis= data['basis'], 
+                    charges= data['charges'], floors= data['floors'])
 
 @app.route('/admin-update', methods=['GET','POST'])
 @authenticate_user
 def update():
     if request.method=='POST':
         org_name=request.form['org_name']
-        email=request.form['email']
         location=request.form['location']
+        fee=request.form['fee']
+        basis=request.form['basis']
+        charges=float(request.form['charges'])
+        floors=request.form['floors']
+        
+        session['org_name']=org_name
+        session['location']=location
+        session['fee']=fee
+        session['basis']=basis
+        session['charges']=charges
+        session['floors']=floors
+        
         ref=db.collection('organization').document(session['localId'])
-        ref.update({'org_name':org_name, 'email':email, 'location':location})
+        ref.set({'id':session['localId'], 'location':session['location'],'email':session['email'], 'org_name':session['org_name'], 
+                                'fee': session['fee'], 'basis': session['basis'], 'charges': session['charges'], 
+                                'floors': session['floors']})
+        # ref.update({'id':session['localId'], 'org_name':org_name, 'location':location, 'fee': fee, 'basis': basis, 
+        #             'charges': charges, 'No. of floors': floors})
         return redirect(url_for('profile'))
-    print(session)
-    return render_template('admin-update.html', id=session['localId'], org_name=session['org_name'], email=session['email'], location=session['location'])
+    return render_template('admin-update.html', id=session['localId'], org_name=session['org_name'], location=session['location'], 
+                           fee=session['fee'], basis= session['basis'], charges= session['charges'], floors= session['floors'])
 
 @app.route('/admin-delete')
 @authenticate_user
@@ -139,6 +167,3 @@ def delete():
     except:
         return redirect(url_for('profile'))
     return redirect('/admin-login')
-
-if __name__=='__main__':
-    app.run(debug=True)

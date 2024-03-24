@@ -10,6 +10,163 @@
             background-color: #f2f2f2;
             margin: 0;
             padding: 0;
+        }
+
+        form {
+            max-width: 400px;
+            margin: 50px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        input[type="text"],
+        input[type="password"],
+        input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        input[type="radio"] {
+            margin: 10px 5px;
+        }
+
+        input[type="submit"] {
+            width: 100%;
+            background-color: #4caf50;
+            color: white;
+            padding: 10px 0;
+            margin-top: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        a {
+            text-decoration: none;
+            color: #4caf50;
+            margin-top: 10px;
+            display: block;
+            text-align: center;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* Scroll to top button */
+        .scroll-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #b81c21;
+            color: white;
+            width: 50px;
+            height: 50px;
+            text-align: center;
+            line-height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 9999;
+            display: none;
+        }
+
+        .scroll-to-top:hover {
+            background-color: #da4045;
+        }
+
+    </style>
+</head>
+<body>
+    <form action="/admin-register" method="POST">
+        Organization name: <input type="text" name="org_name"><br>
+        Location: <input type="text" name="location"><br>
+        Fee applied:<br>
+        <input id="yes" type="radio" name="fee" value="yes">
+        <label for="yes">Yes</label>
+        <input id="no" type="radio" name="fee" value="no">
+        <label for="no">No</label><br>
+        
+        Basis of fee application: <br>
+        <input id="entry" type="radio" name="basis" value="entry">
+        <label for="entry">Entry</label>
+        <input id="exit" type="radio" name="basis" value="exit">
+        <label for="exit">Exit</label>
+        <input id="hourly" type="radio" name="basis" value="hourly">
+        <label for="hourly">Hourly</label><br>
+
+        Charges: <input type="text" name="charges" value=""><br>
+
+        Enter the no of floors:<input type="number" name="floors" value=""><br>
+
+        Email: <input type="text" name="email"><br>
+        Password: <input type="password" name="password"><br>
+        <input type="submit" value="SignUp">
+        <a href="/admin-login">Login</a>
+    </form>
+
+    <!-- Scroll to top button -->
+    <div class="scroll-to-top" onclick="scrollToTop()">&#8593;</div>
+
+    <script>
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
+        window.onscroll = function() {
+            scrollFunction();
+        };
+
+        function scrollFunction() {
+            if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+                document.querySelector('.scroll-to-top').style.display = "block";
+            } else {
+                document.querySelector('.scroll-to-top').style.display = "none";
+            }
+        }
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
             position: relative;
         }
 
@@ -182,7 +339,6 @@
         {% endif %}
     </form>
 
-    <!-- Scroll to top button -->
     <div class="scroll-to-top" onclick="scrollToTop()">&#8593;</div>
 
     <script>
@@ -206,7 +362,7 @@
         }
     </script>
 </body>
-</html>
+</html> -->
 
 
 

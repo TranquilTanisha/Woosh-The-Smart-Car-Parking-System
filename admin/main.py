@@ -74,6 +74,7 @@ def add_employee():
             ref.set(data)
         return redirect(url_for('view_employees'))
     return render_template('add-employees.html', msg='Add Employee')
+
 @app.route('/view-employees', methods=['GET','POST'])
 @authenticate_user
 def view_employees():
@@ -85,7 +86,7 @@ def view_employees():
     return 'No data available'
 
 #fetch all the data of a particular employee from users
-#takes the key as it is, eq:name. Will have to modify at the user's end only while saving data
+#takes the key as it is, eg:name. Will have to modify at the user's end only while saving data
 @app.route('/view-employee/<k>', methods=['GET','POST'])
 @authenticate_user
 def view_employee(k):
@@ -108,4 +109,4 @@ def delete_employee(k):
     return redirect(url_for('view_employees'))
 
 if __name__ == '__main__':
-    app.run(host="127.0.0.1", port=5000, debug=True)
+    app.run(debug=True)
