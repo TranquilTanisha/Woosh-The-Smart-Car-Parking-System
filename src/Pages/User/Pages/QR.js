@@ -1,9 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 import QrScanner from 'qr-scanner';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../../../App.css';
-import Navbar from '../../../Components/Navbar/Navbar';
 import Bottombar from '../../../Components/Navbar/Bottombar';
+import Navbar from '../../../Components/Navbar/Navbar';
+import { auth, db } from '../../../Firebase.js';
+
 
 QrScanner.WORKER_PATH = './worker.js';
 
@@ -65,7 +68,27 @@ const ReadQR = () => {
       document.body.appendChild(videoElement);
       const scanner = new QrScanner(videoElement, (result) => {
         if (result) {
-          setData(result); 
+          setData(result);
+          const user = auth.currentUser;
+          const uid = user.uid;
+          const docRef = doc(db, "users", uid);
+          getDoc(docRef).then(docSnap => {
+            if (docSnap.exists()) {
+              if (docSnap.data().entryTime) {
+                updateDoc(docRef, {
+                  exitTime: new Date().toLocaleString()
+                });
+              }
+              else {
+                updateDoc(docRef, {
+                  entryTime: new Date().toLocaleString()
+                });
+              }
+            } else {
+              console.log("No such document!");
+            }
+          });
+
           scanner.stop();
           videoElement.remove();
           setScanning(false); 

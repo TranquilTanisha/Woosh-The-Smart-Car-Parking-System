@@ -30,3 +30,5 @@ yarn-error.log*
 /admin/Scripts
 /admin/share
 /admin/pyvenv.cfg
+
+*.pyc

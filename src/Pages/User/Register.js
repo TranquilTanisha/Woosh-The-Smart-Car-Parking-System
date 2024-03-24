@@ -83,6 +83,8 @@ export default function SignUpSide() {
           licenseNo3: '',
           parkingID: '',
           orgID: '',
+          entryTime: '',
+          exitTime: '',
           employeeID: '',
           isVerifiedEmployee: false,
         }
