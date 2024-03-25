@@ -10,6 +10,7 @@ import Navbar from '../../../Components/Navbar/Navbar';
 import chatbotIcon from '../../../Images/chat-bot.png';
 import Location from '../Location';
 import { Box } from '@mui/material';
+import SessionHistory from '../../../Components/SessionHistory';
 
 
 const Home = () => {
@@ -43,6 +44,7 @@ const Home = () => {
         <Location />
       </Box>
       </Box>
+      <SessionHistory />
       <div>
         <img
           src={chatbotIcon}
