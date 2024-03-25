@@ -217,6 +217,8 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-start;
+    margin-left: 40px;
+    margin-top: 40px;
   }
 
   .boxi{
@@ -261,14 +263,15 @@
 @media (max-width: 768px) {
   .square {
     max-width: 40vw;
+    margin-bottom: 20px;
   }
 
   .squares-container {
     display: flex;
     flex-direction: row;
     justify-content: space-around;
-    /* flex-wrap: wrap;
-    justify-content: flex-start; */
+    width: fit-content;
+    flex-wrap: wrap;
   }
 
   .link{
