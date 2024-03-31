@@ -66,6 +66,8 @@
     </style>
 </head>
 <body>
+    {% include 'navbar.html' %}
+    {% include 'flash.html' %}
     <h1>Upload Excel File</h1>
     <form action="/add-employees" method="post" enctype="multipart/form-data">
         <label for="excel_file">Select an Excel file:</label>
