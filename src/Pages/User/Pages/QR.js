@@ -100,20 +100,21 @@ const ReadQR = () => {
           getDoc(docRef).then(docSnap => {
             if (docSnap.exists()) {
                 const currentDate = new Date();
-                const formattedDate = currentDate.toISOString().split('T')[0];
+                const formattedDateTime = currentDate.toISOString().replace('T', ' ').split('.')[0];
                 if (docSnap.data().entryTime) {
                     updateDoc(docRef, {
-                        exitTime: formattedDate
+                        exitTime: formattedDateTime
                     });
                 } else {
                     updateDoc(docRef, {
-                        entryTime: formattedDate
+                        entryTime: formattedDateTime
                     });
                 }
             } else {
                 console.log("No such document!");
             }
         });
+        
 
           scannerRef.current.stop();
           videoElement.remove();
