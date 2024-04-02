@@ -1,11 +1,9 @@
 from app import app
-from flask import render_template, request, redirect, url_for, send_file
+from flask import render_template, request, redirect, url_for, send_file, flash
 from authenticate import authenticate_user
 from config import authenticator, db, session, auth
 
 import pyqrcode
-from fpdf import FPDF
-# pip install pyqrcode fpdf
 import openpyxl
 #pip install openpyxl
 
@@ -28,6 +26,7 @@ def generate_qr_code():
     qr.png(qr_png, scale=10)
     qr_png.seek(0)
     
+    flash("QR code downloaded successfully")
     return send_file(
         qr_png,
         as_attachment=True,
@@ -56,9 +55,10 @@ def add_employees():
         ref=db.collection('employees').document(session['localId'])
         ref.set(d)
         os.remove(excel_file.filename)
+        flash("Employees added successfully")
         return redirect(url_for('view_employees'))
     
-    return render_template('add-employees.html')
+    return render_template('add-employees.html', org_name=session['org_name'])
 
 @app.route('/add-employee', methods=['GET','POST'])
 @authenticate_user
@@ -73,7 +73,7 @@ def add_employee():
         else:
             ref.set(data)
         return redirect(url_for('view_employees'))
-    return render_template('add-employees.html', msg='Add Employee')
+    return render_template('add-employees.html', msg='Add Employee', org_name=session['org_name'])
 
 @app.route('/view-employees', methods=['GET','POST'])
 @authenticate_user
@@ -106,6 +106,7 @@ def delete_employee(k):
     data=doc.to_dict()
     data.pop(k)
     ref.set(data)
+    flash('Employee deleted successfully')
     return redirect(url_for('view_employees'))
 
 if __name__ == '__main__':

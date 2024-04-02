@@ -8,9 +8,9 @@
 <body>
     {% include 'navbar.html' %}
     {% include 'flash.html' %}
-
-    {% for k,v in data.items() %}
-    {{k}}: {{v}}<br>
-    {% endfor %}
+    <h2>Enter new mail address</h2>
+    <form action="/change-email" method="post">
+        <input type="email" name="email" placeholder="Enter new email address">
+        <input type="submit" value="Change">
 </body>
 </html>

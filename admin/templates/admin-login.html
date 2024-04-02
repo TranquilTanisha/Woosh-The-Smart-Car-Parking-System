@@ -75,6 +75,7 @@
     </style>
 </head>
 <body>
+    {% include 'flash.html' %}
     <h1 style="text-align: center;">Admin Login</h1>
 
     {% if next %}
@@ -84,7 +85,6 @@
     {% endif %}
         Email: <input type="text" name="email"><br>
         Password: <input type="password" name="password"><br>
-        <a href="/forgot/"{{email}}>Forgot Password</a><br>
         <input type="submit" value="Login">
 
     {% if next %}
@@ -92,7 +92,6 @@
     {% else %}
     <a href="/admin-register">Register</a>
     {% endif %}
-        
         
     </form>
 </body>

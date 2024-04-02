@@ -91,24 +91,24 @@
     </style>
 </head>
 <body>
+    {% include 'navbar.html' %}
+    {% include 'flash.html' %}
     <h1 style="text-align: center;">Organization Detail</h1>
 
     <div class="details">
         <!-- <h3>Organization Details</h3> -->
-        <p><strong>Name:</strong> {{org_name}}</p>
-        <p><strong>Organization ID:</strong> {{id}}</p>
-        <p><strong>Location:</strong> {{location}}</p>
-        <p><strong>Admin Email:</strong> {{email}}</p>
-        <p><strong>Fee Applied:</strong> {{fee}}</p>
-        <p><strong>Basis of Fee Application:</strong> {{basis}}</p>
-        <p><strong>Charges:</strong> {{charges}}</p>
-        <p><strong>Number of Floors:</strong> {{floors}}</p>
+        <p><strong>Organization Name:</strong> {{session['org_name']}}</p>
+        <p><strong>Organization ID:</strong> {{session['localId']}}</p>
+        <p><strong>Location:</strong> {{session['location']}}</p>
+        <p><strong>Admin Email:</strong> {{session['email']}}</p>
+        <p><strong>Fee Applied:</strong> {{session['fee']}}</p>
+        <p><strong>Basis of Fee Application:</strong> {{session['basis']}}</p>
+        <p><strong>Charges:</strong> {{session['charges']}}</p>
+        <p><strong>Number of Floors:</strong> {{session['floors']}}</p>
         <input type="button" value="Generate Organization's QR Code" onclick="window.location.href='/qr-code'">
-        <input type="button" value="Add Employees" onclick="window.location.href='/add-employees'">
-        <input type="button" value="View Employees" onclick="window.location.href='/view-employees'">
-        <input type="button" value="Change Email or Password" onclick="window.location.href='/change-email'">
+        <input type="button" value="Change Email" onclick="window.location.href='/change-email'">
+        <input type="button" value="Change Password" onclick="window.location.href='/change-password'">
         <input type="button" value="Edit Details" onclick="window.location.href='/admin-update'">
-        <input type="button" value="Logout" onclick="window.location.href='/admin-logout'">
         <input type="button" value="Delete Account" onclick="window.location.href='/admin-delete'">
     </div>
 

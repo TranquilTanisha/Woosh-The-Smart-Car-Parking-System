@@ -95,10 +95,12 @@
     </style>
 </head>
 <body>
+    {% include 'navbar.html' %}
+    {% include 'flash.html' %}
     <h1 style="text-align: center;">Update Organization Details</h1>
     <form action="/admin-update" method="POST">
-        Organization name: <input type="text" name="org_name" value="{{org_name}}"><br>
-        Location: <input type="text" name="location" value="{{location}}"><br>
+        Organization name: <input type="text" name="org_name" value="{{session['org_name']}}"><br>
+        Location: <input type="text" name="location" value="{{session['location']}}"><br>
         Fee applied:<br>
         <input id="yes" type="radio" name="fee" value="yes">
         <label for="yes">Yes</label>
@@ -113,9 +115,9 @@
         <input id="hourly" type="radio" name="basis" value="hourly">
         <label for="hourly">Hourly</label><br>
 
-        Charges: <input type="text" name="charges" value="{{charges}}"><br>
+        Charges: <input type="text" name="charges" value="{{session['charges']}}"><br>
 
-        Enter the no of floors:<input type="number" name="floors" value="{{floors}}"><br>
+        Enter the no of floors:<input type="number" name="floors" value="{{session['floors']}}"><br>
 
         <input type="submit" value="Update details">
     </form>

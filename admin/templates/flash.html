@@ -6,11 +6,12 @@
     <title>Document</title>
 </head>
 <body>
-    {% include 'navbar.html' %}
-    {% include 'flash.html' %}
-
-    {% for k,v in data.items() %}
-    {{k}}: {{v}}<br>
+    {% with messages = get_flashed_messages() %}
+  {% if messages %}
+    {% for message in messages %}
+      {{ message }}
     {% endfor %}
+  {% endif %}
+{% endwith %}
 </body>
 </html>
