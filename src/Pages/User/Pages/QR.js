@@ -101,13 +101,14 @@ const ReadQR = () => {
             if (docSnap.exists()) {
                 const currentDate = new Date();
                 const formattedDateTime = currentDate.toISOString().replace('T', ' ').split('.')[0];
-                if (docSnap.data().entryTime) {
+                if (docSnap.data().entryTime && !docSnap.data().exitTime) {
                     updateDoc(docRef, {
                         exitTime: formattedDateTime
                     });
                 } else {
                     updateDoc(docRef, {
-                        entryTime: formattedDateTime
+                        entryTime: formattedDateTime,
+                        exitTime: ""
                     });
                 }
             } else {
