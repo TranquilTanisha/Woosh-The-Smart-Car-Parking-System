@@ -19,7 +19,7 @@ function Profile() {
           email: localProfile.email,
           photoURL: localProfile.photoURL,
           employeeID: localProfile.employeeID,
-          parkingID: localProfile.parkingID,
+          orgID: localProfile.orgID,
         };
         setProfile(userProfile);
       } catch (error) {
@@ -46,7 +46,7 @@ function Profile() {
               <Typography variant="h6" sx={{ mb: 1 }}>Name: {profile.displayName}</Typography>
               <Typography variant="body1">Email: {profile.email}</Typography>
               <Typography variant="body1">Employee ID: {profile.employeeID}</Typography>
-              <Typography variant="body1">Workplace Parking ID: {profile.parkingID}</Typography>
+              <Typography variant="body1">Organization ID: {profile.orgID}</Typography>
               <Button variant="outlined" onClick={handleEditProfile} sx={{ mt: 2 }}>Edit Profile</Button>
             </>
           ) : (

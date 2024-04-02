@@ -379,13 +379,13 @@ svg path {
   }
 }
 
-label {
+.label_form {
   display: block;
   margin-top: 10px;
   font-size: 16px;
 }
 
-input[type="text"] {
+.input_text {
   width: calc(100% - 22px);
   padding: 10px;
   margin: 10px 0;
@@ -395,7 +395,7 @@ input[type="text"] {
   font-size: 16px;
 }
 
-button[type="submit"] {
+.button_submit {
   width: 100%;
   background-color: #b81c21;
   color: white;
@@ -408,7 +408,7 @@ button[type="submit"] {
   transition: background-color 0.3s ease;
 }
 
-button[type="submit"]:hover {
+.button_submit:hover {
   background-color: #da4045;
 }
 
@@ -430,4 +430,3 @@ svg {
     padding: 20px;
   }
 }
-

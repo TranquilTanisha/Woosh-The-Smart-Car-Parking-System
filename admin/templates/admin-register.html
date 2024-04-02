@@ -115,6 +115,32 @@
             text-decoration: underline;
         }
 
+        .location-input-container {
+            position: relative;
+            width: calc(100% - 20px);
+            margin: 10px 0;
+        }
+
+        .location-input {
+            width: calc(100% - 32px);
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        .location-button {
+            position: absolute;
+            top: 36%;
+            right: 1%;
+            width: 30px;
+            height: 51%;
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+            cursor: pointer;
+        }
+
         /* Scroll to top button */
         .scroll-to-top {
             position: fixed;
@@ -138,13 +164,18 @@
     </style>
 </head>
 <body>
+    
     <h1>Admin Registration</h1>
     <form action="/admin-register" method="POST">
         <label for="org_name">Organization name:</label>
         <input type="text" id="org_name" name="org_name">
 
-        <label for="location">Location:</label>
-        <input type="text" id="location" name="location">
+        
+        <div class="location-input-container">
+            <label for="location">Location:</label>
+            <input type="text" id="location" name="location" class="location-input">
+            <button type="button" id="getLocationButton" class="location-button">📍</button>
+        </div>
 
         <label for="fee">Fee applied:</label>
         <div class="radio-group">
@@ -214,6 +245,26 @@
                 document.querySelector('.scroll-to-top').style.display = "none";
             }
         }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            document.getElementById('getLocationButton').addEventListener('click', function () {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(function (position) {
+                        const latitude = position.coords.latitude;
+                        const longitude = position.coords.longitude;
+
+                        document.getElementById('location').value = latitude + ', ' + longitude;
+                    }, function (error) {
+                        console.error(error);
+                        alert('Failed to fetch location. Please try again.');
+                    });
+                } else {
+
+                    alert('Geolocation is not supported by this browser.');
+                }
+            });
+        });
+    </script>
     </script>
 </body>
 </html>
