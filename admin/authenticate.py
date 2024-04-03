@@ -52,6 +52,13 @@ def login():
                 ref=db.collection('organization').document(user['localId'])
                 doc=ref.get()
                 if (doc.exists):
+                    session['org_name']=doc.to_dict()['org_name']
+                    session['location']=doc.to_dict()['location']
+                    session['fee']=doc.to_dict()['fee']
+                    session['basis']=doc.to_dict()['basis']
+                    session['charges']=doc.to_dict()['charges']
+                    session['floors']=doc.to_dict()['floors']
+                    
                     pass
                 else:
                     ref.set({'id':user['localId'], 'location':session['location'],'email':email, 'org_name':session['org_name'], 
@@ -156,9 +163,10 @@ def update():
         session['floors']=floors
         
         ref=db.collection('organization').document(session['localId'])
-        ref.set({'id':session['localId'], 'location':session['location'],'email':session['email'], 'org_name':session['org_name'], 
-                                'fee': session['fee'], 'basis': session['basis'], 'charges': session['charges'], 
-                                'floors': session['floors']})
+        # ref.set({'id':session['localId'], 'location':session['location'],'email':session['email'], 'org_name':session['org_name'], 
+        #                         'fee': session['fee'], 'basis': session['basis'], 'charges': session['charges'], 
+        #                         'floors': session['floors']})
+        ref.update({'org_name': org_name, 'location': location, 'fee': fee, 'basis': basis, 'charges': charges, 'floors': floors})
         flash("Details updated successfully")
         return redirect(url_for('profile'))
     # return render_template('admin-update.html', id=session['localId'], org_name=session['org_name'], location=session['location'], 
