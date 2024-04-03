@@ -11,6 +11,21 @@ import pandas
 import os
 from io import BytesIO
 
+months={
+    '01': 'January',
+    '02': 'February',
+    '03': 'March',
+    '04': 'April',
+    '05': 'May',
+    '06': 'June',
+    '07': 'July',
+    '08': 'August',
+    '09': 'September',
+    '10': 'October',
+    '11': 'November',
+    '12': 'December',
+}
+
 @app.route('/admin')
 @authenticate_user
 def home():
@@ -87,7 +102,7 @@ def view_employees():
 
 #fetch all the data of a particular employee from users
 #takes the key as it is, eg:name. Will have to modify at the user's end only while saving data
-@app.route('/view-employee/<k>', methods=['GET','POST'])
+@app.route('/view-user/<k>', methods=['GET','POST'])
 @authenticate_user
 def view_employee(k):
     ref=db.collection('users').document(k)
@@ -95,7 +110,7 @@ def view_employee(k):
     if doc.exists:
         data=doc.to_dict()
         print(data)
-        return render_template('view-employee.html', data=data)
+        return render_template('view-employee.html', data=data, id=k, oeg_name=session['org_name'])
     return 'No data available'
 
 @app.route('/remove-employee/<k>', methods=['GET','POST'])
@@ -108,6 +123,47 @@ def delete_employee(k):
     ref.set(data)
     flash('Employee deleted successfully')
     return redirect(url_for('view_employees'))
+
+@app.route('/delete-employees', methods=['GET','POST'])
+@authenticate_user
+def delete_employees():
+    ref=db.collection('employees').document(session['localId'])
+    ref.delete()
+    flash('All employees deleted successfully')
+    return redirect(url_for('add_employees'))
+
+@app.route('/view-logs', methods=['GET','POST'])
+@authenticate_user
+def view_logs():
+    ref=db.collection('organization').document(session['localId'])
+    dates=ref.collections()
+    month={}
+    data={}
+
+    for date in dates:
+        key=date.id[:date.id.rfind('-')] #2024-04 yr and month
+        if key not in month:
+            month[key]=[date.id.split('-')[2]]
+        else:
+            month[key]+=[date.id.split('-')[2]] #get the date of the month
+        
+        #store data for each and every date in a weird format
+        r=ref.collection(date.id)
+        docs=r.stream()
+        data[date.id]=[]
+        for doc in docs:
+            if len(list(doc.to_dict().keys())) !=0:
+                data[date.id].append(doc.to_dict())
+    # print(data)
+    # print()
+    # # print(data.keys())
+    for k,v in data.items():
+        print(k)
+        print(v)
+    #     sorted_dict = dict(sorted(my_dict.items(), key=lambda item: item[1][0]))
+    print(data)
+    month = dict(sorted(month.items(), key=lambda item: item[0], reverse=True)) #sorting month and yr in descending order
+    return render_template('view_logs.html', month=month, months=months, data=data, org_name=session['org_name'])
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    {% include 'navbar.html' %}
+    {% include 'flash.html' %}
+    <h2>User logs</h2>
+
+    {% for k,values in month.items() %}
+        <h3>{{ k.split('-')[0]+', '+ months[k.split('-')[1]] }}</h3>
+        {% for v in values %}
+        Date: {{v}} 
+
+        <table>
+            <thead>
+              <tr>
+                <th>User id</th>
+                <th>Type</th>
+                <th>Entry Time</th>
+                <th>Exit Time</th>
+              </tr>
+            </thead>
+        
+            <tbody>
+              {% for d in data[k+'-'+v] %}
+                <tr>
+                  <td>{{d['id']}}</td>
+                  <td>{{d['type']}}</td>
+                  <td>{{d['entry']}}</td>
+                  <td>{{d['exit']}}</td>
+                  <td><a href="/view-user/{{d['id']}}">View user details</td>
+                </tr>
+              {% endfor %}
+              <br>
+            </tbody>
+          </table>
+        <br>
+        {% endfor %}
+        <br>
+    {% endfor %}
+
+</body>
+</html>

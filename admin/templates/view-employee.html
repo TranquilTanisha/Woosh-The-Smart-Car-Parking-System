@@ -8,7 +8,8 @@
 <body>
     {% include 'navbar.html' %}
     {% include 'flash.html' %}
-
+    <br>
+    <h3>User: {{id}}</h3>
     {% for k,v in data.items() %}
     {{k}}: {{v}}<br>
     {% endfor %}
