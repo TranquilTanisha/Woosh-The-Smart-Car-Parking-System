@@ -40,7 +40,6 @@ const defaultTheme = createTheme();
 export default function SignUpSide() {
   const navigate = useNavigate();
 
-  //on submit redirect to login page
   const handleSubmit = async (event) => { 
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -48,7 +47,6 @@ export default function SignUpSide() {
     const password = data.get('password');
     const confirmPassword = data.get('confirm_password');
 
-    // Frontend validations
     if (!validateEmail(email)) {
       alert('Invalid email address');
       return;
@@ -59,7 +57,6 @@ export default function SignUpSide() {
       return;
     }
   
-    // Weak password validation
     if (password.length < 6) {
       alert('Password should be at least 6 characters long');
       return;
@@ -81,7 +78,7 @@ export default function SignUpSide() {
           licenseNo1: '',
           licenseNo2: '',
           licenseNo3: '',
-          parkingID: '',
+          // parkingID: '',
           orgID: '',
           entryTime: '',
           exitTime: '',
@@ -146,6 +143,15 @@ export default function SignUpSide() {
               Sign Up
             </Typography>
             <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
+            <TextField
+                margin="normal"
+                required
+                fullWidth
+                name="name"
+                label="name"
+                type="name"
+                id="name"
+              />
               <TextField
                 margin="normal"
                 required

@@ -12,7 +12,7 @@ import Paper from '@mui/material/Paper';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { getAuth, signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
 import { doc, getDoc, setDoc } from "firebase/firestore";
-import GoogleButton from 'react-google-button';
+// import GoogleButton from 'react-google-button';
 import { useNavigate } from 'react-router-dom';
 import '../../App.css';
 import { auth, db, provider } from '../../Firebase.js';
@@ -40,7 +40,7 @@ export default function SignInSide() {
   const SignInWithGoogle = async () => {
     console.log('Sign in with google');
     try {
-      const result = await signInWithPopup(auth, provider);
+  const result = await signInWithPopup(auth, provider);
       console.log(result);
       localStorage.setItem('token', result.user.accessToken);
       const user = auth.currentUser;
@@ -60,7 +60,7 @@ export default function SignInSide() {
         licenseNo1: '',
         licenseNo2: '',
         licenseNo3: '',
-        parkingID: '',
+        // parkingID: '',
         orgID: '',
         entryTime: '',
         exitTime: '',
@@ -233,7 +233,7 @@ export default function SignInSide() {
                 }}>
                 OR
               </Typography>
-              <GoogleButton onClick={SignInWithGoogle} />
+              {/* <GoogleButton onClick={SignInWithGoogle} /> */}
               <Copyright sx={{ mt: 5 }} />
             </Box>
           </Box>

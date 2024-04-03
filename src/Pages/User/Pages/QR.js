@@ -81,21 +81,41 @@ const ReadQR = () => {
           const uid = user.uid;
           const docRef = doc(db, "users", uid);
 
+          // getDoc(docRef).then(docSnap => {
+          //   if (docSnap.exists()) {
+          //     if (docSnap.data().entryTime) {
+          //       updateDoc(docRef, {
+          //         exitTime: new Date().toLocaleString()
+          //       });
+          //     } else {
+          //       updateDoc(docRef, {
+          //         entryTime: new Date().toLocaleString()
+          //       });
+          //     }
+          //   } else {
+          //     console.log("No such document!");
+          //   }
+          // });
+
           getDoc(docRef).then(docSnap => {
             if (docSnap.exists()) {
-              if (docSnap.data().entryTime) {
-                updateDoc(docRef, {
-                  exitTime: new Date().toLocaleString()
-                });
-              } else {
-                updateDoc(docRef, {
-                  entryTime: new Date().toLocaleString()
-                });
-              }
+                const currentDate = new Date();
+                const formattedDateTime = currentDate.toISOString().replace('T', ' ').split('.')[0];
+                if (docSnap.data().entryTime && !docSnap.data().exitTime) {
+                    updateDoc(docRef, {
+                        exitTime: formattedDateTime
+                    });
+                } else {
+                    updateDoc(docRef, {
+                        entryTime: formattedDateTime,
+                        exitTime: ""
+                    });
+                }
             } else {
-              console.log("No such document!");
+                console.log("No such document!");
             }
-          });
+        });
+        
 
           scannerRef.current.stop();
           videoElement.remove();
