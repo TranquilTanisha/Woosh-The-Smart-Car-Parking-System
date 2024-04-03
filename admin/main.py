@@ -10,6 +10,9 @@ import openpyxl
 import pandas
 import os
 from io import BytesIO
+from datetime import datetime
+import pdfkit
+from xhtml2pdf import pisa
 
 months={
     '01': 'January',
@@ -139,6 +142,8 @@ def view_logs():
     dates=ref.collections()
     month={}
     data={}
+    length={}
+    emp={}
 
     for date in dates:
         key=date.id[:date.id.rfind('-')] #2024-04 yr and month
@@ -151,19 +156,58 @@ def view_logs():
         r=ref.collection(date.id)
         docs=r.stream()
         data[date.id]=[]
+        length[date.id]=len(r.get())
+        emp[date.id]=len(r.where("type", "==", 'employee').get())
         for doc in docs:
             if len(list(doc.to_dict().keys())) !=0:
                 data[date.id].append(doc.to_dict())
-    # print(data)
-    # print()
-    # # print(data.keys())
-    for k,v in data.items():
-        print(k)
-        print(v)
+
+    # for k,v in data.items():
+    #     print(k)
+    #     print(v)
     #     sorted_dict = dict(sorted(my_dict.items(), key=lambda item: item[1][0]))
-    print(data)
+    # print(data)
+    # print(length)
+    # print(emp)
     month = dict(sorted(month.items(), key=lambda item: item[0], reverse=True)) #sorting month and yr in descending order
-    return render_template('view_logs.html', month=month, months=months, data=data, org_name=session['org_name'])
+    return render_template('view_logs.html', month=month, months=months, data=data, org_name=session['org_name'], total=length, emp=emp)
+
+@app.route('/download-logs', methods=['GET','POST'])
+@authenticate_user
+def download_logs():
+    file_name=session['org_name']+'-logs'
+    ref=db.collection('organization').document(session['localId'])
+    dates=ref.collections()
+    data={}
+    for date in dates:
+        r=ref.collection(date.id)
+        docs=r.stream()
+        data[date.id]=[]
+        for doc in docs:
+            if len(list(doc.to_dict().keys())) !=0:
+                data[date.id].append(doc.to_dict())
+    print(data)
+    df=pandas.DataFrame(data)
+    df.to_excel('logs.xlsx')
+    
+    return send_file('logs.xlsx', as_attachment=True)
+
+@app.route('/view-status', methods=['GET','POST'])
+@authenticate_user
+def view_status():
+    date=datetime.now().strftime('%Y-%m-%d')
+    ref=db.collection('organization').document(session['localId']).collection(date)
+    if ref.get() is None:
+        return 'No data available'
+    docs=ref.where("exit","==","").stream()
+    total=len(ref.where("exit","==","").get())
+    emp=len(ref.where("type","==","employee").where("exit","==","").get())
+    data=[]
+    for doc in docs:
+        data.append(doc.to_dict())
+    print(total)
+    print(emp)
+    return render_template('view_status.html', data=data, total=total, emp=emp, org_name=session['org_name'])
 
 if __name__ == '__main__':
     app.run(debug=True)
