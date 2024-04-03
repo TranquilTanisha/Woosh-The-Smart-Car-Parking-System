@@ -247,23 +247,23 @@
         }
 
         document.addEventListener('DOMContentLoaded', function () {
-            document.getElementById('getLocationButton').addEventListener('click', function () {
-                if (navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition(function (position) {
-                        const latitude = position.coords.latitude;
-                        const longitude = position.coords.longitude;
-
-                        document.getElementById('location').value = latitude + ', ' + longitude;
-                    }, function (error) {
-                        console.error(error);
-                        alert('Failed to fetch location. Please try again.');
-                    });
-                } else {
-
-                    alert('Geolocation is not supported by this browser.');
-                }
+    document.getElementById('getLocationButton').addEventListener('click', function () {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function (position) {
+                const latitude = position.coords.latitude;
+                const longitude = position.coords.longitude;
+                const locationInput = document.getElementById('location');
+                locationInput.value = `${latitude},${longitude}`;
+            }, function (error) {
+                console.error(error);
+                alert('Failed to fetch location. Please try again.');
             });
-        });
+        } else {
+            alert('Geolocation is not supported by this browser.');
+        }
+    });
+});
+
     </script>
     </script>
 </body>
