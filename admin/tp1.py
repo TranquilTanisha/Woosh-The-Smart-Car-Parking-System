@@ -23,6 +23,5 @@ from config import authenticator, db, session, auth
 # # print(subcollection_names)
 
 ref=db.collection('organization').document('8WP1uuHtHnXJ5JcmV8tNbmip9C83').collection('2024-04-03')
-docs=ref.stream()
-for doc in docs:
-    print(doc.to_dict())
+docs=ref.get()
+print(len(docs))

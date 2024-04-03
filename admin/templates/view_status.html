@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    {% include 'navbar.html' %}
+    {% include 'flash.html' %}
+    <h2>Current status of users in the premises</h2>
+    <br>
+    <table>
+        <thead>
+            <tr>
+              <th>User id</th>
+              <th>Type</th>
+              <th>Entry Time</th>
+            </tr>
+          </thead>
+      
+          <tbody>
+            {% for d in data %}
+              <tr>
+                <td>{{d['id']}}</td>
+                <td>{{d['type']}}</td>
+                <td>{{d['entry']}}</td>
+                <td><a href="/view-user/{{d['id']}}">View details</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+    </table>
+    <br>
+    Employees: {{emp}}<br>
+    Non-Employees: {{total-emp}}<br>
+    Total users: {{total}}<br>
+</body>
+</html>

@@ -1,6 +1,6 @@
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import QrScanner from 'qr-scanner';
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../../../App.css';
 import Bottombar from '../../../Components/Navbar/Bottombar';
@@ -81,29 +81,22 @@ const ReadQR = () => {
           const uid = user.uid;
           const docRef = doc(db, "users", uid);
 
-          // getDoc(docRef).then(docSnap => {
-          //   if (docSnap.exists()) {
-          //     if (docSnap.data().entryTime) {
-          //       updateDoc(docRef, {
-          //         exitTime: new Date().toLocaleString()
-          //       });
-          //     } else {
-          //       updateDoc(docRef, {
-          //         entryTime: new Date().toLocaleString()
-          //       });
-          //     }
-          //   } else {
-          //     console.log("No such document!");
-          //   }
-          // });
-
           getDoc(docRef).then(docSnap => {
             if (docSnap.exists()) {
+              console.log(docSnap.data());
                 const currentDate = new Date();
-                const formattedDateTime = currentDate.toISOString().replace('T', ' ').split('.')[0];
+                const year = currentDate.getFullYear();
+                const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+                const day = String(currentDate.getDate()).padStart(2, '0');
+                const hours = String(currentDate.getHours()).padStart(2, '0');
+                const minutes = String(currentDate.getMinutes()).padStart(2, '0');
+                const seconds = String(currentDate.getSeconds()).padStart(2, '0');
+                const formattedDateTime = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+
                 if (docSnap.data().entryTime && !docSnap.data().exitTime) {
                     updateDoc(docRef, {
                         exitTime: formattedDateTime
+
                     });
                 } else {
                     updateDoc(docRef, {
@@ -116,7 +109,6 @@ const ReadQR = () => {
             }
         });
         
-
           scannerRef.current.stop();
           videoElement.remove();
           setScanning(false);

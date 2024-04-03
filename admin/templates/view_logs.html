@@ -32,13 +32,15 @@
                   <td>{{d['type']}}</td>
                   <td>{{d['entry']}}</td>
                   <td>{{d['exit']}}</td>
-                  <td><a href="/view-user/{{d['id']}}">View user details</td>
+                  <td><a href="/view-user/{{d['id']}}">View details</td>
                 </tr>
               {% endfor %}
-              <br>
             </tbody>
           </table>
         <br>
+          Employees: {{emp[k+'-'+v]}}<br>
+          Non-Employees: {{total[k+'-'+v]-emp[k+'-'+v]}}<br>
+          Total users: {{total[k+'-'+v]}}<br>
         {% endfor %}
         <br>
     {% endfor %}
