@@ -1,20 +1,59 @@
 import React, { useState, useEffect } from 'react';
 import Bottombar from '../../Components/Navbar/Bottombar';
-// import Navbar from '../../Components/Navbar/Navbar';
-import axios from 'axios';
-import { MapContainer, TileLayer, Marker, CircleMarker } from 'react-leaflet';
+import { db } from '../../Firebase';
+import { collection, getDocs, onSnapshot } from 'firebase/firestore';
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import Button from '@mui/material/Button';
 import L from 'leaflet';
+import icon1 from '../../Images/parking_icon.png';
 
 const Location = () => {
     const [parkinglotLocations, setParkinglotLocations] = useState([]); 
     const [initialPosition, setInitialPosition] = useState(null);
     const [setMapLoaded] = useState(false);
     const [fetchError, setFetchError] = useState(null);
-    const [visibleLocations, setVisibleLocations] = useState([]);
+    const [selectedOrg, setSelectedOrg] = useState(null);
+    const [nearbyParkingSpots, setNearbyParkingSpots] = useState([]);
+    const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const organizationsRef = collection(db, 'organization');
+                const snapshot = await getDocs(organizationsRef);
+                const locations = [];
+
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const [latitude, longitude] = data.location.split(',');
+                    if (!isNaN(latitude) && !isNaN(longitude)) {
+                        locations.push({ id: doc.id, latitude, longitude, name: data.org_name });
+                    }
+                });
+
+                setParkinglotLocations(locations);
+                setFetchError(null);
+                console.log('Parking lot locations:', locations);
+
+                // Listen for real-time updates
+                onSnapshot(organizationsRef, (snapshot) => {
+                    const updatedLocations = [];
+                    snapshot.forEach(doc => {
+                        const data = doc.data();
+                        const [latitude, longitude] = data.location.split(',');
+                        if (!isNaN(latitude) && !isNaN(longitude)) {
+                            updatedLocations.push({ id: doc.id, latitude, longitude, name: data.org_name });
+                        }
+                    });
+                    setParkinglotLocations(updatedLocations);
+                });
+
+            } catch (error) {
+                console.error('Error fetching organizations:', error);
+                setFetchError('Error fetching data. Please try again later.');
+            }
+        };
+
         fetchData();
         getGeoLocation();
     }, []);
@@ -23,46 +62,7 @@ const Location = () => {
         if (initialPosition && parkinglotLocations.length > 0) {
             filterVisibleLocations();
         }
-    // eslint-disable-next-line
     }, [initialPosition, parkinglotLocations]);
-
-    const fetchData = async () => {
-        try {
-            const response = await axios.get(
-                'https://docs.google.com/spreadsheets/d/1ZlwPVJ5R5UJ09vP8XaizBG0nyqXEt4L_ww2gdvyVGh8/gviz/tq?tqx=out:json&sheet=Sheet1'
-            );
-
-            const data = JSON.parse(response.data.substr(47).slice(0, -2));
-
-            const locations = data.table.rows.map((row) => {
-                const locationUrl = row.c[1]?.v;
-                const name = row.c[2]?.v;
-
-                if (locationUrl) {
-                    const matches = locationUrl.match(/[-+]?([0-9]*\.[0-9]+|[0-9]+)/g);
-
-                    if (matches && matches.length >= 2) {
-                        const latitude = parseFloat(matches[0]);
-                        const longitude = parseFloat(matches[1]);
-                        const range = parseFloat(matches[2]);
-
-                        // Check if latitude and longitude are valid numbers
-                        if (!isNaN(latitude) && !isNaN(longitude)) {
-                            return { latitude, longitude, range, name };
-                        }
-                    }
-                }
-
-                return null;
-            }).filter((location) => location !== null);
-
-            setParkinglotLocations(locations);
-            setFetchError(null);
-        } catch (error) {
-            console.error('Error fetching data:', error);
-            setFetchError('Error fetching data. Please try again later.');
-        }
-    };
 
     const getGeoLocation = () => {
         if (navigator.geolocation) {
@@ -87,18 +87,6 @@ const Location = () => {
         setMapLoaded(true);
     };
 
-    const openGoogleForm = () => {
-        if (initialPosition) {
-            const googleFormUrl = 'https://docs.google.com/forms/d/e/1FAIpQLSf8UgZlEYexiycrfeaQUhIOBf_QYosdXdaJVwLLpcibCDmK0g/viewform?usp=sf_link';
-            const latitude = initialPosition[0];
-            const longitude = initialPosition[1];
-            const urlWithLocation = `${googleFormUrl}&entry.260777333=${encodeURIComponent(`https://www.google.com/maps/place/${latitude},${longitude}`)}`;
-            window.open(urlWithLocation, '_blank');
-        } else {
-            console.log('Location is not available');
-        }
-    };
-
     const blueIcon = new L.Icon({
         iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
         iconSize: [25, 41],
@@ -107,38 +95,68 @@ const Location = () => {
         shadowSize: [41, 41]
     });
 
+    const customIcon = new L.Icon({
+        iconUrl: icon1,
+        iconSize: [32, 32],
+        iconAnchor: [16, 32],
+        popupAnchor: [0, -32]
+    });
+
     const filterVisibleLocations = () => {
-        const visible = parkinglotLocations.filter(location => {
+        if (!initialPosition) return;
+
+        const nearbySpots = [];
+        parkinglotLocations.forEach(location => {
             const distance = getDistance(initialPosition[0], initialPosition[1], location.latitude, location.longitude);
-            return distance <= 5000; // You can change the threshold (in meters) here
+            if (distance <= 5000) { // 5km radius
+                nearbySpots.push({ id: location.id, name: location.name, distance: distance }); // Distance in meters
+            }
         });
-        setVisibleLocations(visible);
+        setNearbyParkingSpots(nearbySpots);
+
+        const nearSpot = nearbySpots.find(spot => spot.distance <= 1000); // Check if parking spot is within 1 km
+        if (nearSpot) {
+            // Display notification with vibrate effect
+            if ('vibrate' in navigator) {
+                navigator.vibrate([200, 100, 200]);
+            }
+            alert(`Parking spot available nearby: ${nearSpot.name}. Distance: ${(nearSpot.distance/1000).toFixed(2)} km`);
+        }
     };
 
-    //Haversine formula
+    const handleMarkerClick = (location) => {
+        setSelectedOrg(location.name);
+    };
+
     const getDistance = (lat1, lon1, lat2, lon2) => {
-        const R = 6371;
+        const R = 6371; // Radius of the earth in km
         const dLat = deg2rad(lat2 - lat1);
-        const dLon = deg2rad(lon2 - lon1);
-        const a =
-            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-            Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
-            Math.sin(dLon / 2) * Math.sin(dLon / 2);
-        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        const d = R * c;
-        return d * 1000;
+        const dLon = deg2rad(lon2 - lon1); 
+        const a = 
+            Math.sin(dLat/2) * Math.sin(dLat/2) +
+            Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
+            Math.sin(dLon/2) * Math.sin(dLon/2)
+            ; 
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+        const d = R * c; // Distance in km
+        return d * 1000; // Convert to meters
     };
 
     const deg2rad = (deg) => {
-        return deg * (Math.PI / 180);
+        return deg * (Math.PI/180);
     };
+
+    const handleSearch = (e) => {
+        setSearchTerm(e.target.value);
+    };
+
+    const filteredLocations = parkinglotLocations.filter(location => {
+        return location.name.toLowerCase().includes(searchTerm.toLowerCase());
+    });
 
     return (
         <>
-         {/* <div className="navbar">
-             <Navbar />
-         </div> */}
-        <div style={{ height: '100%', width: '100%' }}>
+            <div style={{ height: '100%', width: '100%' }}>
                 {fetchError && <p>{fetchError}</p>}
                 {initialPosition && (
                     <MapContainer
@@ -148,32 +166,36 @@ const Location = () => {
                         whenCreated={handleMapLoad}
                     >
                         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                        <Marker position={initialPosition} icon={blueIcon} />
-                        {visibleLocations.map((location, index) => (
-                            <CircleMarker
+                        {initialPosition && (
+                            <Marker position={initialPosition} icon={blueIcon}>
+                                <Popup>You are here</Popup>
+                            </Marker>
+                        )}
+                        {filteredLocations.map((location, index) => (
+                            <Marker
                                 key={index}
-                                center={[location.latitude, location.longitude]}
-                                pathOptions={{ color: 'red' }}
-                                radius={location.range || 20}
+                                position={[location.latitude, location.longitude]}
+                                title={location.name}
+                                icon={customIcon}
+                                eventHandlers={{
+                                    click: () => {
+                                        handleMarkerClick(location);
+                                    }
+                                }}
                             >
-                            </CircleMarker>
+                                <Popup>{location.name}</Popup>
+                            </Marker>
                         ))}
                     </MapContainer>
                 )}
-                <div style={{ display: 'flex', justifyContent: 'center' }}>
-                <Button
-                    variant="contained"
-                    sx={{ backgroundColor: '#b81c21' }}
-                    onClick={openGoogleForm}
-                    style={{ marginTop: '10px' }}>
-                    Edit Location
-                (only for admins)
-                </Button>
-                </div>
+            </div>
+            <div className="search-bar">
+                <input type="text" placeholder="Search by organization name" onChange={handleSearch} />
             </div>
             <div className="bottombar">
-        <Bottombar/>
-      </div></>
+                <Bottombar/>
+            </div>
+        </>
     );
 };
 
