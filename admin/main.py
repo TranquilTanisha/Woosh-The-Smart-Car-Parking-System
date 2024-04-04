@@ -2,6 +2,7 @@ from app import app
 from flask import render_template, request, redirect, url_for, send_file, flash
 from authenticate import authenticate_user
 from config import authenticator, db, session, auth
+from google.cloud import firestore
 
 import pyqrcode
 import openpyxl
@@ -103,29 +104,35 @@ def view_employees():
         return render_template('view-employees.html', data=data, l=len(data))
     return 'No data available'
 
-#fetch all the data of a particular employee from users
-#takes the key as it is, eg:name. Will have to modify at the user's end only while saving data
-@app.route('/view-user/<k>', methods=['GET','POST'])
+#k==emp id
+@app.route('/view-employee/<k>', methods=['GET','POST'])
 @authenticate_user
 def view_employee(k):
+    ref=db.collection('Alert').document(session['localId'])
+    doc=ref.get()   
+    if doc.exists:
+        data=doc.to_dict()
+        print(data)
+        user_id=data[k]
+        print(user_id)
+        ref=db.collection('users').document(user_id)
+        doc=ref.get()
+        if doc.exists:
+            data=doc.to_dict()
+            return render_template('view-employee.html', data=data, id=user_id, oeg_name=session['org_name'])
+    return 'No data available'
+
+#k==user id
+@app.route('/view-user/<k>', methods=['GET','POST'])
+@authenticate_user
+def view_user(k):
     ref=db.collection('users').document(k)
     doc=ref.get()
     if doc.exists:
         data=doc.to_dict()
         print(data)
-        return render_template('view-employee.html', data=data, id=k, oeg_name=session['org_name'])
+        return render_template('view-employee.html', data=data, id=k, org_name=session['org_name'])
     return 'No data available'
-
-@app.route('/remove-employee/<k>', methods=['GET','POST'])
-@authenticate_user
-def delete_employee(k):
-    ref=db.collection('employees').document(session['localId'])
-    doc=ref.get()
-    data=doc.to_dict()
-    data.pop(k)
-    ref.set(data)
-    flash('Employee deleted successfully')
-    return redirect(url_for('view_employees'))
 
 @app.route('/delete-employees', methods=['GET','POST'])
 @authenticate_user
@@ -208,6 +215,34 @@ def view_status():
     print(total)
     print(emp)
     return render_template('view_status.html', data=data, total=total, emp=emp, org_name=session['org_name'])
+
+@app.route('/alerts', methods=['GET','POST'])
+@authenticate_user
+def alerts():
+    ref=db.collection('alerts').document(session['localId'])
+    doc=ref.get()
+    data=doc.to_dict()
+    print(data)
+    if len(data)!=0:
+        data = sorted(data.items(), key=lambda x: x[1], reverse=True)
+        data = {k: v for k, v in data}
+        
+        temp=[]
+        for k,v in data.items():
+            today=datetime.today().strftime('%Y-%m-%d')
+            if today not in v:
+                temp.append(k)
+        for t in temp:
+            del data[t]
+        ref.set(data)   
+        if len(data)>10:
+            data=list(data.items())
+            data=data[:10]
+            data=dict(data)
+            ref.set(data)
+        print(data)
+        return render_template('alerts.html', data=data, org_name=session['org_name'])
+    return 'No alerts'
 
 if __name__ == '__main__':
     app.run(debug=True)

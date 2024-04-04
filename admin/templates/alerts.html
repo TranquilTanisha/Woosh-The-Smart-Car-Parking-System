@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    {% include 'navbar.html' %}
+    {% include 'flash.html' %}
+    <h2>Alerts</h2>
+    <br>
+    <ul>
+        {% for k,v in data.items() %}
+        <li><strong>User <a href="/view-user/{{k}}">{{k}}</a></strong> was attempting to enter the premises at <strong>{{v}}</strong></li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

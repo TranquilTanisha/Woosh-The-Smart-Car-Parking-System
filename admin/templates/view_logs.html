@@ -10,6 +10,7 @@
     {% include 'flash.html' %}
     <h2>User logs</h2>
 
+    --add a search bar--
     {% for k,values in month.items() %}
         <h3>{{ k.split('-')[0]+', '+ months[k.split('-')[1]] }}</h3>
         {% for v in values %}

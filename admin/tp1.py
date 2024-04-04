@@ -1,4 +1,5 @@
 from config import authenticator, db, session, auth
+from datetime import datetime
 
 # ref=db.collection('organization').document('1')
 # doc=ref.get()
@@ -22,6 +23,10 @@ from config import authenticator, db, session, auth
 # # subcollection_names.sort(reverse=True)
 # # print(subcollection_names)
 
-ref=db.collection('organization').document('8WP1uuHtHnXJ5JcmV8tNbmip9C83').collection('2024-04-03')
-docs=ref.get()
-print(len(docs))
+# ref=db.collection('organization').document('8WP1uuHtHnXJ5JcmV8tNbmip9C83').collection('2024-04-03')
+# docs=ref.get()
+# print(len(docs))
+
+ref=db.collection('alerts').document('8WP1uuHtHnXJ5JcmV8tNbmip9C83')
+ref.update({'45N8MO2wD6UbCxlmRYxRaeZqEtv2': datetime.now().strftime('%Y-%m-%d %H:%M:%S')})
+# print(datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
