@@ -8,14 +8,11 @@ import Navbar from '../../../Components/Navbar/Navbar';
 import Bottombar from '../../../Components/Navbar/Bottombar';
 import { getFirestore, collection, getDocs } from 'firebase/firestore';
 
-// Placeholder image URL
 const placeholderImage = 'https://via.placeholder.com/150';
 
 function Navigation() {
-  // State to store organization data
   const [organizations, setOrganizations] = useState([]);
 
-  // Function to fetch data from Firestore
   const fetchOrganizations = async () => {
     const db = getFirestore();
     const organizationsCollection = collection(db, 'organization');
@@ -25,7 +22,7 @@ function Navigation() {
   };
 
   useEffect(() => {
-    fetchOrganizations(); // Fetch data when component mounts
+    fetchOrganizations();
   }, []);
 
   return (

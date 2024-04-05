@@ -4,7 +4,6 @@ import { Button, Container, Table, TableBody, TableCell, TableContainer, TableHe
 import AdminNavbar from './Admin-navbar';
 
 function AdminDashboard() {
-  // Dummy data for employees
   const employees = [
     { id: 1, email: 'employee1@example.com' },
     { id: 2, email: 'employee2@example.com' },
@@ -12,12 +11,10 @@ function AdminDashboard() {
   ];
 
   const handleApprove = (employeeId) => {
-    // Handle approve logic
     console.log('Approving employee with ID:', employeeId);
   };
 
   const handleDeny = (employeeId) => {
-    // Handle deny logic
     console.log('Denying employee with ID:', employeeId);
   };
 
@@ -67,23 +64,3 @@ function AdminDashboard() {
 }
 
 export default AdminDashboard;
-
-
-
-// const [employees, setEmployees] = useState([]);
-
-//   useEffect(() => {
-//     // Fetch employees data from Firebase or your backend
-//     const fetchEmployees = async () => {
-//       try {
-//         // Fetch employees data from Firebase Firestore
-//         const querySnapshot = await db.collection('employees').get();
-//         const fetchedEmployees = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-//         setEmployees(fetchedEmployees);
-//       } catch (error) {
-//         console.error('Error fetching employees:', error);
-//       }
-//     };
-
-//     fetchEmployees();
-//   }, []);
