@@ -4,10 +4,57 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        nav {
+            background-color: #b81c21;
+            padding: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            transition: background-color 0.3s ease;
+        }
+        nav a:hover {
+            background-color: #8c1217;
+        }
+        @media (max-width: 768px) {
+            nav {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            nav a {
+                display: block;
+                padding: 10px;
+                margin: 5px 0;
+            }
+            span {
+                margin-bottom: 10px;
+            }
+        }
+    </style>
 </head>
 <body>
-{{org_name}} <a href="/admin-profile">Organization's details</a> <a href="/add-employees">Add employees</a> <a href="/view-employees">View employees</a> 
-<a href="">View layout</a> <a href="/view-status">Status</a> <a href="/view-logs">View Logs</a> <a href="/alerts">Alerts</a>
-<a href="/admin-logout">Logout</a>
+    <nav>
+        <span style="font-weight: bold; font-size: 20px; color: white; text-transform: uppercase; letter-spacing: 2px;">{{org_name}}</span>
+        <div>
+            <a href="/admin-profile">Organization's details</a>
+            <a href="/add-employees">Add employees</a>
+            <a href="/view-employees">View employees</a>
+            <a href="">View layout</a>
+            <a href="/view-status">Status</a>
+            <a href="/view-logs">View Logs</a>
+            <a href="/alerts">Alerts</a>
+            <a href="/admin-logout">Logout</a>
+        </div>
+    </nav>
 </body>
 </html>

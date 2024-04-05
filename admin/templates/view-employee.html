@@ -3,15 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>User Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f8f8;
+        }
+        .container {
+            margin: 2% auto;
+            max-width: 800px;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: left;
+        }
+        h3 {
+            color: #333;
+            margin-top: 20px;
+            text-align: center;
+        }
+        p {
+            color: #666;
+            margin: 5px 0;
+            padding-left: 10px;
+        }
+    </style>
 </head>
 <body>
     {% include 'navbar.html' %}
     {% include 'flash.html' %}
-    <br>
-    <h3>User: {{id}}</h3>
-    {% for k,v in data.items() %}
-    {{k}}: {{v}}<br>
-    {% endfor %}
+    <h1 style="text-align: center">User Details</h1>
+    <div class="container">
+        <div class="main">
+            <h3>User: {{ id }}</h3>
+            {% for k, v in data.items() %}
+                <p><strong>{{ k }}:</strong> {{ v }}</p>
+            {% endfor %}
+        </div>
+    </div>
 </body>
 </html>

@@ -42,18 +42,17 @@ const EditProfile = () => {
                 profile.orgID = orgID;
                 localStorage.setItem('profile', JSON.stringify(profile));
 
-                const alertDocRef = doc(db, "Alert", orgID);
-                const alertDocSnapshot = await getDoc(alertDocRef);
+                const notificationDocRef = doc(db, "notification", orgID);
+                const notificationDocSnapshot = await getDoc(notificationDocRef);
 
-                if (alertDocSnapshot.exists()) {
-                    const alertData = alertDocSnapshot.data();
-                    const updatedEmployeeIDs = [...alertData.employeeIDs, employeeID];
-                    await updateDoc(alertDocRef, {
-                        employeeIDs: updatedEmployeeIDs
+                if (notificationDocSnapshot.exists()) {
+                    const notificationData = notificationDocSnapshot.data();
+                    await updateDoc(notificationDocRef, {
+                        employeeID: uid
                     });
                 } else {
-                    await setDoc(alertDocRef, {
-                        employeeIDs: [employeeID]
+                    await setDoc(notificationDocRef, {
+                        employeeID: uid
                     });
                 }
 

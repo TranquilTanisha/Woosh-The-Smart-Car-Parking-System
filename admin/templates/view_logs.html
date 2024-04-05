@@ -4,47 +4,128 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        h1, h2, h3 {
+            color: #333;
+            margin-top: 20px;
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tbody tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+        }
+        a.button {
+            display: inline-block;
+            background-color: #b81c21;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+        a.button:hover {
+            background-color: #8c1217;
+        }
+        .main {
+            margin: 0 auto;
+            width: 80%;
+        }
+        .search-bar {
+            margin-bottom: 30px;
+        }
+        .search-bar input[type="text"] {
+            width: 91%;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+        }
+        .search-bar input[type="submit"] {
+            background-color: #b81c21;
+            color: white;
+            border: none;
+            padding: 15px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .search-bar input[type="submit"]:hover {
+            background-color: #8c1217;
+        }
+        .divider {
+            border-bottom: 2px solid #ddd;
+            margin-bottom: 20px;
+        }
+    </style>
 </head>
 <body>
     {% include 'navbar.html' %}
     {% include 'flash.html' %}
-    <h2>User logs</h2>
 
-    --add a search bar--
-    {% for k,values in month.items() %}
-        <h3>{{ k.split('-')[0]+', '+ months[k.split('-')[1]] }}</h3>
-        {% for v in values %}
-        Date: {{v}} 
-
-        <table>
-            <thead>
-              <tr>
-                <th>User id</th>
-                <th>Type</th>
-                <th>Entry Time</th>
-                <th>Exit Time</th>
-              </tr>
-            </thead>
-        
-            <tbody>
-              {% for d in data[k+'-'+v] %}
-                <tr>
-                  <td>{{d['id']}}</td>
-                  <td>{{d['type']}}</td>
-                  <td>{{d['entry']}}</td>
-                  <td>{{d['exit']}}</td>
-                  <td><a href="/view-user/{{d['id']}}">View details</td>
-                </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        <br>
-          Employees: {{emp[k+'-'+v]}}<br>
-          Non-Employees: {{total[k+'-'+v]-emp[k+'-'+v]}}<br>
-          Total users: {{total[k+'-'+v]}}<br>
+    <h1>User logs</h1>
+    <div class="main">
+        <div class="search-bar">
+            <form action="/search-employees" method="GET">
+                <input type="text" name="search" placeholder="Search employees...">
+                <input type="submit" value="Search">
+            </form>
+        </div>
+    
+        {% for k, values in month.items() %}
+            <h3>{{ k.split('-')[0] + ', ' + months[k.split('-')[1]] }}</h3>
+            {% for v in values %}
+                <p>Date: {{ v }}</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>User id</th>
+                            <th>Type</th>
+                            <th>Entry Time</th>
+                            <th>Exit Time</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for d in data[k + '-' + v] %}
+                            <tr>
+                                <td>{{ d['id'] }}</td>
+                                <td>{{ d['type'] }}</td>
+                                <td>{{ d['entry'] }}</td>
+                                <td>{{ d['exit'] }}</td>
+                                <td><a class="button" href="/view-user/{{ d['id'] }}">View details</a></td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <p>Employees: {{ emp[k + '-' + v] }}</p>
+                <p>Non-Employees: {{ total[k + '-' + v] - emp[k + '-' + v] }}</p>
+                <p>Total users: {{ total[k + '-' + v] }}</p>
+                <div class="divider"></div>
+            {% endfor %}
         {% endfor %}
-        <br>
-    {% endfor %}
-
+    </div>
 </body>
 </html>

@@ -4,37 +4,111 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        h2 {
+            color: #333;
+            margin-top: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tbody tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+        }
+        a.button {
+            display: inline-block;
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+        a.button:hover {
+            background-color: #0056b3;
+        }
+        .main{
+        margin: 0 auto;
+        width: 80%;
+        }
+        .search-bar {
+        margin-bottom: 30px;
+        }
+        .search-bar input[type="text"] {
+          width: 91%;
+          padding: 15px;
+          border-radius: 10px;
+          border: 1px solid #ccc;
+        }
+        .search-bar input[type="submit"] {
+          background-color: #b81c21;
+          color: white;
+          border: none;
+          padding: 15px 20px;
+          border-radius: 5px;
+          cursor: pointer;
+        }
+        .search-bar input[type="submit"]:hover {
+          background-color: #8c1217;
+        }
+    </style>
 </head>
 <body>
     {% include 'navbar.html' %}
     {% include 'flash.html' %}
-    <h2>Current status of users in the premises</h2>
-    <br>
-    --add a search bar--
-    <br>
+    <h1 style="text-align: center">Current status of users in the premises</h1>
+    <div class="main">
+    <div class="search-bar">
+      <form action="/search-employees" method="GET">
+        <input type="text" name="search" placeholder="Search employees...">
+        <input type="submit" value="Search">
+      </form>
+    </div>
     <table>
         <thead>
             <tr>
-              <th>User id</th>
-              <th>Type</th>
-              <th>Entry Time</th>
+                <th>User id</th>
+                <th>Type</th>
+                <th>Entry Time</th>
             </tr>
-          </thead>
-      
-          <tbody>
+        </thead>
+        <tbody>
             {% for d in data %}
-              <tr>
+            <tr>
                 <td>{{d['id']}}</td>
                 <td>{{d['type']}}</td>
                 <td>{{d['entry']}}</td>
-                <td><a href="/view-user/{{d['id']}}">View details</td>
-              </tr>
+            </tr>
             {% endfor %}
-          </tbody>
+        </tbody>
     </table>
     <br>
     Employees: {{emp}}<br>
     Non-Employees: {{total-emp}}<br>
     Total users: {{total}}<br>
+  </div>
 </body>
 </html>

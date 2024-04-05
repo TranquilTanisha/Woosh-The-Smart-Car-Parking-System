@@ -4,36 +4,110 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
+  <style>
+
+    h2 {
+      color: #333;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: #f2f2f2;
+      padding: 12px;
+    }
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+    .main{
+      margin: 0 auto;
+      width: 80%;
+    }
+    .search-bar {
+      margin-bottom: 30px;
+    }
+    .search-bar input[type="text"] {
+      width: 91%;
+      padding: 15px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+    }
+    .search-bar input[type="submit"] {
+      background-color: #b81c21;
+      color: white;
+      border: none;
+      padding: 15px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .search-bar input[type="submit"]:hover {
+      background-color: #8c1217;
+    }
+    .total-employees-button {
+      background-color: #b81c21;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .total-employees-button:hover {
+      background-color: #8c1217;
+    }
+    td a {
+            color: #007bff;
+            text-decoration: none;
+            margin-right: 10px;
+            transition: color 0.3s ease;
+        }
+        td a:hover {
+            color: #0056b3;
+        }
+  </style>
 </head>
 <body>
   {% include 'navbar.html' %}
   {% include 'flash.html' %}
 
-<h2>Employee details</h2>
+  <h1 style="text-align: center">Employee details</h1>
+  <div class="main">
+  <div class="search-bar">
+    <form action="/search-employees" method="GET">
+      <input type="text" name="search" placeholder="Search employees...">
+      <input type="submit" value="Search">
+    </form>
+  </div>
 
---- add a search bar here ---
-<table>
+  <table>
     <thead>
       <tr>
         <th>Employee ID</th>
         <th>Email ID</th>
+        <th>Actions</th>
       </tr>
     </thead>
 
     <tbody>
-        {% for k, v in data.items() %}
+      {% for k, v in data.items() %}
       <tr>
         <td>{{k}}</td>
         <td>{{v}}</td>
-        <td><a href="/view-employee/{{k}}">View</a></td>
-        <td><a href="/remove-employee/{{k}}">Remove</a></td>
+        <td><a href="/view-employee/{{k}}">View</a><a href="/remove-employee/{{k}}">Remove</a></td>
       </tr>
       {% endfor %}
-
     </tbody>
   </table>
-<br>
-Total Employees: {{ l }}
-<button><a href="/delete-employees">Delete all Employees</a></button>
+
+  <p>Total Employees: {{ l }}</p>
+  <button class="total-employees-button"><a href="/delete-employees" style="color: inherit; text-decoration: none">Delete all Employees</a></button>
+</div>
 </body>
 </html>
