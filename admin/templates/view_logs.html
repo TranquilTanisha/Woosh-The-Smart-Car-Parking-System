@@ -79,6 +79,27 @@
             border-bottom: 2px solid #ddd;
             margin-bottom: 20px;
         }
+        /* Scroll to top button */
+        .scroll-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #b81c21;
+            color: white;
+            width: 50px;
+            height: 50px;
+            text-align: center;
+            line-height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 9999;
+            display: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .scroll-to-top:hover {
+            background-color: #da4045;
+        }
     </style>
 </head>
 <body>
@@ -97,7 +118,7 @@
         {% for k, values in month.items() %}
             <h3>{{ k.split('-')[0] + ', ' + months[k.split('-')[1]] }}</h3>
             {% for v in values %}
-                <p>Date: {{ v }}</p>
+                <p><strong>Date: {{ v }}</strong></p>
                 <table>
                     <thead>
                         <tr>
@@ -127,5 +148,28 @@
             {% endfor %}
         {% endfor %}
     </div>
+    <!-- Scroll to top button -->
+    <div class="scroll-to-top" onclick="scrollToTop()">&#8593;</div>
+
+    <script>
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
+        window.onscroll = function() {
+            scrollFunction();
+        };
+
+        function scrollFunction() {
+            if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+                document.querySelector('.scroll-to-top').style.display = "block";
+            } else {
+                document.querySelector('.scroll-to-top').style.display = "none";
+            }
+        }
+    </script>
 </body>
 </html>
