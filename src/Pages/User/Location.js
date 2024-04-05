@@ -1,22 +1,18 @@
-import React, { useState, useEffect } from 'react';
-// import Bottombar from '../../Components/Navbar/Bottombar';
-import { db } from '../../Firebase';
 import { collection, getDocs, onSnapshot } from 'firebase/firestore';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
+import React, { useEffect, useState } from 'react';
+import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
+import Bottombar from '../../Components/Navbar/Bottombar';
+import { db } from '../../Firebase';
 import icon1 from '../../Images/parking_icon.png';
 
-
-
 const Location = () => {
-    const [parkinglotLocations, setParkinglotLocations] = useState([]); 
+    const [parkinglotLocations, setParkinglotLocations] = useState([]);
     const [initialPosition, setInitialPosition] = useState(null);
     const [setMapLoaded] = useState(false);
     const [fetchError, setFetchError] = useState(null);
-    // eslint-disable-next-line
     const [selectedOrg, setSelectedOrg] = useState(null);
-    // eslint-disable-next-line
     const [nearbyParkingSpots, setNearbyParkingSpots] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
 
@@ -38,6 +34,8 @@ const Location = () => {
                 setParkinglotLocations(locations);
                 setFetchError(null);
                 console.log('Parking lot locations:', locations);
+
+                // Listen for real-time updates
                 onSnapshot(organizationsRef, (snapshot) => {
                     const updatedLocations = [];
                     snapshot.forEach(doc => {
@@ -64,7 +62,6 @@ const Location = () => {
         if (initialPosition && parkinglotLocations.length > 0) {
             filterVisibleLocations();
         }
-    // eslint-disable-next-line
     }, [initialPosition, parkinglotLocations]);
 
     const getGeoLocation = () => {
@@ -111,18 +108,19 @@ const Location = () => {
         const nearbySpots = [];
         parkinglotLocations.forEach(location => {
             const distance = getDistance(initialPosition[0], initialPosition[1], location.latitude, location.longitude);
-            if (distance <= 5000) {
-                nearbySpots.push({ id: location.id, name: location.name, distance: distance });
+            if (distance <= 5000) { // 5km radius
+                nearbySpots.push({ id: location.id, name: location.name, distance: distance }); // Distance in meters
             }
         });
         setNearbyParkingSpots(nearbySpots);
 
-        const nearSpot = nearbySpots.find(spot => spot.distance <= 1000);
+        const nearSpot = nearbySpots.find(spot => spot.distance <= 1000); // Check if parking spot is within 1 km
         if (nearSpot) {
+            // Display notification with vibrate effect
             if ('vibrate' in navigator) {
                 navigator.vibrate([200, 100, 200]);
             }
-            alert(`Parking spot available nearby: ${nearSpot.name}. Distance: ${(nearSpot.distance/1000).toFixed(2)} km`);
+            alert(`Parking spot available nearby: ${nearSpot.name}. Distance: ${(nearSpot.distance / 1000).toFixed(2)} km`);
         }
     };
 
@@ -131,21 +129,21 @@ const Location = () => {
     };
 
     const getDistance = (lat1, lon1, lat2, lon2) => {
-        const R = 6371;
+        const R = 6371; // Radius of the earth in km
         const dLat = deg2rad(lat2 - lat1);
-        const dLon = deg2rad(lon2 - lon1); 
-        const a = 
-            Math.sin(dLat/2) * Math.sin(dLat/2) +
-            Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
-            Math.sin(dLon/2) * Math.sin(dLon/2)
-            ; 
-        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
-        const d = R * c;
-        return d * 1000;
+        const dLon = deg2rad(lon2 - lon1);
+        const a =
+            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+            Math.sin(dLon / 2) * Math.sin(dLon / 2)
+            ;
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        const d = R * c; // Distance in km
+        return d * 1000; // Convert to meters
     };
 
     const deg2rad = (deg) => {
-        return deg * (Math.PI/180);
+        return deg * (Math.PI / 180);
     };
 
     const handleSearch = (e) => {
@@ -158,11 +156,11 @@ const Location = () => {
 
     return (
         <>
-            <div className="search-bar" style={{ display: "flex", justifyContent: "center" }}>
-    <input type="text" placeholder="Search by organization name" onChange={handleSearch} />
-</div>
+            <div className="search-bar" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <input type="text" className="search-input" placeholder="Search..." />
 
-            <div style={{ height: '100%', width: '100%' }}>
+            </div>
+            <div style={{ height: '60%', width: '100%' }}>
                 {fetchError && <p>{fetchError}</p>}
                 {initialPosition && (
                     <MapContainer
@@ -195,9 +193,9 @@ const Location = () => {
                     </MapContainer>
                 )}
             </div>
-            {/* <div className="bottombar">
-                <Bottombar/>
-            </div> */}
+            <div className="bottombar">
+                <Bottombar />
+            </div>
         </>
     );
 };
