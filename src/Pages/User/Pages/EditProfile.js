@@ -45,7 +45,9 @@ const EditProfile = () => {
                 const notificationDocRef = doc(db, "notification", orgID);
                 const notificationDocSnapshot = await getDoc(notificationDocRef);
 
+                // eslint-disable-next-line
                 if (notificationDocSnapshot.exists()) {
+                    // eslint-disable-next-line
                     const notificationData = notificationDocSnapshot.data();
                     await updateDoc(notificationDocRef, {
                         employeeID: uid

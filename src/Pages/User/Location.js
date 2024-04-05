@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import Bottombar from '../../Components/Navbar/Bottombar';
+// import Bottombar from '../../Components/Navbar/Bottombar';
 import { db } from '../../Firebase';
 import { collection, getDocs, onSnapshot } from 'firebase/firestore';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import icon1 from '../../Images/parking_icon.png';
+
+
 
 const Location = () => {
     const [parkinglotLocations, setParkinglotLocations] = useState([]); 
@@ -156,6 +158,10 @@ const Location = () => {
 
     return (
         <>
+            <div className="search-bar" style={{ display: "flex", justifyContent: "center" }}>
+    <input type="text" placeholder="Search by organization name" onChange={handleSearch} />
+</div>
+
             <div style={{ height: '100%', width: '100%' }}>
                 {fetchError && <p>{fetchError}</p>}
                 {initialPosition && (
@@ -189,12 +195,9 @@ const Location = () => {
                     </MapContainer>
                 )}
             </div>
-            <div className="search-bar">
-                <input type="text" placeholder="Search by organization name" onChange={handleSearch} />
-            </div>
-            <div className="bottombar">
+            {/* <div className="bottombar">
                 <Bottombar/>
-            </div>
+            </div> */}
         </>
     );
 };
