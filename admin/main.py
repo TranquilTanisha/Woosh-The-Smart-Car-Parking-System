@@ -38,7 +38,7 @@ def home():
 #root_url/parking-layout/org-id
 @app.route('/qr-code')
 def generate_qr_code():
-    link=request.root_url+'parking-layout/'+session['localId']
+    link=request.root_url+'parking-layout?org_id='+session['localId']
     file_name=session['org_name']+'.png'
     qr = pyqrcode.create(link)
     qr_png = BytesIO()
