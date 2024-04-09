@@ -7,20 +7,20 @@
 }
 
 .bottombar {
-  display: none; 
+  display: none;
   position: fixed;
   bottom: 0;
-  width: 100%;  
+  width: 100%;
   z-index: 1000;
 }
 
 @media (max-width: 600px) {
   .navbar {
-    display: none; 
+    display: none;
   }
 
   .bottombar {
-    display: block; 
+    display: block;
   }
 }
 
@@ -28,9 +28,11 @@
   0% {
     transform: scale(1);
   }
+
   50% {
     transform: scale(1.2);
   }
+
   100% {
     transform: scale(1);
   }
@@ -44,26 +46,27 @@
   .chatbot-window {
     bottom: 150px;
     max-height: 100vh;
-    width: 70vw; 
+    width: 70vw;
   }
-  #qrScanner{
+
+  #qrScanner {
     left: 20vw !important;
   }
 }
 
 /* for chatbot */
-.react-chatbot-kit-user-avatar-container{
+.react-chatbot-kit-user-avatar-container {
   background: url('https://www.w3schools.com/howto/img_avatar.png');
   background-size: contain;
 }
 
-.react-chatbot-kit-user-avatar-icon{
-  fill: transparent!important;
+.react-chatbot-kit-user-avatar-icon {
+  fill: transparent !important;
 }
 
 
 /* for QR page */
-.card-body{
+.card-body {
   display: flex;
   justify-content: center;
   padding-top: 10vh;
@@ -105,6 +108,7 @@
   0% {
     transform: translateY(-100%);
   }
+
   100% {
     transform: translateY(100%);
   }
@@ -158,9 +162,9 @@
 
 
 
- /* for navigation page */
+/* for navigation page */
 
- .navigation-container {
+.navigation-container {
   padding: 12px;
 }
 
@@ -192,25 +196,24 @@
 }
 
 
-.card-content{
+.card-content {
   border-radius: 10px !important;
 }
-@media (max-width: 1465px) {
 
-}
-  
-@media only screen and (min-width: 768px)  {
-  
+@media (max-width: 1465px) {}
+
+@media only screen and (min-width: 768px) {
+
   .square {
     flex: 1 0 40%;
     margin-right: 20px;
-    margin-bottom: 20px; 
- 
+    margin-bottom: 20px;
+
   }
-  .search-bar{
-    margin-top: 10vh;
-    width: 50vw;
-    margin-left: 25vw;
+
+  .search-bar {
+    width: 60%;
+    margin: 5vh auto;
   }
 
   .squares-container {
@@ -221,14 +224,14 @@
     margin-top: 40px;
   }
 
-  .boxi{
+  .boxi {
     display: flex;
     margin-top: 20px;
     width: 40vw;
     flex-direction: column;
   }
 
-  .outerBoxi{
+  .outerBoxi {
     display: flex;
     justify-content: center;
     margin-top: 30px;
@@ -244,11 +247,12 @@
 
 .name {
   font-weight: bold !important;
- font-size: medium !important;
- text-decoration: none;
+  font-size: medium !important;
+  text-decoration: none;
 }
+
 .name:hover {
- 
+
   color: blue;
   cursor: pointer;
 }
@@ -274,7 +278,7 @@
     flex-wrap: wrap;
   }
 
-  .link{
+  .link {
     width: 40vw;
     display: flex;
     flex-direction: row;
@@ -284,28 +288,30 @@
 
 
 
-.pcontent{
+.pcontent {
   display: flex;
   margin-left: 15px;
   margin-right: 15px;
 }
-.pimage{
+
+.pimage {
   border-radius: 10px;
   margin-right: 20px;
 }
 
-.pdetail{
+.pdetail {
   display: flex;
-    align-items: center;
-    flex-direction: column;
-    justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
 }
-.pname{
+
+.pname {
   font-size: larger;
   font-weight: bold;
 }
 
-.pinfo{
+.pinfo {
   height: 10vh;
   border: 1px solid #b81c21;
   margin: 10px 15px;
@@ -315,14 +321,14 @@
   align-items: center;
 }
 
-.pline{
+.pline {
   height: 70%;
   background: #b81c21;
   width: 2px;
   border-radius: 50px;
 }
 
-.pinfo1{
+.pinfo1 {
   align-items: center;
   display: flex;
   justify-content: center;
@@ -374,6 +380,7 @@ svg path {
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
