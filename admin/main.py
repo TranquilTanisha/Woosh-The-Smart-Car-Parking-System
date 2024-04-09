@@ -108,7 +108,7 @@ def view_employees():
 @app.route('/view-employee/<k>', methods=['GET','POST'])
 @authenticate_user
 def view_employee(k):
-    ref=db.collection('Alert').document(session['localId'])
+    ref=db.collection('notification').document(session['localId'])
     doc=ref.get()   
     if doc.exists:
         data=doc.to_dict()
