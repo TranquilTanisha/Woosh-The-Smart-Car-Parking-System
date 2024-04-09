@@ -12,7 +12,9 @@ const Location = () => {
     const [initialPosition, setInitialPosition] = useState(null);
     const [setMapLoaded] = useState(false);
     const [fetchError, setFetchError] = useState(null);
+    // eslint-disable-next-line
     const [selectedOrg, setSelectedOrg] = useState(null);
+    // eslint-disable-next-line
     const [nearbyParkingSpots, setNearbyParkingSpots] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
 
@@ -35,7 +37,6 @@ const Location = () => {
                 setFetchError(null);
                 console.log('Parking lot locations:', locations);
 
-                // Listen for real-time updates
                 onSnapshot(organizationsRef, (snapshot) => {
                     const updatedLocations = [];
                     snapshot.forEach(doc => {
@@ -62,6 +63,7 @@ const Location = () => {
         if (initialPosition && parkinglotLocations.length > 0) {
             filterVisibleLocations();
         }
+    // eslint-disable-next-line
     }, [initialPosition, parkinglotLocations]);
 
     const getGeoLocation = () => {
@@ -108,15 +110,14 @@ const Location = () => {
         const nearbySpots = [];
         parkinglotLocations.forEach(location => {
             const distance = getDistance(initialPosition[0], initialPosition[1], location.latitude, location.longitude);
-            if (distance <= 5000) { // 5km radius
-                nearbySpots.push({ id: location.id, name: location.name, distance: distance }); // Distance in meters
+            if (distance <= 5000) {
+                nearbySpots.push({ id: location.id, name: location.name, distance: distance });
             }
         });
         setNearbyParkingSpots(nearbySpots);
 
-        const nearSpot = nearbySpots.find(spot => spot.distance <= 1000); // Check if parking spot is within 1 km
+        const nearSpot = nearbySpots.find(spot => spot.distance <= 1000);
         if (nearSpot) {
-            // Display notification with vibrate effect
             if ('vibrate' in navigator) {
                 navigator.vibrate([200, 100, 200]);
             }
@@ -129,7 +130,7 @@ const Location = () => {
     };
 
     const getDistance = (lat1, lon1, lat2, lon2) => {
-        const R = 6371; // Radius of the earth in km
+        const R = 6371;
         const dLat = deg2rad(lat2 - lat1);
         const dLon = deg2rad(lon2 - lon1);
         const a =
@@ -138,14 +139,15 @@ const Location = () => {
             Math.sin(dLon / 2) * Math.sin(dLon / 2)
             ;
         const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        const d = R * c; // Distance in km
-        return d * 1000; // Convert to meters
+        const d = R * c;
+        return d * 1000;
     };
 
     const deg2rad = (deg) => {
         return deg * (Math.PI / 180);
     };
 
+    // eslint-disable-next-line
     const handleSearch = (e) => {
         setSearchTerm(e.target.value);
     };

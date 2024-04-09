@@ -1,17 +1,38 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Typography, Divider, useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import { collection, query, where, getDocs } from 'firebase/firestore';
+import { db } from '../Firebase';
 
-const SessionHistory = () => {
-  const sessionHistoryData = [
-    { date: '2022-03-14', entryTime: '10:30 AM', exitTime: '12:45 PM', amount: '$10' },
-    { date: '2022-03-13', entryTime: '09:15 AM', exitTime: '11:30 AM', amount: '$8' },
-    { date: '2022-03-12', entryTime: '11:00 AM', exitTime: '01:20 PM', amount: '$12' },
-  ];
-
+const SessionHistory = ({ employeeId }) => {
+  const [sessionHistoryData, setSessionHistoryData] = useState([]);
   const theme = useTheme();
-  // eslint-disable-next-line
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
+  useEffect(() => {
+    const fetchSessionHistory = async () => {
+      try {
+        const sessionHistoryCollection = collection(db, 'organization');
+        const q = query(sessionHistoryCollection, where('employeeId', '==', employeeId));
+        const querySnapshot = await getDocs(q);
+        const sessions = [];
+        querySnapshot.forEach((doc) => {
+          // Assuming the document structure contains 'date', 'entryTime', 'exitTime'
+          const sessionData = doc.data();
+          sessions.push({
+            date: sessionData.date,
+            entryTime: sessionData.entryTime,
+            exitTime: sessionData.exitTime,
+          });
+        });
+        setSessionHistoryData(sessions);
+      } catch (error) {
+        console.error('Error fetching session history:', error);
+      }
+    };
+
+    fetchSessionHistory();
+  }, [employeeId]);
 
   return (
     <Box p={2} bgcolor="background.paper" borderRadius={5}>
@@ -23,7 +44,6 @@ const SessionHistory = () => {
           <Typography variant="subtitle1">Date: {session.date}</Typography>
           <Typography variant="body1">Entry Time: {session.entryTime}</Typography>
           <Typography variant="body1">Exit Time: {session.exitTime}</Typography>
-          <Typography variant="body1">Amount Paid: {session.amount}</Typography>
           {index !== sessionHistoryData.length - 1 && <Divider />}
         </Box>
       ))}
