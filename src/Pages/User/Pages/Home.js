@@ -11,6 +11,7 @@ import Navbar from '../../../Components/Navbar/Navbar';
 import Location from '../Location';
 import { Box } from '@mui/material';
 import SessionHistory from '../../../Components/SessionHistory';
+import LayoutEditor from '../../../Components/ParkingLayout/LayoutEditor';
 
 const Home = () => {
   const [username, setUsername] = useState('');
@@ -41,7 +42,8 @@ const Home = () => {
             <Location />
           </Box>
         </Box>
-        <SessionHistory />
+        <LayoutEditor />
+        {/* <SessionHistory /> */}
         {/* <div>
           <img
             src={chatbotIcon}

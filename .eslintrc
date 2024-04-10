@@ -1,0 +1,30 @@
+{
+    "globals": {
+      "read": "readonly",
+      "readbuffer": "readonly",
+      "globalThis": "readonly",
+      "scriptArgs": "readonly",
+      "quit": "readonly",
+      "print": "readonly",
+      "printErr": "readonly",
+      "self": "readonly",
+      "SharedArrayBuffer": "readonly",
+      "Atomics": "readonly",
+      "addEventListener": "readonly",
+      "screen": "readonly",
+      "event": "readonly",
+      "innerWidth": "readonly",
+      "innerHeight": "readonly",
+      "outerWidth": "readonly",
+      "outerHeight": "readonly",
+      "pageXOffset": "readonly",
+      "pageYOffset": "readonly",
+      "removeEventListener": "readonly",
+      "startWorker": "readonly",
+      "define": "readonly",
+      "webkitAudioContext": "readonly",
+      "CanvasPixelArray": "readonly",
+      "emscripten_source_map": "readonly"
+    }
+  }
+  
