@@ -11,7 +11,6 @@ import SessionHistory from '../../../Components/SessionHistory';
 // import config from '../../../Components/Chatbot/Config';
 // import MessageParser from '../../../Components/Chatbot/MessageParser';
 // import chatbotIcon from '../../../Images/chat-bot.png';
-import LayoutEditor from '../../../Components/ParkingLayout/LayoutEditor';
 
 const Home = () => {
   const [username, setUsername] = useState('');
@@ -44,9 +43,8 @@ const Home = () => {
           </div>
          </div>
         </Box>
-        <LayoutEditor />
-        {/* <SessionHistory /> */}
-        {/* <div>
+        <SessionHistory />
+        <div>
           <img
             src={chatbotIcon}
             alt="Chatbot"
@@ -63,7 +61,7 @@ const Home = () => {
               />
             </div>
           )}
-        </div> */}
+        </div>
       </div>
       <div className='bottombar'>
       <Bottombar value="Home" />
