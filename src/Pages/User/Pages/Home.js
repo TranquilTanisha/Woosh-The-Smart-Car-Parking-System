@@ -11,9 +11,6 @@ import SessionHistory from '../../../Components/SessionHistory';
 // import config from '../../../Components/Chatbot/Config';
 // import MessageParser from '../../../Components/Chatbot/MessageParser';
 // import chatbotIcon from '../../../Images/chat-bot.png';
-import Location from '../Location';
-import { Box } from '@mui/material';
-import SessionHistory from '../../../Components/SessionHistory';
 import LayoutEditor from '../../../Components/ParkingLayout/LayoutEditor';
 
 const Home = () => {
