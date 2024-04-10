@@ -6,6 +6,8 @@ import IconButton from '@mui/material/IconButton';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useParams } from 'react-router-dom';
 import { getFirestore, doc, getDoc } from 'firebase/firestore';
+import Image from '../../../Images/location.png';
+import '../../../App.css';
 
 const ParkingDetail = () => {
     const { id } = useParams();
@@ -46,14 +48,21 @@ const ParkingDetail = () => {
                 <div className='outerBoxi'>
                     <div style={{ marginTop: '20px' }} className='boxi'>
                         <div className='pcontent'>
-                            <div className='pPhoto'> <img src={organization.image} alt="/" className="pimage" /></div>
+                            <div className='pPhoto'> <img src={Image} alt="/" className="pimage" /></div>
                             <div className='pdetail'>
                                 <div className='pname'>
                                     {organization.org_name}
                                 </div>
                                 <div className='paddress'>
-                                    {organization.location}
+                                <a className='paddress'
+                                    href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(organization.location)}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    View Location on Maps
+                                </a>
                                 </div>
+
                             </div>
                         </div>
                         <div className='pinfo'>

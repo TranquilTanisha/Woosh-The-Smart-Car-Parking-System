@@ -7,7 +7,9 @@ import '../../../App.css';
 import Navbar from '../../../Components/Navbar/Navbar';
 import Bottombar from '../../../Components/Navbar/Bottombar';
 import { getFirestore, collection, getDocs } from 'firebase/firestore';
+import Image from '../../../Images/location.png';
 
+// eslint-disable-next-line
 const placeholderImage = 'https://via.placeholder.com/150';
 
 function Navigation() {
@@ -46,20 +48,33 @@ function Navigation() {
         </div>
         <div className="squares-container">
           {organizations.map(org => (
-            <Link to={`/navigation/detail/${org.id}`} key={org.id} className="link">
-              <Card className="square">
-                <CardContent className="card-content">
-                  <img src={placeholderImage} alt="Organization" className="image" />
-                  <Typography variant="h6" component="div" className="name">
-                    {org.org_name}
-                  </Typography>
-                  <Typography variant="body2" color="textSecondary" component="div" className="location">
-                    {org.location}
-                  </Typography>
-                  {/* Add more organization data fields as needed */}
-                </CardContent>
-              </Card>
-            </Link>
+            <Card className="square" key={org.id}>
+              <CardContent className="card-content">
+                <img src={Image} alt="Organization" className="image" />
+                <Typography 
+                  variant="h6" 
+                  component={Link} 
+                  to={`/navigation/detail/${org.id}`} 
+                  className="name"
+                >
+                  {org.org_name}
+                </Typography>
+                <Typography 
+                  variant="body2" 
+                  color="textSecondary" 
+                  component="div" 
+                  className="location"
+                >
+                  <Link 
+                    to={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(org.location)}`} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                  >
+                    Get Directions
+                  </Link>
+                </Typography>
+              </CardContent>
+            </Card>
           ))}
         </div>
       </div>

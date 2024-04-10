@@ -17,6 +17,7 @@ import AdminRegister from './Pages/Admin/Admin-register.js';
 import ManageEmployee from './Pages/Admin/manage-employee.js';
 import LayoutEditor from './Pages/Admin/layout-editor.js';
 import ParkingDetail from './Pages/User/Pages/ParkingDetail.js';
+import MapView from './Components/MapView.js';
 
 const App = () => {
   return (
@@ -39,6 +40,7 @@ const App = () => {
       <Route path='/manage-employee' element={<ManageEmployee/>} />
       <Route path='/layout-editor' element={<LayoutEditor/>} />
       <Route path='/navigation/Detail/:id' element={<ParkingDetail/>} />
+      <Route path='/map' component={MapView} />
       
     </Routes>
   );

@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../../Components/Navbar/Navbar';
 import Bottombar from '../../Components/Navbar/Bottombar';
-import { Box, Container, Typography, Avatar, CircularProgress, Button } from '@mui/material';
-import Image2 from '../../Images/car_park2.png';
+import SendIcon from '@mui/icons-material/Send';
+import { Box, Typography, Avatar, CircularProgress, Button } from '@mui/material';
+// import Image2 from '../../Images/car_park2.png';
 
 function Profile() {
   const navigate = useNavigate();
@@ -35,29 +36,36 @@ function Profile() {
   };
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', backgroundImage: `url(${Image2})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
-      <Navbar />
-      <Container maxWidth="md" sx={{ my: 4, textAlign: 'center', backgroundColor: 'rgba(255, 255, 255, 0.8)', padding: '20px', borderRadius: '8px' }}>
-        <Typography variant="h3" sx={{ fontFamily: 'Anta', fontStyle: 'normal', color: '#b81c21', fontWeight: 700, mb: 2 }}>Profile</Typography>
-        <Box sx={{ p: 4 }}>
-          {profile ? (
-            <>
-              <Avatar alt={profile.displayName} src={profile.photoURL} sx={{ width: 150, height: 150, mb: 2, mx: 'auto', display: 'block' }} />
-              <Typography variant="h6" sx={{ mb: 1 }}>Name: {profile.displayName}</Typography>
-              <Typography variant="body1">Email: {profile.email}</Typography>
-              <Typography variant="body1">Employee ID: {profile.employeeID}</Typography>
-              <Typography variant="body1">Organization ID: {profile.orgID}</Typography>
-              <Button variant="outlined" onClick={handleEditProfile} sx={{ mt: 2 }}>Edit Profile</Button>
-            </>
-          ) : (
-            <CircularProgress sx={{ color: '#b81c21', my: 4 }} />
-          )}
-        </Box>
-      </Container>
-      <div className='bottombar'>
-        <Bottombar />
-      </div>
-    </Box>
+    <>
+    <Navbar/>
+    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh'}} className='container hello'>
+    <Typography variant="h3" sx={{ fontFamily: 'Anta', fontStyle: 'normal', color: '#b81c21', fontWeight: 700, mb: 2,mt:2 }}>Profile</Typography>
+     <div   className='form'>
+       
+       <Box sx={{ display: 'flex',
+   justifyContent: 'center' }}>
+         {profile ? (
+           <>
+             <div className='box-d'>
+             <Avatar alt={profile.displayName} src={profile.photoURL} sx={{   mx: 'auto', height:'100px', width:'100px', display: 'flex' ,marginBottom:'2vh'}} />
+             <Typography variant="h6" className='text-box' sx={{ mb: 1 }}>Name: <span className='s-text'>{profile.displayName}</span></Typography>
+             <Typography variant="body1" className='text-box'>Email: <span className='s-text'>{profile.email}</span></Typography>
+             <Typography variant="body1" className='text-box'>Employee ID: <span className='s-text'>{profile.employeeID}</span></Typography>
+             <Typography variant="body1" className='text-box'>Organization ID: <span className='s-text'>{profile.orgID}</span></Typography>
+             <Button variant="contained" className='btd'onClick={handleEditProfile} sx={{ mt: 2 ,backgroundColor:'#b81c21', width:'80%',marginLeft:'10%'}} endIcon={<SendIcon />}>
+             Edit Profile
+     </Button>
+             </div>
+           </>
+         ) : (
+           <CircularProgress sx={{ color: '#b81c21', my: 4 }} />
+         )}
+       </Box>
+     </div>
+     <div className='bottombar'>
+       <Bottombar />
+     </div>
+   </Box></>
   );
 }
 

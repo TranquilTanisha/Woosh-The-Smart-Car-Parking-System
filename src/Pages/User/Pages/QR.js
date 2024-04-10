@@ -9,6 +9,7 @@ import { auth, db } from '../../../Firebase.js';
 
 QrScanner.WORKER_PATH = './worker.js';
 
+// eslint-disable-next-line
 function genAutoID(len) {
   var text = "";
 
@@ -28,6 +29,7 @@ const ReadQR = () => {
   const [cameraPermissionGranted, setCameraPermissionGranted] = useState(false);
   const [cameraErrorMessage, setCameraErrorMessage] = useState('');
   const [scanning, setScanning] = useState(false);
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const scannerRef = useRef(null);
 
   useEffect(() => {
@@ -103,6 +105,14 @@ const ReadQR = () => {
               const minutes = String(currentDate.getMinutes()).padStart(2, '0');
               const seconds = String(currentDate.getSeconds()).padStart(2, '0');
               const formattedDateTime = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+
+              setShowSuccessMessage(true);
+              setTimeout(() => {
+                setShowSuccessMessage(false);
+                scannerRef.current.stop();
+                videoElement.remove();
+                setScanning(false);
+              }, 3000);
 
               if (docSnap.data().entryTime && !docSnap.data().exitTime) {
                 updateDoc(userDocRef, {
@@ -207,6 +217,7 @@ const ReadQR = () => {
         <div className="card border-0">
           <div className="card-body d-flex flex-column align-items-center justify-content-center">
             {cameraErrorMessage && <p className="error-message">{cameraErrorMessage}</p>}
+            {showSuccessMessage && <p className="success-message">QR code has successfully been scanned</p>}
             <button
               type="button"
               className="btn btn-primary mx-2 scan-button"
