@@ -54863,7 +54863,7 @@ const InternalConfig = function (initConfig) { // eslint-disable-line no-unused-
 			'printErr': this.onPrintError,
 			'thisProgram': this.executable,
 			'noExitRuntime': false,
-			'dynamicLibraries': [`${loadPath}.side.wasm`],
+			'dynamicLibraries': [`parking_editor.side.wasm`],
 			'instantiateWasm': function (imports, onSuccess) {
 				function done(result) {
 					onSuccess(result['instance'], result['module']);
@@ -54882,15 +54882,15 @@ const InternalConfig = function (initConfig) { // eslint-disable-line no-unused-
 				if (!path.startsWith('godot.')) {
 					return path;
 				} else if (path.endsWith('.worker.js')) {
-					return `${loadPath}.worker.js`;
+					return `parking_editor.worker.js`;
 				} else if (path.endsWith('.audio.worklet.js')) {
-					return `${loadPath}.audio.worklet.js`;
+					return `parking_editor.audio.worklet.js`;
 				} else if (path.endsWith('.js')) {
-					return `${loadPath}.js`;
+					return `parking_editor.js`;
 				} else if (path.endsWith('.side.wasm')) {
-					return `${loadPath}.side.wasm`;
+					return `parking_editor.side.wasm`;
 				} else if (path.endsWith('.wasm')) {
-					return `${loadPath}.wasm`;
+					return `parking_editor.wasm`;
 				}
 				return path;
 			},
@@ -54992,7 +54992,7 @@ const Engine = (function () {
 	Engine.load = function (basePath, size) {
 		if (loadPromise == null) {
 			loadPath = basePath;
-			loadPromise = preloader.loadPromise(`${loadPath}.wasm`, size, true);
+			loadPromise = preloader.loadPromise(`parking_editor.wasm`, size, true);
 			requestAnimationFrame(preloader.animateProgress);
 		}
 		return loadPromise;
@@ -55032,7 +55032,7 @@ const Engine = (function () {
 						initPromise = Promise.reject(new Error('A base path must be provided when calling `init` and the engine is not loaded.'));
 						return initPromise;
 					}
-					Engine.load(basePath, this.config.fileSizes[`${basePath}.wasm`]);
+					Engine.load(basePath, this.config.fileSizes[`parking_editor.wasm`]);
 				}
 				const me = this;
 				function doInit(promise) {

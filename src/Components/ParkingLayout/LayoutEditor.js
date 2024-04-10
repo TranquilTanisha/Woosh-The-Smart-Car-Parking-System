@@ -143,7 +143,7 @@ const LayoutEditor = () => {
           <div></div>
           <div></div>
         </div>
-        <div> BYE </div>
+        <div> MAYBE BYE </div>
         <div id="status-notice" className="godot" style={{ display: 'none' }}></div>
       </div>
 
