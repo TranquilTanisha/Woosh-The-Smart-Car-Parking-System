@@ -3900,14 +3900,14 @@ var PThread = {
    }
    PThread.currentProxiedOperationCallerThread = undefined;
   };
-  worker.onerror = e => {
-   var message = "worker sent an error!";
-   if (worker.pthread_ptr) {
-    message = "Pthread " + ptrToString(worker.pthread_ptr) + " sent an error!";
-   }
-   err(message + " " + e.filename + ":" + e.lineno + ": " + e.message);
-   throw e;
-  };
+  // worker.onerror = e => {
+  //  var message = "worker sent an error!";
+  //  if (worker.pthread_ptr) {
+  //   message = "Pthread " + ptrToString(worker.pthread_ptr) + " sent an error!";
+  //  }
+  //  err(message + " " + e.filename + ":" + e.lineno + ": " + e.message);
+  //  throw e;
+  // };
   assert(wasmMemory instanceof WebAssembly.Memory, "WebAssembly memory should have been loaded by now!");
   assert(wasmModule instanceof WebAssembly.Module, "WebAssembly Module should have been loaded by now!");
   var handlers = [];
@@ -54793,7 +54793,11 @@ const InternalConfig = function (initConfig) { // eslint-disable-line no-unused-
 		 * @type {?function(...*)}
 		 */
 		onPrintError: function (var_args) {
-			console.error.apply(console, Array.from(arguments)); // eslint-disable-line no-console
+			if (var_args) {
+        console.error.apply(console, Array.from(arguments)); // eslint-disable-line no-console
+    } else {
+        console.error("An error occurred, but no details were provided.");
+    }
 		},
 	};
 
