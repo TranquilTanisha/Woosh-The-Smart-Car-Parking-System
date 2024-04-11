@@ -43,6 +43,7 @@ export default function SignUpSide() {
   const handleSubmit = async (event) => { 
     event.preventDefault();
     const data = new FormData(event.currentTarget);
+    const name = data.get('name');
     const email = data.get('email');
     const password = data.get('password');
     const confirmPassword = data.get('confirm_password');
@@ -73,7 +74,7 @@ export default function SignUpSide() {
         localStorage.setItem('token', docName);
         const userData = {
           email: email,
-          name: userName,
+          name: name,
           photoURL: user.photoURL ? user.photoURL : '',
           licenseNo1: '',
           licenseNo2: '',

@@ -162,13 +162,13 @@ const Location = () => {
                 <input type="text" className="search-input" placeholder="Search..." />
 
             </div>
-            <div style={{ height: '60%', width: '100%' }}>
+            <div style={{ height: '50%', width: '100%' }}>
                 {fetchError && <p>{fetchError}</p>}
                 {initialPosition && (
                     <MapContainer
                         center={initialPosition}
                         zoom={13}
-                        style={{ height: '80vh', width: '100%' }}
+                        style={{ height: '70vh', width: '100%' }}
                         whenCreated={handleMapLoad}
                     >
                         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />

@@ -1,6 +1,18 @@
 .dark_mode {
-    margin-top: -20px;
-    margin-left: 10px;
+    /* margin-top: -20px;
+    margin-left: 10px; */
+}
+
+.dark_mode {
+    cursor: pointer;
+  }
+  
+  .darkIcon {
+    color: white;
+  }
+  
+  .lightIcon {
+    color: black;
 }
 
 .dark_mode_label {

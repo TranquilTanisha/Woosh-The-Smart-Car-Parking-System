@@ -1,6 +1,5 @@
-import React from "react";
-import { ReactComponent as Sun } from "./Sun.svg";
-import { ReactComponent as Moon } from "./Moon.svg";
+import React, { useEffect } from "react";
+import ContrastIcon from '@mui/icons-material/Contrast';
 import "./DarkMode.css";
 
 const DarkMode = () => {
@@ -8,36 +7,81 @@ const DarkMode = () => {
         document.querySelector("body").setAttribute('data-theme', 'dark')
         localStorage.setItem("selectedTheme", "dark")
     }
+
     const setLightMode = () => {
         document.querySelector("body").setAttribute('data-theme', 'light')
         localStorage.setItem("selectedTheme", "light")
     }
 
-    const selectedTheme = localStorage.getItem("selectedTheme")
-    if (selectedTheme === "dark") {
-        setDarkMode();
-    }
+    useEffect(() => {
+        const selectedTheme = localStorage.getItem("selectedTheme")
+        if (selectedTheme === "dark") {
+            setDarkMode();
+        }
+    }, []);
 
-    const toggleTheme = e => {
-        if (e.target.checked) setDarkMode();
-        else setLightMode();
-      };
+    const toggleTheme = () => {
+        const selectedTheme = localStorage.getItem("selectedTheme");
+        if (selectedTheme === "dark") {
+            setLightMode();
+        } else {
+            setDarkMode();
+        }
+    };
 
     return (
-        <div className='dark_mode'>
-            <input
-                className='dark_mode_input'
-                type='checkbox'
-                id='darkmode-toggle'
-                onChange={toggleTheme}
-                defaultChecked={selectedTheme === "dark"}
-            />
-            <label className='dark_mode_label' for='darkmode-toggle'>
-                <Sun />
-                <Moon />
-            </label>
+        <div className='dark_mode' onClick={toggleTheme}>
+            <ContrastIcon />
         </div>
     );
 };
 
 export default DarkMode;
+
+
+
+
+// import React from "react";
+// import { ReactComponent as Sun } from "./Sun.svg";
+// import { ReactComponent as Moon } from "./Moon.svg";
+// import ContrastIcon from '@mui/icons-material/Contrast';
+// import "./DarkMode.css";
+
+// const DarkMode = () => {
+//     const setDarkMode = () => {
+//         document.querySelector("body").setAttribute('data-theme', 'dark')
+//         localStorage.setItem("selectedTheme", "dark")
+//     }
+//     const setLightMode = () => {
+//         document.querySelector("body").setAttribute('data-theme', 'light')
+//         localStorage.setItem("selectedTheme", "light")
+//     }
+
+//     const selectedTheme = localStorage.getItem("selectedTheme")
+//     if (selectedTheme === "dark") {
+//         setDarkMode();
+//     }
+
+//     const toggleTheme = e => {
+//         if (e.target.checked) setDarkMode();
+//         else setLightMode();
+//       };
+
+//     return (
+//         <div className='dark_mode'>
+//             <input
+//                 className='dark_mode_input'
+//                 type='checkbox'
+//                 id='darkmode-toggle'
+//                 onChange={toggleTheme}
+//                 defaultChecked={selectedTheme === "dark"}
+//             />
+//             <label className='dark_mode_label' for='darkmode-toggle'>
+//                 <Sun />
+//                 <Moon />
+//             </label>
+//         </div>
+//     );
+// };
+
+// export default DarkMode;
