@@ -44,7 +44,7 @@ const Home = () => {
          </div>
         </Box>
         <SessionHistory />
-        {/* <div>
+        <div>
           <img
             src={chatbotIcon}
             alt="Chatbot"
@@ -61,7 +61,7 @@ const Home = () => {
               />
             </div>
           )}
-        </div> */}
+        </div>
       </div>
       <div className='bottombar'>
       <Bottombar value="Home" />
