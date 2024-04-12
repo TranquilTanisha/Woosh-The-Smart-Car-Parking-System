@@ -4,6 +4,7 @@ import { getAuth, signOut } from "firebase/auth";
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Theme from '../DarkMode/DarkMode';
+import Logo from '../../Images/woosh.jpeg'
 
 
 const pages = ['Home', 'Navigation', 'QR'];
@@ -45,7 +46,6 @@ const ResponsiveAppBar = () => {
     const profile = localStorage.getItem('profile')
     if (profile !== "undefined" && profile !== null) {
       setProfile(JSON.parse(profile));
-      console.log("Navbar: ", profile);
     }
   }, []);
 
@@ -53,7 +53,8 @@ const ResponsiveAppBar = () => {
     <AppBar position="static" sx={{ backgroundColor: '#b81c21' }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <AdbIcon sx={{ display: { xs: 'none', sm: 'flex' }, mr: 1 }} />
+          {/* <AdbIcon sx={{ display: { xs: 'none', sm: 'flex' }, mr: 1 }} /> */}
+          <img src={Logo} alt="Woosh Logo" style={{ height: '30px', marginRight: '8px' }} />
           <Typography
             variant="h6"
             noWrap
@@ -69,7 +70,7 @@ const ResponsiveAppBar = () => {
               textDecoration: 'none',
             }}
           >
-            Woosh
+            
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', sm: 'flex' } }}>
             {pages.map((page) => (

@@ -37,6 +37,13 @@ function Profile() {
 
   return (
     <>
+    <style>
+        {`
+          body {
+            overflow: hidden;
+          }
+        `}
+      </style>
       <Navbar />
       <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }} className='container hello'>
         <Typography variant="h3" sx={{ fontFamily: 'Anta', fontStyle: 'normal', color: '#b81c21', fontWeight: 700, mb: 2, mt: 2 }}>Profile</Typography>
@@ -50,11 +57,11 @@ function Profile() {
               <>
                 <div className='box-d'>
                   <Avatar alt={profile.displayName} src={profile.photoURL} sx={{ mx: 'auto', height: '100px', width: '100px', display: 'flex', marginBottom: '2vh' }} />
-                  <div style={{ display: 'flex', flexDirection: 'column', padding: '0 2rem' }}>
-                    <Typography variant="h6" className='text-box' sx={{ mb: 1 }}>Name: <span className='s-text'>{profile.displayName}</span></Typography>
+                  <div style={{ display: 'flex', flexDirection: 'column', padding: '0 1rem' }}>
+                    <Typography variant="h6" className='text-box'>Name: <span className='s-text'>{profile.displayName}</span></Typography>
                     <Typography variant="body1" className='text-box'>Email: <span className='s-text'>{profile.email}</span></Typography>
                     <Typography variant="body1" className='text-box'>Employee ID: <span className='s-text'>{profile.employeeID}</span></Typography>
-                    <Typography variant="body1" className='text-box'>Organization ID: <span className='s-text'>{profile.orgID}</span></Typography>
+                    <Typography variant="body1" className='text-box'>Org ID: <span className='s-text'>{profile.orgID}</span></Typography>
                     <Button variant="contained" className='btd' onClick={handleEditProfile} sx={{ mt: 2, backgroundColor: '#b81c21' }} endIcon={<SendIcon />}>
                       Edit Profile
                     </Button>

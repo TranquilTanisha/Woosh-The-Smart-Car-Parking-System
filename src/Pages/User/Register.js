@@ -52,15 +52,7 @@ const generateOrgEmployeeMap = async (email) => {
 }
 
 const getEmployeeID = async (orgEmployeeMap, email) => {
-  // The orgEmployeeMap is something like this:
-  // {
-  //   0yCprQEL4XNRO22HxhxMfvSqYSF2: {2220210207: 'shah.dhyey@gmail.com', 2220210236: 'dhyey095534@gmail.com', 2220241203: 'tanisha.kaur@somaiya.edu', 2220245632: 'yatharth.w@somaiya.edu', 2220245879: 'siddhanth.shah@gmail.com'}
-  //   8WP1uuHtHnXJ5JcmV8tNbmip9C83: {123456: 'shah.dhyey@gmail.com', 234567891: 'siddhanth.shah@somaiya.edu', 345678912: 'yatharth.w@somaiya.edu', 456789123: 'dhyey095534@gmail.com'}
-  //   RdbvNjonv5aYFXZHAB3OFT0gKYR2: {7890: 'fopiri7034@felibg.com', 100100: 'poxiho2585@dacgu.com', 123456: 'ximiw93925@adstam.com', 123456789: 'abc@gmail.com', 234567891: 'def@gmail.com', 345678912: 'ghi@gmail.com'}
-  //   om0ZteOhdkg2t1EoLmj6zwiYvyr1: {2220210207: 'shah.dhyey@gmail.com', 2220210236: 'dhyey095534@gmail.com', 2220241203: 'tanisha.kaur@somaiya.edu', 2220245632: 'yatharth.w@somaiya.edu', 2220245879: 'siddhanth.shah@gmail.com'}
-  //   }
-  // Where the key is the orgID and the value is a map of employeeID to email
-  // We need to find the employeeID for the given email
+
   let employeeID = null;
   for (const orgID in orgEmployeeMap) {
     const employeeMap = orgEmployeeMap[orgID];
@@ -75,7 +67,6 @@ const getEmployeeID = async (orgEmployeeMap, email) => {
 }
 
 const getOrgID = async (orgEmployeeMap, employeeID) => {
-  // Get the orgID for the given employeeID
   let orgID = null;
   for (const mapOrgID in orgEmployeeMap) {
     const employeeMap = orgEmployeeMap[mapOrgID];
@@ -122,7 +113,7 @@ export default function SignUpSide() {
       createUserWithEmailAndPassword(auth, email, password).then((userCredential) => {
         const user = userCredential.user;
         const docName = user.uid.toString();
-        const userName = user.displayName;
+        const userName = data.get('name');
         localStorage.setItem('token', docName);
         // Autofetch the employee ID and org ID
         generateOrgEmployeeMap(email).then((orgEmployeeMap) => {

@@ -409,6 +409,15 @@
   flex-direction: column;
 }
 
+.pdetails {
+  margin-bottom: 5px;
+}
+
+.pbasis,
+.pcharges,
+.pfloors{
+  margin-bottom: 5px;
+}
 
 /*  Edit-Profile page */
 

@@ -44,7 +44,6 @@ const ResponsiveAppBar = () => {
     const profile = localStorage.getItem('profile')
     if (profile !== "undefined" && profile !== null) {
       setProfile(JSON.parse(profile));
-      console.log("Navbar: ", profile);
     }
   }, []);
 

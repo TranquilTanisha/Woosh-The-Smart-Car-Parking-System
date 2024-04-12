@@ -84,6 +84,13 @@ const EditProfile = () => {
 
     return (
         <>
+        <style>
+        {`
+          body {
+            overflow: hidden;
+          }
+        `}
+      </style>
         <AppBar position="static" style={{ backgroundColor: '#b81c21' }}>
         <Toolbar>
             <IconButton edge="start" color="inherit" aria-label="menu" onClick={goBack}>

@@ -28,8 +28,8 @@ const ReadQR = () => {
   const [cameraErrorMessage, setCameraErrorMessage] = useState('');
   const [scanning, setScanning] = useState(false);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
-  const [showLinkButton, setShowLinkButton] = useState(false); // State to control button visibility
-  const [hasScannedOnce, setHasScannedOnce] = useState(false); // State to track if QR has been scanned at least once
+  const [showLinkButton, setShowLinkButton] = useState(false);
+  const [hasScannedOnce, setHasScannedOnce] = useState(false);
   const scannerRef = useRef(null);
 
   useEffect(() => {
@@ -93,7 +93,6 @@ const ReadQR = () => {
           const user = auth.currentUser;
           const uid = user.uid;
           const userDocRef = doc(db, "users", uid);
-          // Logic to update entry/exit time on user side
           getDoc(userDocRef).then(docSnap => {
             if (docSnap.exists()) {
               console.log(docSnap.data());
@@ -107,8 +106,8 @@ const ReadQR = () => {
               const formattedDateTime = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 
               setShowSuccessMessage(true);
-              setHasScannedOnce(true); // Set hasScannedOnce to true after first scan
-              setShowLinkButton(true); // Show the button when QR is successfully scanned
+              setHasScannedOnce(true);
+              setShowLinkButton(true);
               setTimeout(() => {
                 setShowSuccessMessage(false);
                 setScanning(false);
@@ -129,7 +128,6 @@ const ReadQR = () => {
             }
           });
 
-          // Logic to update entry/exit time on admin side
           const qrOrgID = result.split("org_id=")[1];
           console.log("QR ORG ID: ", qrOrgID);
           getDoc(userDocRef).then(docSnap => {
@@ -145,7 +143,6 @@ const ReadQR = () => {
               const autoID = localStorage.getItem("autoID");
               console.log("Auto ID: ", autoID);
               if (autoID !== null) {
-                // This means that the autoID exists, thus the user is trying to exit
                 getDoc(doc(db, "organization", qrOrgID)).then(docSnap => {
                   if (docSnap.exists()) {
                     const orgDocRef = doc(db, "organization", qrOrgID);
@@ -211,6 +208,13 @@ const ReadQR = () => {
 
   return (
     <>
+    <style>
+        {`
+          body {
+            overflow: hidden;
+          }
+        `}
+      </style>
       <div className="navbar">
         <Navbar />
       </div>

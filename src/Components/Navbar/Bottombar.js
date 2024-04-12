@@ -13,10 +13,9 @@ export default function LabelBottomNavigation() {
   const [value, setValue] = React.useState('Home');
 
   React.useEffect(() => {
-    // Extract the path from the current location
+
     const path = location.pathname;
 
-    // Map the path to the corresponding value in BottomNavigation
     const pathToValueMap = {
       '/': 'Home',
       '/navigation': 'Navigation',
@@ -24,7 +23,6 @@ export default function LabelBottomNavigation() {
       '/profile': 'Profile',
     };
 
-    // Set the value based on the path
     setValue(pathToValueMap[path] || 'Home');
   }, [location]);
 

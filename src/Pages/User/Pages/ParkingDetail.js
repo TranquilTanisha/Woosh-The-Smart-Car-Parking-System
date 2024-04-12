@@ -5,17 +5,20 @@ import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useParams } from 'react-router-dom';
-import { getFirestore, doc, getDoc } from 'firebase/firestore';
+import { getFirestore, doc, getDoc, collection, query, where, getDocs } from 'firebase/firestore';
 import Image from '../../../Images/location.png';
 import '../../../App.css';
 
 const ParkingDetail = () => {
     const { id } = useParams();
     const [organization, setOrganization] = useState(null);
+    const [totalParking, setTotalParking] = useState(0);
+    const [usedSpots, setUsedSpots] = useState(0);
 
     useEffect(() => {
-        const fetchOrganization = async () => {
+        const fetchOrganizationAndParking = async () => {
             const db = getFirestore();
+
             const orgRef = doc(db, 'organization', id);
             const orgSnap = await getDoc(orgRef);
             if (orgSnap.exists()) {
@@ -23,9 +26,27 @@ const ParkingDetail = () => {
             } else {
                 console.log('Organization not found');
             }
+
+            var totalParkingCount = 0;
+            var occupiedSpots = 0;
+
+            const magnetometersRef = collection(db, 'magnetometers');
+            const querySnapshot = await getDocs((magnetometersRef)).then((querySnapshot) => {
+                
+                querySnapshot.forEach((doc) => {
+                    if (doc.data().org_id === id) {
+                        setTotalParking(++totalParkingCount);
+                        if(doc.data().occupied === true){
+                            setUsedSpots(++occupiedSpots);
+                        }
+                    }
+                    
+                });
+                }
+            );
         };
 
-        fetchOrganization();
+        fetchOrganizationAndParking();
     }, [id]);
 
     const goBack = () => {
@@ -53,32 +74,38 @@ const ParkingDetail = () => {
                                 <div className='pname'>
                                     {organization.org_name}
                                 </div>
-                                <div className='paddress'>
-                                <a className='paddress'
-                                    href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(organization.location)}`}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                >
-                                    View Location on Maps
-                                </a>
+                                <div className='pdetails'>
+                                <div className='pbasis'>
+                                    Basis: {organization.basis}
                                 </div>
-
+                                <div className='pcharges'>
+                                    Charges: {organization.charges}
+                                </div>
+                                <div className='pfloors'>
+                                    Floors: {organization.floors}
+                                </div>
+                                </div>
+                                <div className='paddress'>
+                                    <a className='paddress'
+                                        href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(organization.location)}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                    >
+                                        View Location on Maps
+                                    </a>
+                                </div>
                             </div>
                         </div>
                         <div className='pinfo'>
-                            <div className='pinfo1'><div>Total slots</div><div>{organization.totalParking}</div></div>
+                            <div className='pinfo1'><div>Total slots</div><div>{totalParking}</div></div>
                             <div className='pline'></div>
-                            <div className='pinfo1'><div>Filled</div><div>{organization.usedSpots}</div></div>
+                            <div className='pinfo1'><div>Filled</div><div>{usedSpots}</div></div>
                             <div className='pline'></div>
-                            <div className='pinfo1'><div>Vacant</div><div>{organization.vacantSpots}</div></div>
+                            <div className='pinfo1'><div>Vacant</div><div>{totalParking - usedSpots}</div></div>
                         </div>
                     </div>
                 </div>
             )}
-        {/* Embedding iframe
-        <div style={{ margin: '20px auto', width: '80%', textAlign: 'center' }}>
-        <iframe src="https://html.itch.zone/html/10151287/index.html" allow="autoplay; fullscreen *; geolocation; microphone; camera; midi; monetization; xr-spatial-tracking; gamepad; gyroscope; accelerometer; xr; cross-origin-isolated" allowtransparency="true" webkitallowfullscreen="true" mozallowfullscreen="true" msallowfullscreen="true" frameborder="0" allowfullscreen="true" scrolling="no" id="game_drop"></iframe>
-        </div> */}
         </div>
     );
 }
