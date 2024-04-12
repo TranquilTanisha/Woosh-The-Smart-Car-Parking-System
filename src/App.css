@@ -16,7 +16,21 @@
 
 .home{
   background-color: var(--body_background);
+}
 
+.navigation{
+  background-color: var(--body_background);
+  height: 100vh;
+}
+
+.qr{
+  background-color: var(--body_background);
+  /* height: 100vh; */
+}
+
+.profile{
+  background-color: var(--body_background);
+  height: 100vh;
 }
 
 .location_box {
@@ -183,6 +197,14 @@
 
 .navigation-container {
   padding: 12px;
+  margin-top: 40px;
+}
+
+@media only screen and (max-width: 600px) {
+.navigation-container {
+  padding: 12px;
+  margin-top: 0%;
+}
 }
 
 .search-bar {
@@ -373,8 +395,9 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: #f2f2f2;
+  /* background-color: var(--body_background); */
   height: 100vh;
+  margin-top: 40px;
 }
 
 .title {
@@ -399,7 +422,7 @@ svg path {
 
 .form {
   max-width: 500px;
-  background-color: #fff;
+  background-color: var(--body_background);
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -462,9 +485,14 @@ svg {
   fill: #000;
 }
 
+.container{
+  color: var(--body_color);
+}
+
 @media (max-width: 768px) {
   .container {
     padding: 20px;
+    color: var(--body_color);
   }
 }
 
@@ -493,7 +521,7 @@ svg {
   font-size: small!important;
   margin-left:1vw;
   font-weight: bold;
-  color: black;
+  color: var(--body_color);
 }
 
 .box-d{

@@ -6,6 +6,7 @@ import '../../../App.css';
 import Bottombar from '../../../Components/Navbar/Bottombar';
 import Navbar from '../../../Components/Navbar/Navbar';
 import { auth, db } from '../../../Firebase.js';
+import Theme from '../../../Components/DarkMode/DarkMode';
 
 QrScanner.WORKER_PATH = './worker.js';
 
@@ -212,6 +213,8 @@ const ReadQR = () => {
       <div className="navbar">
         <Navbar />
       </div>
+      <div className="qr">
+        <Theme />
       <div className="container">
         <h2 className="text-center mb-4">Scan QR Code</h2>
         <div className="card border-0">
@@ -231,6 +234,7 @@ const ReadQR = () => {
         <div className="bottombar">
           <Bottombar value={value} />
         </div>
+      </div>
       </div>
     </>
   );
