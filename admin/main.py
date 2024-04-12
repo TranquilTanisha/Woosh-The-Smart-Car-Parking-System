@@ -101,25 +101,31 @@ def view_employees():
     doc=ref.get()
     if doc.exists:
         data=doc.to_dict()
-        return render_template('view-employees.html', data=data, l=len(data))
+        return render_template('view-employees.html', data=data, l=len(data), org_name=session['org_name'])
     return 'No data available'
 
 #k==emp id
 @app.route('/view-employee/<k>', methods=['GET','POST'])
 @authenticate_user
 def view_employee(k):
-    ref=db.collection('notification').document(session['localId'])
-    doc=ref.get()   
-    if doc.exists:
-        data=doc.to_dict()
+    # ref=db.collection('notification').document(session['localId'])
+    # doc=ref.get()   
+    # if doc.exists:
+    #     data=doc.to_dict()
+    #     print(data)
+    #     user_id=data[k]
+    #     print(user_id)
+    #     ref=db.collection('users').document(user_id)
+    #     doc=ref.get()
+    #     if doc.exists:
+    #         data=doc.to_dict()
+    #         return render_template('view-employee.html', data=data, id=user_id, oeg_name=session['org_name'])
+    ref=db.collection('users')
+    data=ref.where('email', '==', k).get()
+    if len(data)!=0:
+        data=data[0].to_dict()
         print(data)
-        user_id=data[k]
-        print(user_id)
-        ref=db.collection('users').document(user_id)
-        doc=ref.get()
-        if doc.exists:
-            data=doc.to_dict()
-            return render_template('view-employee.html', data=data, id=user_id, oeg_name=session['org_name'])
+        return render_template('view-employee.html', data=data, id=data['email'], org_name=session['org_name'])
     return 'No data available'
 
 #k==user id
@@ -141,6 +147,25 @@ def delete_employees():
     ref.delete()
     flash('All employees deleted successfully')
     return redirect(url_for('add_employees'))
+
+@app.route('/delete-employee/<k>', methods=['GET','POST'])
+@authenticate_user
+def delete_employee(k):
+    ref=db.collection('employees').document(session['localId'])
+    doc=ref.get()
+    data=doc.to_dict()
+    del data[k]
+    ref.set(data)
+    ref=db.collection('users')
+    data=ref.where('email', '==', k).get()
+    if len(data)!=0:
+        data=data.to_dict()
+        print(data)
+        del data['employeeID']
+        print(data)
+        ref.set(data)
+    flash('Employee deleted successfully')
+    return redirect(url_for('view_employees'))
 
 @app.route('/view-logs', methods=['GET','POST'])
 @authenticate_user
@@ -175,8 +200,9 @@ def view_logs():
     #     sorted_dict = dict(sorted(my_dict.items(), key=lambda item: item[1][0]))
     # print(data)
     # print(length)
-    # print(emp)
     month = dict(sorted(month.items(), key=lambda item: item[0], reverse=True)) #sorting month and yr in descending order
+    for k,v in month.items():
+        month[k]=sorted(v, reverse=True)
     return render_template('view_logs.html', month=month, months=months, data=data, org_name=session['org_name'], total=length, emp=emp)
 
 @app.route('/download-logs', methods=['GET','POST'])
