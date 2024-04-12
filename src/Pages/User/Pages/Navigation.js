@@ -8,6 +8,7 @@ import Navbar from '../../../Components/Navbar/Navbar';
 import Bottombar from '../../../Components/Navbar/Bottombar';
 import { getFirestore, collection, getDocs } from 'firebase/firestore';
 import Image from '../../../Images/location.png';
+import Theme from '../../../Components/DarkMode/DarkMode';
 
 // eslint-disable-next-line
 const placeholderImage = 'https://via.placeholder.com/150';
@@ -28,6 +29,9 @@ function Navigation() {
   }, []);
 
   return (
+    <>
+    <div className='navigation'>
+    <Theme />
     <div>
       <div className="navbar">
         <Navbar />
@@ -82,6 +86,8 @@ function Navigation() {
         <Bottombar />
       </div>
     </div>
+    </div>
+    </>
   );
 }
 

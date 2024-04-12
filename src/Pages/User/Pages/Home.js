@@ -4,7 +4,7 @@ import Bottombar from '../../../Components/Navbar/Bottombar';
 import Navbar from '../../../Components/Navbar/Navbar';
 import Location from '../Location';
 import { Box } from '@mui/material';
-import SessionHistory from '../../../Components/SessionHistory';
+// import SessionHistory from '../../../Components/SessionHistory';
 import Theme from '../../../Components/DarkMode/DarkMode';
 // import Chatbot from 'react-chatbot-kit';
 // import 'react-chatbot-kit/build/main.css';
@@ -36,7 +36,7 @@ const Home = () => {
       <div className='home'>
         <Theme />
         <div>
-          <h1 style={{ marginTop: '3rem', textAlign: 'center' }}>Welcome {username}! Explore nearby parking areas. </h1>
+          <h1 style={{ marginTop: '3rem', textAlign: 'center', color: 'var(--body_color)' }}>Welcome {username}! Explore nearby parking areas. </h1>
         </div>
         <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
          <div className='lb'>
@@ -45,7 +45,7 @@ const Home = () => {
           </div>
          </div>
         </Box>
-        <SessionHistory />
+        {/* <SessionHistory /> */}
         {/* <div>
           <img
             src={chatbotIcon}

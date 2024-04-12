@@ -1,15 +1,15 @@
-import { addDoc, collection, doc, getDoc, updateDoc } from "firebase/firestore";
-import QrScanner from 'qr-scanner';
 import React, { useEffect, useRef, useState } from 'react';
+import QrScanner from 'qr-scanner';
 import { useNavigate } from 'react-router-dom';
-import '../../../App.css';
+import { addDoc, collection, doc, getDoc, updateDoc } from "firebase/firestore";
+import { auth, db } from '../../../Firebase.js';
+import Theme from '../../../Components/DarkMode/DarkMode';
 import Bottombar from '../../../Components/Navbar/Bottombar';
 import Navbar from '../../../Components/Navbar/Navbar';
-import { auth, db } from '../../../Firebase.js';
+import '../../../App.css';
 
 QrScanner.WORKER_PATH = './worker.js';
 
-// eslint-disable-next-line
 function genAutoID(len) {
   var text = "";
 
@@ -22,14 +22,14 @@ function genAutoID(len) {
 }
 
 const ReadQR = () => {
-  // eslint-disable-next-line
   const navigate = useNavigate();
-  // eslint-disable-next-line
   const [data, setData] = useState(null);
   const [cameraPermissionGranted, setCameraPermissionGranted] = useState(false);
   const [cameraErrorMessage, setCameraErrorMessage] = useState('');
   const [scanning, setScanning] = useState(false);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  const [showLinkButton, setShowLinkButton] = useState(false); // State to control button visibility
+  const [hasScannedOnce, setHasScannedOnce] = useState(false); // State to track if QR has been scanned at least once
   const scannerRef = useRef(null);
 
   useEffect(() => {
@@ -107,10 +107,10 @@ const ReadQR = () => {
               const formattedDateTime = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 
               setShowSuccessMessage(true);
+              setHasScannedOnce(true); // Set hasScannedOnce to true after first scan
+              setShowLinkButton(true); // Show the button when QR is successfully scanned
               setTimeout(() => {
                 setShowSuccessMessage(false);
-                scannerRef.current.stop();
-                videoElement.remove();
                 setScanning(false);
               }, 3000);
 
@@ -205,31 +205,39 @@ const ReadQR = () => {
     }
   };
 
-  const value = "QR";
+  const handleRedirect = () => {
+    window.location.href = 'https://html.itch.zone/html/10151287/index.html';
+  };
 
   return (
     <>
       <div className="navbar">
         <Navbar />
       </div>
-      <div className="container">
-        <h2 className="text-center mb-4">Scan QR Code</h2>
-        <div className="card border-0">
-          <div className="card-body d-flex flex-column align-items-center justify-content-center">
-            {cameraErrorMessage && <p className="error-message">{cameraErrorMessage}</p>}
-            {showSuccessMessage && <p className="success-message">QR code has successfully been scanned</p>}
-            <button
-              type="button"
-              className="btn btn-primary mx-2 scan-button"
-              onClick={handleCameraScan}
-              disabled={!cameraPermissionGranted || scanning}
-            >
-              {scanning ? 'Scanning...' : 'Scan QR Code'}
-            </button>
+      <div className="qr">
+        <Theme />
+        <div className="container">
+          <h2 className="text-center mb-4">Scan QR Code</h2>
+          <div className="card border-0">
+            <div className="card-body d-flex flex-column align-items-center justify-content-center">
+              {cameraErrorMessage && <p className="error-message">{cameraErrorMessage}</p>}
+              {showSuccessMessage && <p className="success-message">QR code has successfully been scanned</p>}
+              <button
+                type="button"
+                className="btn btn-primary mx-2 scan-button"
+                onClick={handleCameraScan}
+                disabled={!cameraPermissionGranted || scanning}
+              >
+                {scanning ? 'Scanning...' : 'Scan QR Code'}
+              </button>
+              {showLinkButton && hasScannedOnce && (
+                <button className="btn btn-primary mx-2 scan-button" onClick={handleRedirect}>Go to Link</button>
+              )}
+            </div>
           </div>
-        </div>
-        <div className="bottombar">
-          <Bottombar value={value} />
+          <div className="bottombar">
+            <Bottombar value="QR" />
+          </div>
         </div>
       </div>
     </>

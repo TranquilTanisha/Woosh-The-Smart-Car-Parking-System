@@ -5,7 +5,15 @@
 
 .dark_mode {
     cursor: pointer;
-  }
+}
+
+@media only screen and (max-width: 600px) {
+    .dark_mode {
+        right: 10px;
+        bottom: 10px;
+    }
+}
+
   
   .darkIcon {
     color: white;

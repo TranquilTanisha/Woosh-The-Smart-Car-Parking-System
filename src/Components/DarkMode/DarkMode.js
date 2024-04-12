@@ -1,5 +1,7 @@
 import React, { useEffect } from "react";
 import ContrastIcon from '@mui/icons-material/Contrast';
+import Brightness5TwoToneIcon from '@mui/icons-material/Brightness5TwoTone';
+import Themelogo from '../../Images/theme.png'
 import "./DarkMode.css";
 
 const DarkMode = () => {
@@ -31,12 +33,13 @@ const DarkMode = () => {
 
     return (
         <div className='dark_mode' onClick={toggleTheme}>
-            <ContrastIcon />
+            <img src={Themelogo} alt="Brightness5TwoToneIcon" style={{ width: '30px', height: '30px' }} />   
         </div>
     );
 };
 
 export default DarkMode;
+
 
 
 
