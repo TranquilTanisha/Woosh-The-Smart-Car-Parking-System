@@ -175,8 +175,9 @@ def view_logs():
     #     sorted_dict = dict(sorted(my_dict.items(), key=lambda item: item[1][0]))
     # print(data)
     # print(length)
-    # print(emp)
     month = dict(sorted(month.items(), key=lambda item: item[0], reverse=True)) #sorting month and yr in descending order
+    for k,v in month.items():
+        month[k]=sorted(v, reverse=True)
     return render_template('view_logs.html', month=month, months=months, data=data, org_name=session['org_name'], total=length, emp=emp)
 
 @app.route('/download-logs', methods=['GET','POST'])
