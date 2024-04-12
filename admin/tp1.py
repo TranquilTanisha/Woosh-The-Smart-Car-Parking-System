@@ -27,6 +27,24 @@ from datetime import datetime
 # docs=ref.get()
 # print(len(docs))
 
-ref=db.collection('alerts').document('8WP1uuHtHnXJ5JcmV8tNbmip9C83')
+ref=db.collection('alerts').document('0yCprQEL4XNRO22HxhxMfvSqYSF2')
 ref.update({'45N8MO2wD6UbCxlmRYxRaeZqEtv2': datetime.now().strftime('%Y-%m-%d %H:%M:%S')})
 # print(datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+
+def search(email="shah.dhyey@gmail.com"):
+    ref=db.collection('employees').stream()
+    for doc in ref:
+        doc=doc.to_dict()
+        for k,v in doc.items():
+            if v == email:
+                return k
+    # doc=ref.get()
+    # if doc.exists:
+    #     doc=doc.to_dict()
+    #     for k,v in doc.items():
+    #         if v == email:
+    #             return k
+        else:
+            return None
+k=search()
+print(k)
