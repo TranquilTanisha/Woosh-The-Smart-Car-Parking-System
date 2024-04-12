@@ -147,7 +147,6 @@ const Location = () => {
         return deg * (Math.PI / 180);
     };
 
-    // eslint-disable-next-line
     const handleSearch = (e) => {
         setSearchTerm(e.target.value);
     };
@@ -159,7 +158,7 @@ const Location = () => {
     return (
         <>
             <div className="search-bar" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                <input type="text" className="search-input" placeholder="Search..." />
+                <input type="text" className="search-input" placeholder="Search..." onChange={handleSearch}/>
 
             </div>
             <div style={{ height: '50%', width: '100%' }}>
