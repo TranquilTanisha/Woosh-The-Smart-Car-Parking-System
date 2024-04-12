@@ -100,7 +100,8 @@
 .card-body {
   display: flex;
   justify-content: center;
-  padding-top: 10vh;
+  /* padding-top: 10vh; */
+  flex-direction: column;
 }
 
 #qrScanner {
@@ -108,17 +109,10 @@
   height: 200px;
   object-fit: cover;
   position: absolute;
-  top: 30vh;
-  left: 41vw;
+  top: 35vh;
+  left: 44%;
   /* transform: translate(-50%, -50%); */
 }
-
-
-
-/* #qrScanner {
-  position: relative;
-} */
-
 
 .qrScanner {
   position: relative;
@@ -159,11 +153,38 @@
   font-size: 16px;
   font-weight: bold;
   text-transform: uppercase;
+  margin-top: 4px;
 }
 
 .scan-button:hover {
   background-color: #da4045;
 }
+
+/* .scan-button2 {
+  padding: 10px 20px;
+  font-size: 18px;
+  border-radius: 5px;
+  background-color: #b81c21;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  outline: none;
+  font-size: 16px;
+  font-weight: bold;
+  text-transform: uppercase;
+  margin-top: 30%;
+}
+
+.scan-button2:hover {
+  background-color: #da4045;
+}
+
+@media only screen and (max-width: 600px) {
+  .scan-button2{
+    margin-top: 90%;
+  }
+} */
 
 /* .scanner-animation {
   position: relative;
