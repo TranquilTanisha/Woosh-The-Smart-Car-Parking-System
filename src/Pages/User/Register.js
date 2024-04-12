@@ -15,7 +15,8 @@ import { db } from '../../Firebase';
 import Image2 from '../../Images/car_parking.jpg';
 // import { auth , googleProvider} from "../Firebase";
 import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore";
+import { collection, doc, getDocs, setDoc } from "firebase/firestore";
+
 function Copyright(props) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
@@ -35,12 +36,63 @@ function validateEmail(email) {
   return regex.test(email);
 }
 
+const generateOrgEmployeeMap = async (email) => {
+  // Get all the documents from the employees collection
+
+  const querySnapshot = await getDocs(collection(db, "employees"));
+  // Create a map of orgID to employeeIDs to email
+  const orgEmployeeMap = {};
+  querySnapshot.forEach((doc) => {
+    // console.log(doc.id, " => ", doc.data());
+    // const orgId = doc.id;
+    // const empIdToEmail = doc.data();
+    orgEmployeeMap[doc.id] = doc.data();
+  });
+  return orgEmployeeMap;
+}
+
+const getEmployeeID = async (orgEmployeeMap, email) => {
+  // The orgEmployeeMap is something like this:
+  // {
+  //   0yCprQEL4XNRO22HxhxMfvSqYSF2: {2220210207: 'shah.dhyey@gmail.com', 2220210236: 'dhyey095534@gmail.com', 2220241203: 'tanisha.kaur@somaiya.edu', 2220245632: 'yatharth.w@somaiya.edu', 2220245879: 'siddhanth.shah@gmail.com'}
+  //   8WP1uuHtHnXJ5JcmV8tNbmip9C83: {123456: 'shah.dhyey@gmail.com', 234567891: 'siddhanth.shah@somaiya.edu', 345678912: 'yatharth.w@somaiya.edu', 456789123: 'dhyey095534@gmail.com'}
+  //   RdbvNjonv5aYFXZHAB3OFT0gKYR2: {7890: 'fopiri7034@felibg.com', 100100: 'poxiho2585@dacgu.com', 123456: 'ximiw93925@adstam.com', 123456789: 'abc@gmail.com', 234567891: 'def@gmail.com', 345678912: 'ghi@gmail.com'}
+  //   om0ZteOhdkg2t1EoLmj6zwiYvyr1: {2220210207: 'shah.dhyey@gmail.com', 2220210236: 'dhyey095534@gmail.com', 2220241203: 'tanisha.kaur@somaiya.edu', 2220245632: 'yatharth.w@somaiya.edu', 2220245879: 'siddhanth.shah@gmail.com'}
+  //   }
+  // Where the key is the orgID and the value is a map of employeeID to email
+  // We need to find the employeeID for the given email
+  let employeeID = null;
+  for (const orgID in orgEmployeeMap) {
+    const employeeMap = orgEmployeeMap[orgID];
+    for (const empID in employeeMap) {
+      if (employeeMap[empID] === email) {
+        employeeID = empID;
+        break;
+      }
+    }
+  }
+  return employeeID;
+}
+
+const getOrgID = async (orgEmployeeMap, employeeID) => {
+  // Get the orgID for the given employeeID
+  let orgID = null;
+  for (const mapOrgID in orgEmployeeMap) {
+    const employeeMap = orgEmployeeMap[mapOrgID];
+    if (employeeMap[employeeID]) {
+      orgID = mapOrgID;
+      break;
+    }
+  }
+  return orgID;
+}
+
 const defaultTheme = createTheme();
 
 export default function SignUpSide() {
   const navigate = useNavigate();
 
-  const handleSubmit = async (event) => { 
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const name = data.get('name');
@@ -52,12 +104,12 @@ export default function SignUpSide() {
       alert('Invalid email address');
       return;
     }
-  
+
     if (password !== confirmPassword) {
       alert('Passwords do not match');
       return;
     }
-  
+
     if (password.length < 6) {
       alert('Password should be at least 6 characters long');
       return;
@@ -72,26 +124,51 @@ export default function SignUpSide() {
         const docName = user.uid.toString();
         const userName = user.displayName;
         localStorage.setItem('token', docName);
-        const userData = {
-          email: email,
-          name: name,
-          photoURL: user.photoURL ? user.photoURL : '',
-          licenseNo1: '',
-          licenseNo2: '',
-          licenseNo3: '',
-          // parkingID: '',
-          orgID: '',
-          entryTime: '',
-          exitTime: '',
-          employeeID: '',
-          isVerifiedEmployee: false,
-        }
+        // Autofetch the employee ID and org ID
+        generateOrgEmployeeMap(email).then((orgEmployeeMap) => {
+          getEmployeeID(orgEmployeeMap, email).then((employeeID) => {
+            getOrgID(orgEmployeeMap, employeeID).then((orgID) => {
+              const userData = {
+                email: email,
+                name: userName,
+                photoURL: user.photoURL ? user.photoURL : '',
+                licenseNo1: '',
+                licenseNo2: '',
+                licenseNo3: '',
+                orgID: orgID,
+                entryTime: '',
+                exitTime: '',
+                employeeID: employeeID,
+                isVerifiedEmployee: false,
+              }
+              setDoc(doc(db, "users", docName),
+                userData
+              );
+              localStorage.setItem('profile', JSON.stringify(userData));
+              navigate('/');
+            });
+          });
+        });
+        // const userData = {
+        //   email: email,
+        //   name: name,
+        //   photoURL: user.photoURL ? user.photoURL : '',
+        //   licenseNo1: '',
+        //   licenseNo2: '',
+        //   licenseNo3: '',
+        //   // parkingID: '',
+        //   orgID: '',
+        //   entryTime: '',
+        //   exitTime: '',
+        //   employeeID: '',
+        //   isVerifiedEmployee: false,
+        // }
 
-        setDoc(doc(db, "users", docName),
-          userData
-        );
-        localStorage.setItem('profile', JSON.stringify(userData));
-        navigate('/');
+        // setDoc(doc(db, "users", docName),
+        //   userData
+        // );
+        // localStorage.setItem('profile', JSON.stringify(userData));
+        // navigate('/');
       }).catch((error) => {
         console.log(error);
       });
@@ -100,9 +177,9 @@ export default function SignUpSide() {
       console.log(error);
     }
   };
-  
+
   //  
-  
+
   return (
     <ThemeProvider theme={defaultTheme}>
       <Grid container component="main" sx={{ height: '100vh' }}>
@@ -131,20 +208,20 @@ export default function SignUpSide() {
               alignItems: 'center',
             }}
           >
-            <Avatar sx={{ 
-                  backgroundColor: '#b81c21',
-                  m: 0,
-                 }}>
+            <Avatar sx={{
+              backgroundColor: '#b81c21',
+              m: 0,
+            }}>
 
-                <LoginIcon />
+              <LoginIcon />
             </Avatar>
-            
-            
+
+
             <Typography component="h1" variant="h5">
               Sign Up
             </Typography>
             <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
-            <TextField
+              <TextField
                 margin="normal"
                 required
                 fullWidth
@@ -162,7 +239,7 @@ export default function SignUpSide() {
                 name="email"
                 autoComplete="email"
                 autoFocus
-                />
+              />
               {/* <TextField
                 margin="normal"
                 required
@@ -196,7 +273,7 @@ export default function SignUpSide() {
                 id="confirm_password"
                 autoComplete="current-password"
               />
-            {/* <FormControlLabel
+              {/* <FormControlLabel
                 control={<Checkbox value="remember" color="primary" />}
                 label="Remember me"
               /> */}
@@ -204,14 +281,14 @@ export default function SignUpSide() {
                 type="submit"
                 fullWidth
                 variant="contained"
-                sx={{ 
+                sx={{
                   backgroundColor: '#b81c21',
                   mt: 3,
                   mb: 2,
                   '&:hover': {
                     backgroundColor: '#b81c40',
                   },
-                 }}
+                }}
               >
                 Sign Up
               </Button>
