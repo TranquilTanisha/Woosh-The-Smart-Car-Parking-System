@@ -75,10 +75,10 @@ const ParkingDetail = () => {
                     </div>
                 </div>
             )}
-        {/* Embedding iframe */}
+        {/* Embedding iframe
         <div style={{ margin: '20px auto', width: '80%', textAlign: 'center' }}>
         <iframe src="https://html.itch.zone/html/10151287/index.html" allow="autoplay; fullscreen *; geolocation; microphone; camera; midi; monetization; xr-spatial-tracking; gamepad; gyroscope; accelerometer; xr; cross-origin-isolated" allowtransparency="true" webkitallowfullscreen="true" mozallowfullscreen="true" msallowfullscreen="true" frameborder="0" allowfullscreen="true" scrolling="no" id="game_drop"></iframe>
-        </div>
+        </div> */}
         </div>
     );
 }
