@@ -15,6 +15,7 @@ const placeholderImage = 'https://via.placeholder.com/150';
 
 function Navigation() {
   const [organizations, setOrganizations] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const fetchOrganizations = async () => {
     const db = getFirestore();
@@ -28,6 +29,14 @@ function Navigation() {
     fetchOrganizations();
   }, []);
 
+  const handleSearch = event => {
+    setSearchQuery(event.target.value);
+  };
+
+  const filteredOrganizations = organizations.filter(org =>
+    org.org_name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <>
     <div className='navigation'>
@@ -38,7 +47,7 @@ function Navigation() {
       </div>
       <div className="navigation-container">
         <div className="search-bar">
-          <input type="text" className="search-input" placeholder="Search..." />
+          <input type="text" className="search-input" placeholder="Search..." onChange={handleSearch} />
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
@@ -51,7 +60,7 @@ function Navigation() {
           </svg>
         </div>
         <div className="squares-container">
-          {organizations.map(org => (
+          {filteredOrganizations.map(org => (
             <Card className="square" key={org.id}>
               <CardContent className="card-content">
                 <img src={Image} alt="Organization" className="image" />
