@@ -104,6 +104,7 @@ const ReadQR = () => {
           setData(result);
           const user = auth.currentUser;
           const uid = user.uid;
+          localStorage.setItem('userID', uid);
           const userDocRef = doc(db, "users", uid);
           getDoc(userDocRef).then(docSnap => {
             if (docSnap.exists()) {
@@ -167,7 +168,7 @@ const ReadQR = () => {
                     exitTime: ""
                   }).then(() => {
                     addToSessionHistory(uid, formattedDateTime, "");
-}).catch((error) => {
+                    }).catch((error) => {
                       console.error("Error updating document: ", error);
                     });
                 }) .catch((error) => {
