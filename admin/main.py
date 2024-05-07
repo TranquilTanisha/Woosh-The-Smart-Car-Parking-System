@@ -3,6 +3,7 @@ from flask import render_template, request, redirect, url_for, send_file, flash
 from authenticate import authenticate_user
 from config import authenticator, db, session, auth
 from google.cloud import firestore
+from google.cloud.firestore_v1 import FieldFilter
 
 import pyqrcode
 import openpyxl
@@ -14,6 +15,7 @@ from io import BytesIO
 from datetime import datetime
 import pdfkit
 from xhtml2pdf import pisa
+import plotly.graph_objects as go
 
 months={
     '01': 'January',
@@ -29,6 +31,39 @@ months={
     '11': 'November',
     '12': 'December',
 }
+
+def fetch_logs(ref):
+    dates=ref.collections()
+    month={}
+    data={}
+    length={}
+    emp={}
+
+    for date in dates:
+        key=date.id[:date.id.rfind('-')] #2024-04 yr and month
+        if key not in month:
+            month[key]=[date.id.split('-')[2]]
+        else:
+            month[key]+=[date.id.split('-')[2]] #get the date of the month
+        
+        #store data for each and every date in a weird format
+        r=ref.collection(date.id)
+        docs=r.stream()
+        data[date.id]=[]
+        length[date.id]=len(r.get())
+        emp[date.id]=len(r.where("type", "==", 'employee').get())
+        for doc in docs:
+            if len(list(doc.to_dict().keys())) !=0:
+                data[date.id].append(doc.to_dict())
+
+    month = dict(sorted(month.items(), key=lambda item: item[0], reverse=True)) #sorting month and yr in descending order
+    for k,v in month.items():
+        month[k]=sorted(v, reverse=True)
+    print(month)
+    print(data)
+    print(length)
+    print(emp)
+    return month, data, length, emp
 
 @app.route('/admin')
 @authenticate_user
@@ -94,6 +129,28 @@ def add_employee():
         return redirect(url_for('view_employees'))
     return render_template('add-employees.html', msg='Add Employee', org_name=session['org_name'])
 
+@app.route('/download-employees', methods=['GET','POST'])
+@authenticate_user
+def download_employees():
+    ref=db.collection('employees').document(session['localId'])
+    doc=ref.get()
+    if doc.exists:
+        data=doc.to_dict()
+        print(data)
+        d={'Employee ID': list(data.keys()), 'Email': list(data.values())}
+        df=pandas.DataFrame(d)
+        csv_data = BytesIO()
+        df.to_csv(csv_data, index=False)
+        csv_data.seek(0)
+        return send_file(
+            csv_data,
+            mimetype='text/csv',
+            as_attachment=True,
+            download_name='employees.csv'
+        )
+        
+    return 'No data available'
+
 @app.route('/view-employees', methods=['GET','POST'])
 @authenticate_user
 def view_employees():
@@ -108,24 +165,12 @@ def view_employees():
 @app.route('/view-employee/<k>', methods=['GET','POST'])
 @authenticate_user
 def view_employee(k):
-    # ref=db.collection('notification').document(session['localId'])
-    # doc=ref.get()   
-    # if doc.exists:
-    #     data=doc.to_dict()
-    #     print(data)
-    #     user_id=data[k]
-    #     print(user_id)
-    #     ref=db.collection('users').document(user_id)
-    #     doc=ref.get()
-    #     if doc.exists:
-    #         data=doc.to_dict()
-    #         return render_template('view-employee.html', data=data, id=user_id, oeg_name=session['org_name'])
     ref=db.collection('users')
     data=ref.where('email', '==', k).get()
     if len(data)!=0:
         data=data[0].to_dict()
         print(data)
-        return render_template('view-employee.html', data=data, id=data['email'], org_name=session['org_name'])
+        return render_template('view-employee.html', data=data, id=data['email'], org_name=session['org_name'], orgID=session['localId'])
     return 'No data available'
 
 #k==user id
@@ -137,7 +182,7 @@ def view_user(k):
     if doc.exists:
         data=doc.to_dict()
         print(data)
-        return render_template('view-employee.html', data=data, id=k, org_name=session['org_name'])
+        return render_template('view-employee.html', data=data, id=k, org_name=session['org_name'], orgID=session['localId'])
     return 'No data available'
 
 @app.route('/delete-employees', methods=['GET','POST'])
@@ -170,60 +215,116 @@ def delete_employee(k):
 @app.route('/view-logs', methods=['GET','POST'])
 @authenticate_user
 def view_logs():
+    s=request.args.get('search')
+    t=request.args.get('type')
     ref=db.collection('organization').document(session['localId'])
-    dates=ref.collections()
-    month={}
-    data={}
-    length={}
-    emp={}
-
-    for date in dates:
-        key=date.id[:date.id.rfind('-')] #2024-04 yr and month
-        if key not in month:
-            month[key]=[date.id.split('-')[2]]
+    month, data, length, emp=fetch_logs(ref)
+    if (s is None or len(s)==0) and t is None:
+        return render_template('view_logs.html', month=month, months=months, data=data, org_name=session['org_name'], total=length, emp=emp, search=None)
+    if s is not None and len(s)!=0:
+        l={}
+        if s in data: #search by date
+            l[s]=data[s]
+        elif s in month: # search by yyyy-mm
+            if '-' in s:
+                for d in month[s]:
+                    l[s+'-'+d]=data[s+'-'+d]
+        elif len(s)==4: #search by year
+            for m in month:
+                if s in m:
+                    for d in month[m]:
+                        l[m+'-'+d]=data[m+'-'+d]
         else:
-            month[key]+=[date.id.split('-')[2]] #get the date of the month
-        
-        #store data for each and every date in a weird format
-        r=ref.collection(date.id)
-        docs=r.stream()
-        data[date.id]=[]
-        length[date.id]=len(r.get())
-        emp[date.id]=len(r.where("type", "==", 'employee').get())
-        for doc in docs:
-            if len(list(doc.to_dict().keys())) !=0:
-                data[date.id].append(doc.to_dict())
+            for k,values in data.items():
+                for v in values:
+                    if s in v['name']:
+                        l[k]=v
+        data=l
+        print(data)
+        print()
+    if t is not None:
+        l={}
+        if t=='employee':
+            for k,v in month.items():
+                for d in v:
+                    l[k+'-'+d]=[]
+                    if k+'-'+d in data:
+                        for i in data[k+'-'+d]:
+                            if i['type']=='employee':
+                                l[k+'-'+d].append(i)
 
-    # for k,v in data.items():
-    #     print(k)
-    #     print(v)
-    #     sorted_dict = dict(sorted(my_dict.items(), key=lambda item: item[1][0]))
-    # print(data)
-    # print(length)
-    month = dict(sorted(month.items(), key=lambda item: item[0], reverse=True)) #sorting month and yr in descending order
-    for k,v in month.items():
-        month[k]=sorted(v, reverse=True)
-    return render_template('view_logs.html', month=month, months=months, data=data, org_name=session['org_name'], total=length, emp=emp)
+                    if len(l[k+'-'+d])==0:
+                        del l[k+'-'+d]
+                    
+        elif t=='non-employee':
+            for k,v in month.items():
+                for d in v:
+                    l[k+'-'+d]=[]
+                    if k+'-'+d in data:
+                        for i in data[k+'-'+d]:
+                            if i['type']=='non-employee':
+                                l[k+'-'+d].append(i)
 
+                    if len(l[k+'-'+d])==0:
+                        del l[k+'-'+d]
+        data=l
+        month={}
+        for d in data:
+            a=d[:d.rfind('-')]
+            print(a)
+            if d[:d.rfind('-')] not in month:
+                month[d[:d.rfind('-')]]=[d[d.rfind('-')+1:]]
+            else:
+                month[d[:d.rfind('-')]].append(d[d.rfind('-')+1:])
+    print(month)
+    print(data)
+    return render_template('view_logs.html', month=month, months=months, data=data, org_name=session['org_name'], total=length, emp=emp, search=s, type=t)
+    
 @app.route('/download-logs', methods=['GET','POST'])
 @authenticate_user
 def download_logs():
-    file_name=session['org_name']+'-logs'
     ref=db.collection('organization').document(session['localId'])
-    dates=ref.collections()
-    data={}
-    for date in dates:
-        r=ref.collection(date.id)
-        docs=r.stream()
-        data[date.id]=[]
-        for doc in docs:
-            if len(list(doc.to_dict().keys())) !=0:
-                data[date.id].append(doc.to_dict())
-    print(data)
-    df=pandas.DataFrame(data)
-    df.to_excel('logs.xlsx')
-    
-    return send_file('logs.xlsx', as_attachment=True)
+    month, data, length, emp=fetch_logs(ref)
+    filename=session['org_name']+'-logs'
+    r=db.collection('users')
+    info={'Date':[], 'Name':[], 'Type':[], 'Employee ID':[], 'Email ID': [], 'Entry Time':[], 'Exit Time':[]} #store data in a dictionary
+    for m in month:
+        for d in month[m]:
+            curr=m+'-'+d
+            print(curr)
+            for i in data[curr]:
+                print(i)
+                q=r.document(i['id']).get().to_dict()
+                print(q)
+                info['Date'].append(curr)
+                info['Name'].append(q['name'])
+                info['Type'].append(i['type'])
+                if i['type']!='employee': info['Employee ID'].append(' ')
+                else: info['Employee ID'].append(q['employeeID'])
+                info['Email ID'].append(q['email'])
+                info['Entry Time'].append(i['entry'])
+                info['Exit Time'].append(i['exit'])
+        
+    e=sum(emp.values())
+    v=sum(length.values())
+    info['Date'].extend(['Total employees', 'Total visitors', 'Total entries'])
+    info['Name'].extend([e, v-e, v])
+    info['Type'].extend([' ', ' ', ' '])
+    info['Employee ID'].extend([' ', ' ', ' '])
+    info['Email ID'].extend([' ', ' ', ' '])
+    info['Entry Time'].extend([' ', ' ', ' '])
+    info['Exit Time'].extend([' ', ' ', ' '])
+        
+    df=pandas.DataFrame(info)
+    csv_data = BytesIO()
+    df.to_csv(csv_data, index=False)
+    csv_data.seek(0)
+    return send_file(
+        csv_data,
+        mimetype='text/csv',
+        as_attachment=True,
+        download_name=filename+'.csv'
+    )
 
 @app.route('/view-status', methods=['GET','POST'])
 @authenticate_user
@@ -232,14 +333,17 @@ def view_status():
     ref=db.collection('organization').document(session['localId']).collection(date)
     if ref.get() is None:
         return 'No data available'
-    docs=ref.where("exit","==","").stream()
-    total=len(ref.where("exit","==","").get())
+    
+    docs=ref.where(filter=FieldFilter("exit","==","")).stream()
+    total=len(ref.where(filter=FieldFilter("exit","==","")).get())
     emp=len(ref.where("type","==","employee").where("exit","==","").get())
     data=[]
     for doc in docs:
+        print(doc.to_dict())
         data.append(doc.to_dict())
     print(total)
     print(emp)
+    print(data)
     return render_template('view_status.html', data=data, total=total, emp=emp, org_name=session['org_name'])
 
 @app.route('/alerts', methods=['GET','POST'])
@@ -267,8 +371,31 @@ def alerts():
             data=dict(data)
             ref.set(data)
         print(data)
-        return render_template('alerts.html', data=data, org_name=session['org_name'])
-    return 'No alerts'
+        for k,v in data.items():
+            data[k]=v.split(' ')[1]
+            
+        ref=db.collection('users')
+        users={}
+        for k in data.keys():
+            doc=ref.document(k).get()
+            if doc.exists:
+                doc=doc.to_dict()
+                users[k]=doc['name']
+        print(users)
+        return render_template('alerts.html', data=data, users=users, org_name=session['org_name'])
+    flash('No alerts')
+
+@app.route('/analyze/<k>', methods=['GET','POST'])
+@authenticate_user
+def analyze(k):
+    ref=db.collection('organization').document(session['localId'])
+    month, data, length, emp=fetch_logs(ref)
+    if k in data:
+        values=[emp[k], length[k]-emp[k]]
+        labels=['Employees', 'Non-employees']
+        
+        
+        
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -109,20 +109,27 @@
     <h1>User logs</h1>
     <div class="main">
         <div class="search-bar">
-            <form action="/search-employees" method="GET">
-                <input type="text" name="search" placeholder="Search employees...">
+            <form action="/view-logs" method="GET">
+                <input type="text" name="search" placeholder="Search by name, year as 'yyyy', month as 'yyyy-mm' or date as 'yyyy-mm-dd' ">
+                
+                <input type="radio" name="type" value="employee">
+                <label for="employee">Employee</label><br>
+                <input type="radio" name="type" value="non-employee">
+                <label for="non-employee">Non-Employee</label><br>
                 <input type="submit" value="Search">
             </form>
         </div>
-    
+        <a class="button" href="/download-logs">Download logs</a>
         {% for k, values in month.items() %}
-            <h3>{{ k.split('-')[0] + ', ' + months[k.split('-')[1]] }}</h3>
+            <h3>{{ months[k.split('-')[1]]+', '+ k.split('-')[0] }}</h3>
             {% for v in values %}
-                <p><strong>Date: {{ v }}</strong></p>
+                <p><strong>Date: {{ v }}</strong></p> 
+                <a class="button" href="/analyze/{{k+'-'+v}}">Analye {{k+'-'+v}}</a>
+
                 <table>
                     <thead>
                         <tr>
-                            <th>User id</th>
+                            <th>User name</th>
                             <th>Type</th>
                             <th>Entry Time</th>
                             <th>Exit Time</th>
@@ -132,8 +139,8 @@
                     <tbody>
                         {% for d in data[k + '-' + v] %}
                             <tr>
-                                <td>{{ d['id'] }}</td>
-                                <td>{{ d['type'] }}</td>
+                                <td>{{ d['name'] }}</td>
+                                <td>{{ d['type'].title() }}</td>
                                 <td>{{ d['entry'] }}</td>
                                 <td>{{ d['exit'] }}</td>
                                 <td><a class="button" href="/view-user/{{ d['id'] }}">View details</a></td>
@@ -141,12 +148,16 @@
                         {% endfor %}
                     </tbody>
                 </table>
+                {% if type == None %}
                 <p>Employees: {{ emp[k + '-' + v] }}</p>
                 <p>Non-Employees: {{ total[k + '-' + v] - emp[k + '-' + v] }}</p>
+                {% endif %}
                 <p>Total users: {{ total[k + '-' + v] }}</p>
                 <div class="divider"></div>
             {% endfor %}
+            <div class="divider"></div>
         {% endfor %}
+    
     </div>
     <!-- Scroll to top button -->
     <div class="scroll-to-top" onclick="scrollToTop()">&#8593;</div>

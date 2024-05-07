@@ -81,16 +81,11 @@
     {% include 'flash.html' %}
     <h1 style="text-align: center">Current status of users in the premises</h1>
     <div class="main">
-    <div class="search-bar">
-      <form action="/search-employees" method="GET">
-        <input type="text" name="search" placeholder="Search employees...">
-        <input type="submit" value="Search">
-      </form>
-    </div>
+    
     <table>
         <thead>
             <tr>
-                <th>User id</th>
+                <th>User name</th>
                 <th>Type</th>
                 <th>Entry Time</th>
             </tr>
@@ -98,7 +93,7 @@
         <tbody>
             {% for d in data %}
             <tr>
-                <td>{{d['id']}}</td>
+                <td>{{d['name']}}</td>
                 <td>{{d['type']}}</td>
                 <td>{{d['entry']}}</td>
             </tr>

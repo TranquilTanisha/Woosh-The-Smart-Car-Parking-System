@@ -28,7 +28,7 @@ from datetime import datetime
 # print(len(docs))
 
 ref=db.collection('alerts').document('0yCprQEL4XNRO22HxhxMfvSqYSF2')
-ref.update({'45N8MO2wD6UbCxlmRYxRaeZqEtv2': datetime.now().strftime('%Y-%m-%d %H:%M:%S')})
+ref.update({'op33KxzXvCSHmXScKREV6bLVu5g2': datetime.now().strftime('%Y-%m-%d %H:%M:%S')})
 # print(datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 
 def search(email="shah.dhyey@gmail.com"):
@@ -46,5 +46,5 @@ def search(email="shah.dhyey@gmail.com"):
     #             return k
         else:
             return None
-k=search()
-print(k)
+# k=search()
+# print(k)

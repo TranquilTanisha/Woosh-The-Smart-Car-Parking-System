@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <canvas id="pie-chart" width="400" height="400"></canvas>
+
+    <!-- Script to create the pie chart -->
+    <script>
+        // Data for the pie chart
+        var data = {
+            labels: ['A', 'B', 'C'],
+            datasets: [{
+                data: [30, 20, 50],
+                backgroundColor: ['#ff9999', '#66b3ff', '#99ff99']
+            }]
+        };
+
+        // Create the pie chart
+        var ctx = document.getElementById('pie-chart').getContext('2d');
+        var pieChart = new Chart(ctx, {
+            type: 'pie',
+            data: data,
+            options: {
+                animation: {
+                    animateScale: true,
+                    animateRotate: true
+                }
+            }
+        });
+    </script>
+</body>
+</html>

@@ -12,7 +12,7 @@
     <br>
     <ul>
         {% for k,v in data.items() %}
-        <li><strong>User <a href="/view-user/{{k}}">{{k}}</a></strong> was attempting to enter the premises at <strong>{{v}}</strong></li>
+        <li>User: <a href="/view-user/{{k}}"><strong>{{users[k]}}</strong> </a> was attempting to enter the premises today at <strong>{{v}}</strong>.</li>
         {% endfor %}
     </ul>
 </body>

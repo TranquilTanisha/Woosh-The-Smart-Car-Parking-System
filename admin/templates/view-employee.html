@@ -37,10 +37,30 @@
     <h1 style="text-align: center">User Details</h1>
     <div class="container">
         <div class="main">
-            <h3>User: {{ id }}</h3>
-            {% for k, v in data.items() %}
-                <p><strong>{{ k }}:</strong> {{ v }}</p>
-            {% endfor %}
+            <h3>Name: {{data['name']}}</h3>
+            <p>Email: {{data['email']}}</p>
+            {% if data['orgID'] != orgID or data['orgID'] == Null %}
+            <p>Type: Non-employee</p>
+            {% else %}
+            <p>Type: Employee</p>
+            <p>Employee ID: {{data['employeeID']}}</p>
+            {% endif %}
+            {% if data['entryTime'] != Null %}
+            <p>Entry Time: {{data['entryTime'].split(' ')[1]}}</p>
+            {% if data['exitTime'] != Null %}
+            <p>Exit Time: {{data['exitTime'].split(' ')[1]}}</p>
+            {% endif %}
+            {% endif %}
+            {% if data['licenceNo1'] != Null %}
+            <p>Licence No: {{data['licenceNo1']}}</p>
+            {% endif %}
+            {% if data['licenceNo2'] != Null %}
+            <p>Licence No: {{data['licenceNo2']}}</p>
+            {% endif %}
+            {% if data['licenceNo3'] != Null %}
+            <p>Licence No: {{data['licenceNo3']}}</p>
+            {% endif %}
+            
         </div>
     </div>
 </body>
