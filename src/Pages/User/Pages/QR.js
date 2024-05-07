@@ -7,6 +7,7 @@ import Theme from '../../../Components/DarkMode/DarkMode';
 import Bottombar from '../../../Components/Navbar/Bottombar';
 import Navbar from '../../../Components/Navbar/Navbar';
 import '../../../App.css';
+import { Merge } from '@mui/icons-material';
 
 QrScanner.WORKER_PATH = './worker.js';
 
@@ -30,6 +31,7 @@ const ReadQR = () => {
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [showLinkButton, setShowLinkButton] = useState(false);
   const [hasScannedOnce, setHasScannedOnce] = useState(false);
+  const [qrOrgID, setQrOrgID] = useState(null);
   const scannerRef = useRef(null);
 
   useEffect(() => {
@@ -59,6 +61,16 @@ const ReadQR = () => {
       }
     };
   }, []);
+
+  const addToSessionHistory = async (userID, entryTime, exitTime, orgID) => {
+    const sessionHistoryRef = collection(db, "session_history");
+    await addDoc(sessionHistoryRef, {
+      userID: userID,
+      entryTime: entryTime,
+      exitTime: exitTime,
+      orgID: orgID
+    });
+  };
 
   const handleCameraScan = async () => {
     if (!cameraPermissionGranted) {
@@ -112,81 +124,148 @@ const ReadQR = () => {
                 setShowSuccessMessage(false);
                 setScanning(false);
               }, 3000);
+              
+              if (result) {
+                setData(result);
+                const qrOrgID = result.includes("org_id=") ? result.split("org_id=")[1] : null;
+                setQrOrgID(qrOrgID);
+            
+                if (qrOrgID) {
+                  if (docSnap.data().entryTime && !docSnap.data().exitTime) {
+                    updateDoc(userDocRef, {
+                      exitTime: formattedDateTime
+                    }).then(() => {
+                      addToSessionHistory(uid, docSnap.data().entryTime, formattedDateTime, qrOrgID);
+                    });
+                  } else {
+                    updateDoc(userDocRef, {
+                      entryTime: formattedDateTime,
+                      exitTime: ""
+                    }).then(() => {
+                      addToSessionHistory(uid, formattedDateTime, "", qrOrgID);
+                    });
+                  }
+                } else {
+                  console.error("orgID is undefined. Cannot add to session history.");
+                }
+              }
 
-              if (docSnap.data().entryTime && !docSnap.data().exitTime) {
-                updateDoc(userDocRef, {
-                  exitTime: formattedDateTime
-                });
-              } else {
-                updateDoc(userDocRef, {
-                  entryTime: formattedDateTime,
-                  exitTime: ""
+              const userData = {
+                entryTime: formattedDateTime,
+                exitTime: "",
+                // name: name,
+                // id: uid,
+                // type: entryType
+              };
+
+              if (!docSnap.exists()){
+                userDocRef.set(userData)
+                .then(() => {
+                  console.log("Document created successfully!");
+                  updateDoc(userDocRef, {
+                    entryTime: formattedDateTime,
+                    exitTime: ""
+                  }).then(() => {
+                    addToSessionHistory(uid, formattedDateTime, "");
+}).catch((error) => {
+                      console.error("Error updating document: ", error);
+                    });
+                }) .catch((error) => {
+                  console.error("Error creating document: ", error);
                 });
               }
-            } else {
-              console.log("No such document!");
             }
           });
+      //         setDoc(userDocRef, userData, {merge: true})
+      //           .then(() => {
+      //             console.log("User document created successfully!");
+      //             updateDoc(userDocRef, {
+      //               entryTime: formattedDateTime,
+      //               exitTime: ""
+      //           }).then(() => {
+      //             console.log("User document updated successfully!");
+      //           }).catch((error) => {
+      //             console.error("Error creating user document: ", error);
+      //           });
+      //       })
+      //     .catch((error)=> {console.error("Error creating user document: ", error);
+      //   });  
+      // }
+      // });
 
           const qrOrgID = result.split("org_id=")[1];
-          console.log("QR ORG ID: ", qrOrgID);
-          getDoc(userDocRef).then(docSnap => {
-            if (docSnap.exists()) {
-              const userOrgID = docSnap.data().orgID;
-              const currentDate = new Date();
-              const year = currentDate.getFullYear();
-              const month = String(currentDate.getMonth() + 1).padStart(2, '0');
-              const day = String(currentDate.getDate()).padStart(2, '0');
-              const formattedDate = `${year}-${month}-${day}`;
-              console.log("Formatted Date: ", formattedDate);
+console.log("QR ORG ID: ", qrOrgID);
+getDoc(userDocRef).then(docSnap => {
+    if (docSnap.exists()) {
+        const { name } = docSnap.data();
+        const userOrgID = docSnap.data().orgID;
+        const currentDate = new Date();
+        const year = currentDate.getFullYear();
+        const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+        const day = String(currentDate.getDate()).padStart(2, '0');
+        const formattedDate = `${year}-${month}-${day}`;
 
-              const autoID = localStorage.getItem("autoID");
-              console.log("Auto ID: ", autoID);
-              if (autoID !== null) {
-                getDoc(doc(db, "organization", qrOrgID)).then(docSnap => {
-                  if (docSnap.exists()) {
+        console.log("Formatted Date: ", formattedDate);
+
+        const autoID = localStorage.getItem("autoID");
+        console.log("Auto ID: ", autoID);
+
+        if (autoID !== null) {
+            getDoc(doc(db, "organization", qrOrgID)).then(docSnap => {
+                if (docSnap.exists()) {
                     const orgDocRef = doc(db, "organization", qrOrgID);
                     const orgDocFormattedDateRef = doc(orgDocRef, "dates", formattedDate);
                     getDoc(orgDocFormattedDateRef).then(async docSnap => {
-                      const orgDocRef = doc(db, "organization", qrOrgID);
-                      const orgCollectionFormattedDateRef = collection(orgDocRef, formattedDate);
-                      await updateDoc(doc(orgCollectionFormattedDateRef, autoID), {
-                        exit: new Date().toLocaleTimeString().slice(0, -3)
-                      });
-                      localStorage.removeItem("autoID");
-                    }
-                    );
-                  }
-                })
-              }
-              else {
-                getDoc(doc(db, "organization", qrOrgID)).then(docSnap => {
-                  if (docSnap.exists()) {
-                    const orgDocRef = doc(db, "organization", qrOrgID);
-                    const orgDocFormattedDateRef = doc(orgDocRef, "dates", formattedDate);
-                    getDoc(orgDocFormattedDateRef).then(async docSnap => {
-
-                      console.log("Creating document!");
-                      const orgDocRef = doc(db, "organization", qrOrgID);
-                      const orgCollectionFormattedDateRef = collection(orgDocRef, formattedDate);
-                      console.log("User Org ID: ", userOrgID);
-                      console.log("QR Org ID: ", qrOrgID);
-                      const entryAdded = await addDoc(orgCollectionFormattedDateRef, {
-                        entry: new Date().toLocaleTimeString().slice(0, -3),
-                        exit: "",
-                        id: uid,
-                        type: userOrgID === qrOrgID ? "employee" : "non-employee"
-                      })
-                      localStorage.setItem("autoID", entryAdded.id);
-                    }
-                    );
-                  }
+                        const orgDocRef = doc(db, "organization", qrOrgID);
+                        const orgCollectionFormattedDateRef = collection(orgDocRef, formattedDate);
+                        await updateDoc(doc(orgCollectionFormattedDateRef, autoID), {
+                            exit: new Date().toLocaleTimeString().slice(0, -3)
+                        });
+                        localStorage.removeItem("autoID");
+                    });
                 }
-                );
-              }
-            }
-          }
-          );
+            });
+        } else {
+            // const alertsCollectionRef = collection(db, "alerts");
+            // console.log(data.alertsCollectionRef)
+            // const alertData = {
+            //   [uid]: formattedDate,
+            // };
+            // addDoc(alertsCollectionRef, alertData)
+            //     .then(() => {
+            //         console.log("Alert data added successfully to the alerts collection");
+            //     })
+            //     .catch((error) => {
+            //         console.error("Error adding alert data to the alerts collection: ", error);
+            //     });
+
+                
+            getDoc(doc(db, "organization", qrOrgID)).then(docSnap => {
+                if (docSnap.exists()) {
+                    const orgDocRef = doc(db, "organization", qrOrgID);
+                    const orgDocFormattedDateRef = doc(orgDocRef, "dates", formattedDate);
+                    getDoc(orgDocFormattedDateRef).then(async docSnap => {
+                        console.log("Creating document!");
+                        const orgDocRef = doc(db, "organization", qrOrgID);
+                        const orgCollectionFormattedDateRef = collection(orgDocRef, formattedDate);
+                        console.log("User Org ID: ", userOrgID);
+                        console.log("QR Org ID: ", qrOrgID);
+                        const entryType = userOrgID === qrOrgID ? "employee" : "non-employee";
+                        const entryAdded = await addDoc(orgCollectionFormattedDateRef, {
+                            name: name,
+                            entry: new Date().toLocaleTimeString().slice(0, -3),
+                            exit: "",
+                            id: uid,
+                            type: entryType
+                        });
+                        localStorage.setItem("autoID", entryAdded.id);
+                    });
+                }
+            });
+        }
+    }
+});
+
 
           scannerRef.current.stop();
           videoElement.remove();
@@ -235,7 +314,10 @@ const ReadQR = () => {
                 {scanning ? 'Scanning...' : 'Scan QR Code'}
               </button>
               {showLinkButton && hasScannedOnce && (
+                <>
                 <button className="btn btn-primary mx-2 scan-button" onClick={handleRedirect}>Go to Link</button>
+                <button className="btn btn-primary mx-2 scan-button" onClick={() => navigate(`/navigation/detail/${qrOrgID}`)}>Check Availablity</button>
+                </>
               )}
             </div>
           </div>

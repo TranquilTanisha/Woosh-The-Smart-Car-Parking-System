@@ -3,35 +3,77 @@ import '../../../App.css';
 import Bottombar from '../../../Components/Navbar/Bottombar';
 import Navbar from '../../../Components/Navbar/Navbar';
 import Location from '../Location';
-import { Box } from '@mui/material';
-// import SessionHistory from '../../../Components/SessionHistory';
+import { Box, Card, CardContent, Typography } from '@mui/material';
 import Theme from '../../../Components/DarkMode/DarkMode';
-// import Chatbot from 'react-chatbot-kit';
-// import 'react-chatbot-kit/build/main.css';
-// import ActionProvider from '../../../Components/Chatbot/ActionProvider';
-// import config from '../../../Components/Chatbot/Config';
-// import MessageParser from '../../../Components/Chatbot/MessageParser';
-// import chatbotIcon from '../../../Images/chat-bot.png';
+import { getFirestore, collection, query, where, getDocs, doc as firestoreDoc, getDoc } from 'firebase/firestore'; 
+import { db } from '../../../Firebase'; 
 
 const Home = () => {
   const [username, setUsername] = useState('');
-  // const [chatbotVisible, setChatbotVisible] = useState(false);
+  const [sessionHistory, setSessionHistory] = useState([]);
+  const [orgNames, setOrgNames] = useState([]);
 
   useEffect(() => {
+    const fetchSessionHistory = async () => {
+      const userID = localStorage.getItem('userID');
+      if (userID) {
+        const db = getFirestore();
+        const sessionHistoryCollection = collection(db, 'session_history');
+        const q = query(sessionHistoryCollection, where('userID', '==', userID));
+
+        try {
+          const querySnapshot = await getDocs(q);
+          const data = querySnapshot.docs.map(doc => doc.data());
+          setSessionHistory(data);
+        } catch (error) {
+          console.error('Error fetching session history:', error);
+        }
+      }
+    };
+
     const profile = localStorage.getItem('profile');
     if (profile !== "undefined" && profile !== null) {
       setUsername(JSON.parse(profile).name);
     }
+
+    fetchSessionHistory();
   }, []);
 
-  // const toggleChatbot = () => {
-  //   setChatbotVisible(!chatbotVisible);
-  // };
+  useEffect(() => {
+    const fetchOrgNames = async () => {
+      const orgPromises = sessionHistory
+        .filter(session => session.entryTime.trim() !== '' && session.exitTime.trim() !== '') 
+        .map(async session => {
+          const orgID = session.orgID;
+          const orgName = await fetchOrgName(orgID);
+          return orgName;
+        });
+      
+      const resolvedOrgNames = await Promise.all(orgPromises);
+      setOrgNames(resolvedOrgNames);
+    };
+
+    fetchOrgNames();
+  }, [sessionHistory]);
+
+  const fetchOrgName = async (orgID) => {
+    const organizationRef = firestoreDoc(db, 'organization', orgID);
+    try {
+      const orgSnapshot = await getDoc(organizationRef);
+      if (orgSnapshot.exists()) {
+        const orgData = orgSnapshot.data();
+        return orgData.org_name;
+      }
+    } catch (error) {
+      console.error('Error fetching org name:', error);
+    }
+    return '';
+  };
 
   return (
     <div>
       <div className='navbar'>
-      <Navbar />
+        <Navbar />
       </div>
       <div className='home'>
         <Theme />
@@ -39,34 +81,41 @@ const Home = () => {
           <h1 style={{ marginTop: '3rem', textAlign: 'center', color: 'var(--body_color)' }}>Welcome {username}! Explore nearby parking areas. </h1>
         </div>
         <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
-         <div className='lb'>
-         <div className='location_box' >
-            <Location />
-          </div>
-         </div>
-        </Box>
-        {/* <SessionHistory /> */}
-        {/* <div>
-          <img
-            src={chatbotIcon}
-            alt="Chatbot"
-            className={chatbotVisible ? 'chatbot-icon animate-zoom' : 'chatbot-icon'}
-            style={{ position: 'fixed', bottom: '60px', right: '20px', width: '60px', height: '60px', cursor: 'pointer' }}
-            onClick={toggleChatbot}
-          />
-          {chatbotVisible && (
-            <div className="chatbot-window" style={{ position: 'fixed', bottom: '130px', right: '70px' }}>
-              <Chatbot
-                config={config}
-                messageParser={MessageParser}
-                actionProvider={ActionProvider}
-              />
+          <div className='lb'>
+            <div className='location_box' >
+              <Location />
             </div>
-          )}
-        </div> */}
+          </div>
+        </Box>
+
+        <Typography variant="h4" component="div" style={{ textAlign: 'center', fontWeight: 'bold', marginBottom: '1rem', color: 'var(--body_color)' }}>
+        Session History
+      </Typography>
+
+
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', flexWrap: 'wrap' }}>
+          {sessionHistory
+            .filter(session => session.entryTime.trim() !== '' && session.exitTime.trim() !== '')
+            .map((session, index) => (
+              <Card key={index} variant="outlined" sx={{ minWidth: 275, maxWidth: 350, marginBottom: '20px', boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)' }}>
+                <CardContent>
+                  <Typography variant="body1" component="div" gutterBottom>
+                    Organization Name: {orgNames[index]}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    Entry Time: {session.entryTime}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    Exit Time: {session.exitTime}
+                  </Typography>
+                </CardContent>
+              </Card>
+            ))
+          }
+        </div>
       </div>
       <div className='bottombar'>
-      <Bottombar value="Home" />
+        <Bottombar value="Home" />
       </div>
     </div>
   );
