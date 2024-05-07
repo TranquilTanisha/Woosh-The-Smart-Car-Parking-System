@@ -1,12 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
 import QrScanner from 'qr-scanner';
 import { useNavigate } from 'react-router-dom';
-import { addDoc, collection, doc, getDoc, updateDoc } from "firebase/firestore";
+import { addDoc, collection, doc, getDoc, updateDoc, getDocs } from "firebase/firestore";
 import { auth, db } from '../../../Firebase.js';
 import Theme from '../../../Components/DarkMode/DarkMode';
 import Bottombar from '../../../Components/Navbar/Bottombar';
 import Navbar from '../../../Components/Navbar/Navbar';
 import '../../../App.css';
+import Modal from '../../../Components/Modal/Modal2.js';
+import LogoImage from '../../../Images/woosh.jpeg';
 import { Merge } from '@mui/icons-material';
 
 QrScanner.WORKER_PATH = './worker.js';
@@ -32,7 +34,11 @@ const ReadQR = () => {
   const [showLinkButton, setShowLinkButton] = useState(false);
   const [hasScannedOnce, setHasScannedOnce] = useState(false);
   const [qrOrgID, setQrOrgID] = useState(null);
+  const [showExitModal, setShowExitModal] = useState(false);
+  const [charges, setCharges] = useState(0);
   const scannerRef = useRef(null);
+  const [entryTime ,setEntryTime]= useState(null);
+  const [exitTime ,setExitTime]= useState(null);
 
   useEffect(() => {
     const handleCameraPermission = async () => {
@@ -64,6 +70,8 @@ const ReadQR = () => {
 
   const addToSessionHistory = async (userID, entryTime, exitTime, orgID) => {
     const sessionHistoryRef = collection(db, "session_history");
+    setEntryTime(entryTime);
+    setExitTime(exitTime);
     await addDoc(sessionHistoryRef, {
       userID: userID,
       entryTime: entryTime,
@@ -71,6 +79,72 @@ const ReadQR = () => {
       orgID: orgID
     });
   };
+
+  const calculateCharges = async () => {
+    try {
+        console.log("Calculating charges...");
+
+        if (qrOrgID) {
+            console.log("QR organization ID found:", qrOrgID);
+            const orgCollectionRef = collection(db, 'organization');
+            const orgQuerySnapshot = await getDocs(orgCollectionRef);
+            const matchingOrg = orgQuerySnapshot.docs.find(doc => doc.id === qrOrgID);
+
+            if (matchingOrg) {
+                console.log("Organization document found:", matchingOrg.data());
+
+                const orgData = matchingOrg.data();
+                if (orgData.charges && orgData.fee) {
+                    console.log("Charges and fee information available.");
+
+                    if (orgData.fee.toLowerCase() === 'yes') {
+                        console.log("Charges are applicable.");
+                        console.log("entry",entryTime)
+                        console.log("exit", exitTime)
+
+                        if (entryTime && exitTime
+                        ) {
+                            const entryTimeDate = new Date(entryTime);
+                            const exitTimeDate = new Date(exitTime);
+                            const timeDiff = Math.abs(exitTimeDate - entryTimeDate);
+                            const hours = Math.ceil(timeDiff / (1000 * 60 * 60));
+
+                            if (hours <= 1) {
+                                console.log("Less than or equal to 1 hour. Applying charges for 1 hour.");
+                                const totalCharges = orgData.charges;
+                                console.log("Total charges calculated:", totalCharges);
+                                setCharges(totalCharges);
+                            } else {
+                                const totalCharges = hours * orgData.charges;
+                                console.log("Total charges calculated:", totalCharges);
+                                setCharges(totalCharges);
+                            }
+                        } else {
+                            console.log("Entry time or exit time not available.");
+                        }
+                    } else {
+                        console.log("Charges are not applicable for this organization.");
+                    }
+                } else {
+                    console.log("Charges or fee information missing for the organization.");
+                }
+            } else {
+                console.log("Organization document not found for QR organization ID:", qrOrgID);
+            }
+        } else {
+            console.log("QR organization ID not available.");
+        }
+    } catch (error) {
+        console.error("Error calculating charges:", error);
+    }
+};
+
+  
+
+  useEffect(() => {
+    calculateCharges();
+  }, [qrOrgID,exitTime]);
+  
 
   const handleCameraScan = async () => {
     if (!cameraPermissionGranted) {
@@ -137,6 +211,7 @@ const ReadQR = () => {
                       exitTime: formattedDateTime
                     }).then(() => {
                       addToSessionHistory(uid, docSnap.data().entryTime, formattedDateTime, qrOrgID);
+                      setShowExitModal(true);
                     });
                   } else {
                     updateDoc(userDocRef, {
@@ -300,6 +375,25 @@ getDoc(userDocRef).then(docSnap => {
       </div>
       <div className="qr">
         <Theme />
+        {showExitModal && (
+        <Modal onClose={() => setShowExitModal(false)}>
+            <div className="invoice-header">
+                <img src={LogoImage} alt="Logo" className="logo-image" />
+                <h2 className="invoice-title">INVOICE</h2>
+            </div>
+            <div className="invoice-body">
+                <h3>Exit Time Noted!</h3>
+                <p>Your exit time has been recorded successfully.</p>
+                <p><b>Entry Time:</b> {entryTime}</p>
+                <p><b>Exit Time:</b> {exitTime}</p>
+                <p><b>Charges:</b> ₹{charges}</p>
+            </div>
+            <div className="invoice-footer">
+              <button>Pay Now</button>
+            </div>
+        </Modal>
+        )}
+
         <div className="container">
           <h2 className="text-center mb-4">Scan QR Code</h2>
           <div className="card border-0">

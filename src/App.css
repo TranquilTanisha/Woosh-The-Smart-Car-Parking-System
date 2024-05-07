@@ -155,6 +155,7 @@
   font-weight: bold;
   text-transform: uppercase;
   margin-top: 4px;
+  z-index: 1;
 }
 
 .scan-button:hover {
@@ -571,4 +572,18 @@ svg {
 /* for edit profile */
 .form-box {
   margin-top: 10vh;
+}
+
+
+.session{
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 767px) {
+  .session {
+    margin-bottom: 50px;
+  }
 }

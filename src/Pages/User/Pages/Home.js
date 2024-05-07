@@ -93,7 +93,7 @@ const Home = () => {
       </Typography>
 
 
-        <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', flexWrap: 'wrap' }}>
+        <div className='session'>
           {sessionHistory
             .filter(session => session.entryTime.trim() !== '' && session.exitTime.trim() !== '')
             .map((session, index) => (
