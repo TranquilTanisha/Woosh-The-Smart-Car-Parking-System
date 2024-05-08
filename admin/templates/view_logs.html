@@ -100,6 +100,22 @@
         .scroll-to-top:hover {
             background-color: #da4045;
         }
+
+        .search-container form {
+            display: flex;
+            align-items: center;
+        }
+
+        .search-container input[type="text"],
+        .search-container input[type="radio"],
+        .search-container input[type="submit"] {
+            margin-right: 10px;
+        }
+
+        .search-container label {
+            margin-right: 10px;
+        }
+
     </style>
 </head>
 <body>
@@ -109,15 +125,16 @@
     <h1>User logs</h1>
     <div class="main">
         <div class="search-bar">
+            <div class="search-container">
             <form action="/view-logs" method="GET">
                 <input type="text" name="search" placeholder="Search by name, year as 'yyyy', month as 'yyyy-mm' or date as 'yyyy-mm-dd' ">
-                
                 <input type="radio" name="type" value="employee">
                 <label for="employee">Employee</label><br>
                 <input type="radio" name="type" value="non-employee">
                 <label for="non-employee">Non-Employee</label><br>
                 <input type="submit" value="Search">
             </form>
+        </div>
         </div>
         <a class="button" href="/download-logs">Download logs</a>
         <a class="button" href="/download-search/{{data}}">Download Search Result</a>
