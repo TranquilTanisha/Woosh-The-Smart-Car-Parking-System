@@ -78,10 +78,7 @@ const ReadQR = () => {
 
   const calculateCharges = async () => {
     try {
-      console.log("Calculating charges...");
-
       if (qrOrgID) {
-        console.log("QR organization ID found:", qrOrgID);
         const orgCollectionRef = collection(db, 'organization');
         const orgQuerySnapshot = await getDocs(orgCollectionRef);
         const matchingOrg = orgQuerySnapshot.docs.find(doc => doc.id === qrOrgID);
@@ -175,7 +172,6 @@ const ReadQR = () => {
           const userDocRef = doc(db, "users", uid);
           getDoc(userDocRef).then(docSnap => {
             if (docSnap.exists()) {
-              console.log(docSnap.data());
               const currentDate = new Date();
               const year = currentDate.getFullYear();
               const month = String(currentDate.getMonth() + 1).padStart(2, '0');
@@ -218,23 +214,23 @@ const ReadQR = () => {
                   console.error("orgID is undefined. Cannot add to session history.");
                 }
                 if (user.employeeID === "" || user.employeeID === null || user.employeeID === undefined) {
-                  console.log("User is not an employee. Sending alert to the organization.");
-                  const alertsCollectionRef = collection(db, "alerts");
-                  getDocs(alertsCollectionRef).then(querySnapshot => {
-                    const alertData = {
-                      [formattedDateTime]: uid
-                    };
-                    const alertDocRef = doc(alertsCollectionRef, qrOrgID);
-                    getDoc(alertDocRef).then(docSnap => {
-                      if (!docSnap.exists()) {
-                        setDoc(alertDocRef, alertData);
-                      } else {
-                        updateDoc(alertDocRef, alertData);
-                      }
+                  if (docSnap.data().exitTime) {
+                    const alertsCollectionRef = collection(db, "alerts");
+                    getDocs(alertsCollectionRef).then(querySnapshot => {
+                      const alertData = {
+                        [formattedDateTime]: uid
+                      };
+                      const alertDocRef = doc(alertsCollectionRef, qrOrgID);
+                      getDoc(alertDocRef).then(docSnap => {
+                        if (!docSnap.exists()) {
+                          setDoc(alertDocRef, alertData);
+                        } else {
+                          updateDoc(alertDocRef, alertData);
+                        }
+                      });
                     });
-                  });
+                  }
                 } else {
-                  console.log(user.employeeID);
                   console.log("User is an employee. No alert sent.");
                 }
               }
@@ -242,9 +238,6 @@ const ReadQR = () => {
               const userData = {
                 entryTime: formattedDateTime,
                 exitTime: "",
-                // name: name,
-                // id: uid,
-                // type: entryType
               };
 
               if (!docSnap.exists()) {
@@ -267,7 +260,6 @@ const ReadQR = () => {
           });
 
           const qrOrgID = result.split("org_id=")[1];
-          console.log("QR ORG ID: ", qrOrgID);
           getDoc(userDocRef).then(docSnap => {
             if (docSnap.exists()) {
               const { name } = docSnap.data();
@@ -277,8 +269,6 @@ const ReadQR = () => {
               const month = String(currentDate.getMonth() + 1).padStart(2, '0');
               const day = String(currentDate.getDate()).padStart(2, '0');
               const formattedDate = `${year}-${month}-${day}`;
-
-              console.log("Formatted Date: ", formattedDate);
 
               const autoID = localStorage.getItem("autoID");
               console.log("Auto ID: ", autoID);
@@ -304,11 +294,8 @@ const ReadQR = () => {
                     const orgDocRef = doc(db, "organization", qrOrgID);
                     const orgDocFormattedDateRef = doc(orgDocRef, "dates", formattedDate);
                     getDoc(orgDocFormattedDateRef).then(async docSnap => {
-                      console.log("Creating document!");
                       const orgDocRef = doc(db, "organization", qrOrgID);
                       const orgCollectionFormattedDateRef = collection(orgDocRef, formattedDate);
-                      console.log("User Org ID: ", userOrgID);
-                      console.log("QR Org ID: ", qrOrgID);
                       const entryType = userOrgID === qrOrgID ? "employee" : "non-employee";
                       const entryAdded = await addDoc(orgCollectionFormattedDateRef, {
                         name: name,
