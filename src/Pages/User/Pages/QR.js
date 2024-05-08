@@ -380,7 +380,9 @@ const ReadQR = () => {
               {showLinkButton && hasScannedOnce && (
                 <>
                   <button className="btn btn-primary mx-2 scan-button" onClick={handleRedirect}>Go to Link</button>
-                  <button className="btn btn-primary mx-2 scan-button" onClick={() => navigate(`/navigation/detail/${qrOrgID}`)}>Check Availablity</button>
+                  <button className="btn btn-primary mx-2 scan-button" onClick={() => window.open(`/navigation/detail/${qrOrgID}`, '_blank')}>
+                    Check Availability
+                  </button>
                 </>
               )}
             </div>
