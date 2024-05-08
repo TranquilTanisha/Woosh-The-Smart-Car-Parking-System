@@ -229,16 +229,26 @@ def view_logs():
             if '-' in s:
                 for d in month[s]:
                     l[s+'-'+d]=data[s+'-'+d]
-        elif len(s)==4: #search by year
+        elif len(s)==4 and s.isdigit(): #search by year
             for m in month:
                 if s in m:
                     for d in month[m]:
                         l[m+'-'+d]=data[m+'-'+d]
-        else:
+        else: #search by name
+            c=0
             for k,values in data.items():
+                l[k]=[]
                 for v in values:
-                    if s in v['name']:
-                        l[k]=v
+                    if s.lower() == v['name'].lower():
+                        l[k].append(v)
+                        c+=1
+                
+                if len(l[k])==0:
+                    del l[k]
+            if c==0:
+                flash('No data available')
+                return redirect(url_for('view_logs'))
+                
         data=l
         print(data)
         print()
@@ -271,15 +281,35 @@ def view_logs():
         month={}
         for d in data:
             a=d[:d.rfind('-')]
-            print(a)
             if d[:d.rfind('-')] not in month:
                 month[d[:d.rfind('-')]]=[d[d.rfind('-')+1:]]
             else:
                 month[d[:d.rfind('-')]].append(d[d.rfind('-')+1:])
+    temp={}
+    total={}
+    for k,v in data.items():
+        total[k]=len(v)
+        obj = datetime.strptime(k, "%Y-%m-%d")
+        y = str(obj.strftime("%Y-%m"))
+        d=str(obj.strftime("%d"))
+        if y not in temp:
+            temp[y]=[d]
+        else:
+            temp[y].append(d)
+    month=temp
+    length=total
     print(month)
-    print(data)
+    print(total)
     return render_template('view_logs.html', month=month, months=months, data=data, org_name=session['org_name'], total=length, emp=emp, search=s, type=t)
     
+@app.route('/download-search/<data>', methods=['GET','POST'])
+@authenticate_user
+def download_search(data):
+    # s=request.args.get('search')
+    # t=request.args.get('type')
+    # print
+    return data
+
 @app.route('/download-logs', methods=['GET','POST'])
 @authenticate_user
 def download_logs():
@@ -349,31 +379,18 @@ def view_status():
 @app.route('/alerts', methods=['GET','POST'])
 @authenticate_user
 def alerts():
-    ref=db.collection('alerts').document(session['localId'])
-    doc=ref.get()
-    data=doc.to_dict()
-    print(data)
+    date=datetime.now().strftime('%Y-%m-%d')
+    ref=db.collection('organization').document(session['localId']).collection(date)
+    if ref.get() is None:
+        return 'No data available'
+    docs=ref.where("type","==","non-employee").where("exit","==","").get()
+    data={}
+    for doc in docs:
+        d=doc.to_dict()
+        data[d['id']]=d['entry']
+    
+    print(data)    
     if len(data)!=0:
-        data = sorted(data.items(), key=lambda x: x[1], reverse=True)
-        data = {k: v for k, v in data}
-        
-        temp=[]
-        for k,v in data.items():
-            today=datetime.today().strftime('%Y-%m-%d')
-            if today not in v:
-                temp.append(k)
-        for t in temp:
-            del data[t]
-        ref.set(data)   
-        if len(data)>10:
-            data=list(data.items())
-            data=data[:10]
-            data=dict(data)
-            ref.set(data)
-        print(data)
-        for k,v in data.items():
-            data[k]=v.split(' ')[1]
-            
         ref=db.collection('users')
         users={}
         for k in data.keys():
@@ -382,20 +399,22 @@ def alerts():
                 doc=doc.to_dict()
                 users[k]=doc['name']
         print(users)
+        data = sorted(data.items(), key=lambda x: x[1], reverse=True)
+        data = {k: v for k, v in data}
+        print(data)    
+        if len(data)>10:
+            temp={}
+            data={key: data[key] for key in list(data)[:10]}
+            print(data)
         return render_template('alerts.html', data=data, users=users, org_name=session['org_name'])
-    flash('No alerts')
 
 @app.route('/analyze/<k>', methods=['GET','POST'])
 @authenticate_user
 def analyze(k):
     ref=db.collection('organization').document(session['localId'])
     month, data, length, emp=fetch_logs(ref)
-    if k in data:
-        values=[emp[k], length[k]-emp[k]]
-        labels=['Employees', 'Non-employees']
-        
-        
-        
+    values=[emp[k], length[k]-emp[k]]
+    labels=['Employees', 'Non-employees']
 
 if __name__ == '__main__':
     app.run(debug=True)

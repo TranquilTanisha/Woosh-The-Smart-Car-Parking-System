@@ -120,7 +120,9 @@
             </form>
         </div>
         <a class="button" href="/download-logs">Download logs</a>
+        <a class="button" href="/download-search/{{data}}">Download Search Result</a>
         {% for k, values in month.items() %}
+        
             <h3>{{ months[k.split('-')[1]]+', '+ k.split('-')[0] }}</h3>
             {% for v in values %}
                 <p><strong>Date: {{ v }}</strong></p> 
@@ -148,11 +150,13 @@
                         {% endfor %}
                     </tbody>
                 </table>
-                {% if type == None %}
+                {% if type != None or search.isalpha() %}
+                <p>Total users: {{ total[k + '-' + v] }}</p>
+                {% else %}
                 <p>Employees: {{ emp[k + '-' + v] }}</p>
                 <p>Non-Employees: {{ total[k + '-' + v] - emp[k + '-' + v] }}</p>
-                {% endif %}
                 <p>Total users: {{ total[k + '-' + v] }}</p>
+                {% endif %}
                 <div class="divider"></div>
             {% endfor %}
             <div class="divider"></div>
