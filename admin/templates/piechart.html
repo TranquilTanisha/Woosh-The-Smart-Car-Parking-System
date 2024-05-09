@@ -6,11 +6,26 @@
     <title>Pie Chart Page</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/piechart.css') }}">
 </head>
+
+<style>
+    .card{
+        display: flex;
+    flex-direction: column;
+    align-content: center;
+    flex-wrap: wrap;
+    }
+    .chart{
+        width: 30vw;
+    }
+    .hhh{
+        text-align: center;
+    }
+</style>
 <body>
     {% include 'navbar.html' %}
     {% include 'flash.html' %}
     <div class="card">
-        <h1>Analysis of {{k}}</h1>
+        <h1 class="hhh">Analysis of {{k}}</h1>
         <div class="chart">
             <canvas id="myChart"></canvas>
         </div>
