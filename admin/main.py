@@ -154,10 +154,24 @@ def download_employees():
 @app.route('/view-employees', methods=['GET','POST'])
 @authenticate_user
 def view_employees():
+    search=request.args.get('search')
     ref=db.collection('employees').document(session['localId'])
     doc=ref.get()
     if doc.exists:
         data=doc.to_dict()
+        print(data)
+        if search is not None and len(search)!=0:
+            if search in data:
+                data={search: data[search]}
+            elif search in data.values():
+                temp={}
+                for k,v in data.items():
+                    if search==v:
+                        temp[k]=v
+                data=temp
+            else:
+                flash('No data available')
+                return redirect(url_for('view_employees'))
         return render_template('view-employees.html', data=data, l=len(data), org_name=session['org_name'])
     return 'No data available'
 
