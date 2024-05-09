@@ -111,8 +111,8 @@
   object-fit: cover;
   position: absolute;
   top: 40vh;
-  left: 43%;
-  transform: translate(-50%, -50%);
+  /* left: 43%;
+  transform: translate(-50%, -50%); */
 }
 
 .qrScanner {
