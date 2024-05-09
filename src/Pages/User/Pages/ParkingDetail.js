@@ -122,7 +122,7 @@ const ParkingDetail = () => {
                             <div className='pline'></div>
                             <div className='pinfo1'><div>Vacant</div><div>{totalParking - usedSpots}</div></div>
                             <div className='pline'></div>
-                            <div className='pinfo1'><div>Active Users</div><div>{activeUsers}</div></div>
+                            <div className='pinfo1'><div>Available Parking</div><div>{(totalParking - usedSpots) - activeUsers}</div></div>
                         </div>
                     </div>
                 </div>

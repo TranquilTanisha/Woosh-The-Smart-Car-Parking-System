@@ -110,9 +110,9 @@
   height: 200px;
   object-fit: cover;
   position: absolute;
-  top: 35vh;
-  left: 44%;
-  /* transform: translate(-50%, -50%); */
+  top: 40vh;
+  left: 43%;
+  transform: translate(-50%, -50%);
 }
 
 .qrScanner {

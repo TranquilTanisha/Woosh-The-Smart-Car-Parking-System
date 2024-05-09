@@ -327,7 +327,8 @@ const ReadQR = () => {
   };
 
   const handleRedirect = () => {
-    window.location.href = 'https://html.itch.zone/html/10381436/index.html';
+    // window.location.href = 'https://html.itch.zone/html/10381436/index.html';
+    window.open('https://html.itch.zone/html/10381436/index.html', '_blank');
   };
 
   return (
