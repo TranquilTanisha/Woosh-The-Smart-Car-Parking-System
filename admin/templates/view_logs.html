@@ -167,11 +167,14 @@
                         {% endfor %}
                     </tbody>
                 </table>
-                {% if type != None or search.isalpha() %}
+                {% if name != None %}
+                <p>hi</p>
                 <p>Total users: {{ total[k + '-' + v] }}</p>
-                {% else %}
+                {% elif type == None %}
                 <p>Employees: {{ emp[k + '-' + v] }}</p>
                 <p>Non-Employees: {{ total[k + '-' + v] - emp[k + '-' + v] }}</p>
+                <p>Total users: {{ total[k + '-' + v] }}</p>
+                {% else %}
                 <p>Total users: {{ total[k + '-' + v] }}</p>
                 {% endif %}
                 <div class="divider"></div>

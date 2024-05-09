@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pie Chart Page</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/piechart.css') }}">
+</head>
+<body>
+    {% include 'navbar.html' %}
+    {% include 'flash.html' %}
+    <div class="card">
+        <h1>Analysis of {{k}}</h1>
+        <div class="chart">
+            <canvas id="myChart"></canvas>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // JavaScript code to render the pie chart using Chart.js
+        const config = {
+            type: "pie",
+            data: {
+                datasets: [{
+                    data:[{{values[0]}},{{values[1]}}],
+                    backgroundColor: ["cyan", "DodgerBlue"]
+                }],
+                labels: ["{{labels[0]}}", "{{labels[1]}}"]
+            },
+            options: {
+                responsive: true
+            }
+        };
+    </script>
+    <script>
+        const myChart = new Chart(
+            document.getElementById('myChart'),
+            config
+        );
+    </script>
+</body>
+</html>

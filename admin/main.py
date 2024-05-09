@@ -1,5 +1,5 @@
 from app import app
-from flask import render_template, request, redirect, url_for, send_file, flash
+from flask import render_template, request, redirect, url_for, send_file, flash, jsonify
 from authenticate import authenticate_user
 from config import authenticator, db, session, auth
 from google.cloud import firestore
@@ -219,8 +219,9 @@ def view_logs():
     t=request.args.get('type')
     ref=db.collection('organization').document(session['localId'])
     month, data, length, emp=fetch_logs(ref)
+    name=None
     if (s is None or len(s)==0) and t is None:
-        return render_template('view_logs.html', month=month, months=months, data=data, org_name=session['org_name'], total=length, emp=emp, search=None)
+        return render_template('view_logs.html', month=month, months=months, data=data, org_name=session['org_name'], total=length, emp=emp, search=None, name=name, type=None)
     if s is not None and len(s)!=0:
         l={}
         if s in data: #search by date
@@ -248,8 +249,10 @@ def view_logs():
             if c==0:
                 flash('No data available')
                 return redirect(url_for('view_logs'))
+            else:
+                name=True
                 
-        data=l
+        data = {k: l[k] for k in sorted(l.keys(), reverse=True)}
         print(data)
         print()
     if t is not None:
@@ -300,7 +303,7 @@ def view_logs():
     length=total
     print(month)
     print(total)
-    return render_template('view_logs.html', month=month, months=months, data=data, org_name=session['org_name'], total=length, emp=emp, search=s, type=t)
+    return render_template('view_logs.html', month=month, months=months, data=data, org_name=session['org_name'], total=length, emp=emp, search=s, type=t, name=name)
     
 @app.route('/download-search/<data>', methods=['GET','POST'])
 @authenticate_user
@@ -415,6 +418,9 @@ def analyze(k):
     month, data, length, emp=fetch_logs(ref)
     values=[emp[k], length[k]-emp[k]]
     labels=['Employees', 'Non-employees']
+    # return jsonify({'values': values, 'labels': labels})
+    # datat={'Employees': emp[k], 'Non-Employees': length[k]-emp[k]}
+    return render_template('piechart.html', values= values, labels= labels, k=k, org_name=session['org_name'])
 
 if __name__ == '__main__':
     app.run(debug=True)
