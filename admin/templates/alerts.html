@@ -10,10 +10,14 @@
     {% include 'flash.html' %}
     <h2>Alerts</h2>
     <br>
+    {% if msg%}
+    {{msg}}
+    {% else %}
     <ul>
         {% for k,v in data.items() %}
         <li>User: <a href="/view-user/{{k}}"><strong>{{users[k]}}</strong> </a> was attempting to enter the premises today at <strong>{{v}}</strong>.</li>
         {% endfor %}
     </ul>
+    {% endif%}
 </body>
 </html>

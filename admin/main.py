@@ -410,6 +410,7 @@ def alerts():
             data={key: data[key] for key in list(data)[:10]}
             print(data)
         return render_template('alerts.html', data=data, users=users, org_name=session['org_name'])
+    return render_template('alerts.html', msg='You have no alerts')
 
 @app.route('/analyze/<k>', methods=['GET','POST'])
 @authenticate_user
