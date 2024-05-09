@@ -400,7 +400,7 @@ def alerts():
     ref=db.collection('organization').document(session['localId']).collection(date)
     if ref.get() is None:
         return 'No data available'
-    docs=ref.where("type","==","non-employee").where("exit","==","").get()
+    docs=ref.where("type","==","non-employee").get()
     data={}
     for doc in docs:
         d=doc.to_dict()
