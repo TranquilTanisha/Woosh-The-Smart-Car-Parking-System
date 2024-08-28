@@ -26,14 +26,14 @@ The exponential growth of urbanization in India has led to a significant increas
 The system can work for both, open and closed parking spaces.
 
 <h3>Block Diagram</h3>
-![image](https://github.com/user-attachments/assets/05ecf953-7067-42bc-bcb2-d21d240878c3)
+![image](https://github.com/user-attachments/assets/476c5c81-ea43-43a6-ab01-ff7faa7e92d8)
 
 <h3>Tech Stack</h3>
 <ul>
   <p><strong>Admin: </strong>Python and Flask</p>
   <p><strong>User: </strong>React JS</p>
   <p><strong>Layout Editor: </strong>Godot</p>
-  <p><strong>Hardware Integration: </strong>Embedded C</p>
+  <p><strong>Hardware Integration: </strong>Embedded C/C++</p>
   <p><strong>Real-time database: </strong>Firebase</p>
 </ul>
 
@@ -64,7 +64,13 @@ The system can work for both, open and closed parking spaces.
   <li><strong>Convenience and Ease of Use: </strong>Simplifies the parking experience with user-friendly features.</li>
   <li><strong>Layout Editor: </strong>Allows for customized parking layout design tailored to specific needs.</li>
   <li><strong>Efficient Parking: </strong>Optimizes parking space usage, reducing time spent searching for spots.</li>
+  <li><strong>Improved Traffic Flow: </strong>By directing drivers to available parking spots efficiently, Woosh can reduce traffic congestion in parking facilities.</li>
   <li><strong>Real-time Availability: </strong>Provides up-to-date information on available parking spaces.</li>
   <li><strong>Environmental Sustainability: </strong>Minimizes fuel consumption and carbon footprint through efficient parking management.</li>
   <li><strong>Scalable and Flexible: </strong>Adapts to various parking lot sizes and organizational requirements.</li>
+  <li><strong>Cost-effectiveness: </strong>While the initial investment in smart parking infrastructure may be higher than traditional parking systems, the long-term benefits, including reduced operational costs, increased revenue opportunities, and improved customer satisfaction, often justify the investment.</li>
 </ul>
+
+<h3>Demonstration Video</h3>
+
+[![Woosh-The-Smart-Car-Parking-System](https://img.youtube.com/vi/WcQHFXUZhZg/0.jpg)](https://www.youtube.com/watch?v=WcQHFXUZhZg)
