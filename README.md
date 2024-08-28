@@ -1,7 +1,7 @@
 <h2>Woosh: The Smart Car Parking System</h2>
 
 <h3>Achievement</h3>
-Secured a spot in the <strong>top 8 finalists</strong> out of 450+ teams across India. Woosh was the only solution selected for the finals under the problem statement of 'Finding a Car Parking System.'.
+Secured a spot in the <strong>top 8 finalists</strong> out of 450+ teams across India in Mastek Deep Blue Season 9 Hackathon. Woosh was the only solution selected for the finals under the problem statement of 'Finding a Car Parking System.'.
 
 <h3>Problem Statement: </h3>
 The exponential growth of urbanization in India has led to a significant increase in the number of vehicles on the roads. Because of the limited infrastructure development in our country, the current state of parking facilities in India is inadequate.
